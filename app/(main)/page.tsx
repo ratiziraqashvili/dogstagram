@@ -5,7 +5,7 @@ export default async function Home() {
   const session = await getSession();
 
   if (!session?.user) {
-    redirect("/login")
+    redirect("/register")
   }
 
   return (
