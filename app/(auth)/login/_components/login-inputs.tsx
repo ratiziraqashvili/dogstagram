@@ -19,22 +19,11 @@ import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().email(),
-  username: z.string().min(3, {
-    message: "Username must be at least 3 characters",
-  }),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters long")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      {
-        message:
-          "Password must contain at least one uppercase, lowercase, digit, and special character",
-      }
-    ),
+  username: z.string(),
+  password: z.string(),
 });
 
-export const RegisterInputs = () => {
+export const LoginInputs = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,12 +41,11 @@ export const RegisterInputs = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      await axios.post("/api/register", values)
+      await axios.post("/api/login", values)
 
-      
-      router.push("/login")
+      router.push("/")
     } catch (error) {
-      console.log("register-inputs | Line: 60 in Catch", error);
+      console.log("login-inputs | Line: 48-50 in Catch", error);
     } finally {
       setIsLoading(false);
     }
