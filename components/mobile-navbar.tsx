@@ -29,10 +29,10 @@ export const MobileNavbar = () => {
   };
 
   return (
-    <div className="border-b-[1px] h-[3.8rem] flex justify-between items-center">
+    <nav className="border-b-[1px] h-[3.8rem] flex justify-between items-center w-full fixed">
       <div className="pl-3 cursor-pointer">
         <Link href="/">
-          <Image src="/logo.png" alt="Dogstagram" width={130} height={130} />
+          <Image src="/logo.png" alt="Dogstagram" width={130} height={130} unoptimized  />
         </Link>
       </div>
       <div className="flex items-center gap-3 pr-5">
@@ -42,7 +42,7 @@ export const MobileNavbar = () => {
             onBlur={onBlur}
             ref={inputRef}
             className={cn(
-              "bg-primary/5 w-[16rem] h-9 pl-10 text-muted-foreground",
+              "bg-primary/5 sm:w-[16rem] h-9 pl-10 text-muted-foreground w-auto",
               isSearching && "pl-4"
             )}
           />
@@ -64,6 +64,6 @@ export const MobileNavbar = () => {
         <Heart className="w-6 h-6 cursor-pointer hover:scale-105 transition" />
         </Link>
       </div>
-    </div>
+    </nav>
   );
 };

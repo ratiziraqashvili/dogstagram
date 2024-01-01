@@ -1,3 +1,5 @@
+"use client"
+
 import { Menu } from "lucide-react";
 import {
   DropdownMenu,
@@ -12,7 +14,7 @@ export const MoreDropDown = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger className="outline-none">
         <div className="flex items-center gap-4 p-3  w-full cursor-pointer">
           <Menu className="w-7 h-7" />
           <span className="hidden lg:block text-md font-[500] pt-[0.20rem]">
