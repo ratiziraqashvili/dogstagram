@@ -12,7 +12,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         <MobileNavbar />
         <MobileBottomNavbar />
       </div>
-      <main className="max-w-[50%] mx-auto">
+      <main className="">
         {children}
       </main>
     </div>
