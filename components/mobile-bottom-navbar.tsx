@@ -1,12 +1,10 @@
-"use client"
-
 import { Compass, Home, Plus } from "lucide-react";
 import { ProfilePicture } from "./profile-picture";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { currentUser } from "@clerk/nextjs";
 
-export const MobileBottomNavbar = () => {
-    const pathname = usePathname()
+export const MobileBottomNavbar = async () => {
+    const user = await currentUser();
 
   const routes = [
     {
@@ -23,7 +21,7 @@ export const MobileBottomNavbar = () => {
     },
     {
       icon: ProfilePicture,
-      href: "/profile",
+      href: `/${user?.id}`,
     },
   ];
 

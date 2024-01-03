@@ -1,15 +1,17 @@
-"use client";
-
-import { useUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-export const ProfilePicture = () => {
-  const { user } = useUser();
+interface ProfilePictureProps {
+  className?: string;
+}
+
+export const ProfilePicture = async ({ className = "w-6 h-6" }: ProfilePictureProps) => {
+  const user = await currentUser();
 
   return (
-    <Avatar className="w-6 h-6">
-      <AvatarImage className="" src={user?.imageUrl} />
-      <AvatarFallback>Profile Picture</AvatarFallback>
+    <Avatar className={className}>
+      <AvatarImage src={user?.imageUrl} />
+      <AvatarFallback></AvatarFallback>
     </Avatar>
   );
 };

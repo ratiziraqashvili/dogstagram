@@ -3,8 +3,11 @@ import { Routes } from "./routes";
 import Link from "next/link";
 import { MoreDropDown } from "./more-dropdown";
 import { ProfilePicture } from "./profile-picture";
+import { currentUser } from "@clerk/nextjs";
 
-export const Sidebar = () => {
+export const Sidebar = async () => {
+  const user = await currentUser()
+
   return (
     <div className="xl:w-[15.3rem] w-[4.6rem] border-r-[1px] h-full flex flex-col p-3 gap-7 fixed">
       <div className="pt-3 xl:block hidden">
@@ -30,9 +33,9 @@ export const Sidebar = () => {
       </div>
       <div className="flex flex-col gap-2 flex-1">
         <Routes />
-        <Link href="/profile">
+        <Link href={`/${user?.id}`}>
           <div className="flex items-center justify-center xl:justify-normal gap-[1rem] p-3 w-full rounded-md transition hover:bg-primary/10 cursor-pointer duration-300 pl-[0.770rem]">
-            <ProfilePicture />
+            <ProfilePicture className="w-6 h-6" />
             <span className="hidden xl:block pt-0.5">Profile</span>
           </div>
         </Link>

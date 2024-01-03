@@ -1,19 +1,18 @@
 "use client";
 
-import { useClerk, useUser } from "@clerk/nextjs";
+import { useClerk } from "@clerk/nextjs";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import Link from "next/link";
 
 export const ProfileIndicator = () => {
-  const { user } = useUser();
-  const { signOut } = useClerk()
+  const { signOut, user } = useClerk()
 
   return (
     <div className="w-[31%] hidden xl:block">
       <div>
         <div className="flex justify-around mt-9">
-          <Link href="/profile">
+          <Link href={`/${user?.id}`}>
             <div className="flex gap-2 items-center">
               <div>
                 <Image
@@ -26,13 +25,13 @@ export const ProfileIndicator = () => {
               </div>
               <div className="">
                 <span className="lowercase font-[600] text-sm">
-                  {user?.firstName}
+                  {user?.username}
                 </span>
               </div>
             </div>
           </Link>
           <div>
-            <Button onClick={() => signOut()} className="text-xs text-sky-500 font-bold" variant="ghost">
+            <Button onClick={() => signOut()} className="text-xs text-amber-500 font-bold" variant="ghost">
               Logout
             </Button>
           </div>
