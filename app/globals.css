@@ -8,6 +8,13 @@ body,
   height: 100%;
 }
 
+.cl-internal-1fsg6zy{
+  background-color: rgb(232, 151, 2) !important;
+}
+
+.cl-internal-15amzqo{
+  color: rgb(232, 151, 2) !important;
+}
  
 @layer base {
   :root {
