@@ -30,7 +30,7 @@ export const MobileNavbar = () => {
 
   return (
     <nav className="border-b-[1px] h-[3.8rem] flex justify-between items-center w-full fixed">
-      <div className="pl-3 cursor-pointer">
+      <div className="cursor-pointer">
         <Link href="/">
           <Image src="/logo.png" alt="Dogstagram" width={130} height={130} unoptimized  />
         </Link>
@@ -42,7 +42,7 @@ export const MobileNavbar = () => {
             onBlur={onBlur}
             ref={inputRef}
             className={cn(
-              "bg-primary/5 sm:w-[16rem] h-9 pl-10 text-muted-foreground w-auto",
+              "bg-primary/5 sm:w-[16rem] h-9 pl-10 text-muted-foreground w-[10rem]",
               isSearching && "pl-4"
             )}
           />

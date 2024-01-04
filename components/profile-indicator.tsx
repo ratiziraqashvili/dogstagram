@@ -1,12 +1,12 @@
 "use client";
 
 import { useClerk } from "@clerk/nextjs";
-import Image from "next/image";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { ProfilePicture } from "./profile-picture";
 
 export const ProfileIndicator = () => {
-  const { signOut, user } = useClerk()
+  const { signOut, user } = useClerk();
 
   return (
     <div className="w-[31%] hidden xl:block">
@@ -15,13 +15,7 @@ export const ProfileIndicator = () => {
           <Link href={`/${user?.id}`}>
             <div className="flex gap-2 items-center">
               <div>
-                <Image
-                  src={user?.imageUrl!}
-                  width={45}
-                  height={45}
-                  alt="Profile Picture"
-                  className="rounded-full"
-                />
+                <ProfilePicture className="w-10 h-10" />
               </div>
               <div className="">
                 <span className="lowercase font-[600] text-sm">
@@ -31,7 +25,11 @@ export const ProfileIndicator = () => {
             </div>
           </Link>
           <div>
-            <Button onClick={() => signOut()} className="text-xs text-amber-500 font-bold" variant="ghost">
+            <Button
+              onClick={() => signOut()}
+              className="text-xs text-amber-500 font-bold"
+              variant="ghost"
+            >
               Logout
             </Button>
           </div>

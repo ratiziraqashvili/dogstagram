@@ -29,7 +29,7 @@ export const MobileBottomNavbar = async () => {
     <div className="border-t-[1px] w-full flex justify-center  fixed bottom-0">
       <div className="flex justify-between items-center w-[100%] ">
         {routes.map((route) => (
-          <div className="p-3 hover:scale-110 transition w-full flex justify-center"
+          <div key={route.href} className="p-3 hover:scale-110 transition w-full flex justify-center"
           >
             {route.href ? (
               <Link href={route.href}>
