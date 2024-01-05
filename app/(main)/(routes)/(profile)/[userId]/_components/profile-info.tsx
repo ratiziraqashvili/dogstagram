@@ -27,7 +27,7 @@ export const ProfileInfo = ({
   const otherUserId = JSON.stringify(userId);
 
   const onFollow = async () => {
-    //Making req to api route to follow user
+    // Making req to api route to follow user
     setIsLoading(true);
     try {
       await axios.post("/api/users/follow", otherUserId);
@@ -44,11 +44,11 @@ export const ProfileInfo = ({
     // Fetch following data
     const fetchFollowing = async () => {
       const following = await fetchFollowingData(userId);
-      setIsFollowing(following.includes(user.id))
+      setIsFollowing(following.includes(user?.id))
     };
 
     fetchFollowing();
-  }, [userId, user.id])
+  }, [userId, user?.id])
 
   return (
     <div className="space-y-4">

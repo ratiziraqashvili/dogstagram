@@ -9,12 +9,14 @@ datasource db {
 }
 
 model User {
-  id        String  @id @default(uuid())
+  id        String   @id @default(uuid())
   firstName String?
-  username  String  @unique
-  email     String  @unique
-  imageUrl  String? @db.Text
-  clerkId   String  @unique
+  username  String   @unique
+  email     String   @unique
+  imageUrl  String?  @db.Text
+  clerkId   String   @unique
+  following Follow[] @relation("follower")
+  followers Follow[] @relation("following")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -63,10 +65,13 @@ model Comment {
 }
 
 model Follow {
-  followerId String
+  followerId  String
   followingId String
-  createdAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  follower    User     @relation("follower", fields: [followerId], references: [id])
+  following   User     @relation("following", fields: [followingId], references: [id])
 
   @@id([followerId, followingId])
   @@index([followingId])
+  @@index([followerId])
 }
