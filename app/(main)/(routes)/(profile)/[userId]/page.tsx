@@ -15,7 +15,7 @@ const ProfilePage = async ({ params }: { params: { userId: string }} ) => {
           <ProfilePicture imageUrl={imageUrl} className="md:w-36 md:h-36 w-[4.6rem] h-[4.6rem]" />
         </div>
         <div>
-          <ProfileInfo username={username} firstName={firstName} />
+          <ProfileInfo userId={userId} username={username} firstName={firstName} />
         </div>
       </div>
       <div className="pl-5 lowercase font-semibold border-b-[1px] md:border-b-[0px] md:pb-0 pb-5 block md:hidden">{firstName}</div>

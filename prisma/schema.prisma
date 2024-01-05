@@ -61,3 +61,12 @@ model Comment {
 
   @@index([postId])
 }
+
+model Follow {
+  followerId String
+  followingId String
+  createdAt DateTime @default(now())
+
+  @@id([followerId, followingId])
+  @@index([followingId])
+}

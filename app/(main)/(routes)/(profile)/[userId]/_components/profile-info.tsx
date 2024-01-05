@@ -3,14 +3,52 @@
 import { Button } from "@/components/ui/button";
 import { useClerk } from "@clerk/nextjs";
 import { MoreHorizontal, Settings } from "lucide-react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { fetchFollowingData } from "@/lib/following-data";
 
 interface ProfileInfoProps {
   username: string | null;
   firstName: string | null;
+  userId: string;
 }
 
-export const ProfileInfo = ({ username, firstName }: ProfileInfoProps) => {
+export const ProfileInfo = ({
+  username,
+  firstName,
+  userId,
+}: ProfileInfoProps) => {
   const { user } = useClerk();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  const otherUserId = JSON.stringify(userId);
+
+  const onFollow = async () => {
+    //Making req to api route to follow user
+    setIsLoading(true);
+    try {
+      await axios.post("/api/users/follow", otherUserId);
+
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch following data
+    const fetchFollowing = async () => {
+      const following = await fetchFollowingData(userId);
+      setIsFollowing(following.includes(user.id))
+    };
+
+    fetchFollowing();
+  }, [userId, user.id])
 
   return (
     <div className="space-y-4">
@@ -19,13 +57,20 @@ export const ProfileInfo = ({ username, firstName }: ProfileInfoProps) => {
           <span className="text-xl pr-2">{username}</span>
         </div>
         <div className="flex gap-4 ">
-          <Button className="h-[2rem]" variant={user?.username === username ? "default" : "amber"}>
-            {user?.username === username ? (
-              "View archive"
-            ) : (
-                "Follow"
-            )}
-          </Button>
+          {user?.username !== username ? (
+            <Button
+              disabled={isLoading}
+              onClick={onFollow}
+              className="h-[2rem]"
+              variant="amber"
+            >
+              Follow
+            </Button>
+          ) : (
+            <Button className="h-[2rem]" variant="default">
+              View archive
+            </Button>
+          )}
           <button>
             {user?.username === username ? <Settings /> : <MoreHorizontal />}
           </button>
