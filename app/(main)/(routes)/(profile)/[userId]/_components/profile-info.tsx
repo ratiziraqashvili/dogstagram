@@ -43,12 +43,19 @@ export const ProfileInfo = ({
   useEffect(() => {
     // Fetch following data
     const fetchFollowing = async () => {
-      const following = await fetchFollowingData(userId);
-      setIsFollowing(following.includes(user?.id))
+      try {
+        const following = await fetchFollowingData(userId);
+        const followingIds = following.followingIds || [];
+        setIsFollowing(followingIds.includes(userId) || false);
+      } catch (error) {
+        console.error("Error fetching following data:", error);
+        // Set button to say "Follow" instead of unfollow when user already dont follows
+        setIsFollowing(false);
+      }
     };
 
     fetchFollowing();
-  }, [userId, user?.id])
+  }, [userId]);
 
   return (
     <div className="space-y-4">
@@ -62,9 +69,9 @@ export const ProfileInfo = ({
               disabled={isLoading}
               onClick={onFollow}
               className="h-[2rem]"
-              variant="amber"
+              variant={isFollowing ? "default" : "amber"}
             >
-              Follow
+              {isFollowing ? "Unfollow" : "Follow"}
             </Button>
           ) : (
             <Button className="h-[2rem]" variant="default">

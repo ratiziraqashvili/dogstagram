@@ -7,6 +7,6 @@ export async function fetchFollowingData(userId: string) {
         return following
     } catch (error) {
         console.error("Error fetching following data:", error);
-        throw error;
+        return { followingIds: [], }
     }
 }

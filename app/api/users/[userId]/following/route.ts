@@ -1,28 +1,62 @@
 import { db } from "@/lib/db";
+import { currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
-export async function GET(params:  { userId: string }) {
+export async function GET(req: Request) {
     try {
-        const { userId } = params;
+        const user = await currentUser()
+        const url = req.url;
+       
+        const parts = url.split("/")
 
-        if (!userId) {
+        let userId;
+
+        for (let i = parts.length - 1; i >= 0; i--) {
+            const part = parts[i];
+
+            if (part.length === 32) {
+                userId = part;
+                break;
+            }
+        }
+
+        if (!userId || !user?.id || !user) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
-        const following = await db.user.findUnique({
+        const followers = await db.user.findUnique({
             where: {
                 clerkId: userId,
             },
-            include: {
-                following: {
-                    select: {
-                        id: true
-                    }
-                }
-            }
+            select: {
+                followers: {
+                  select: { 
+                    followerId: true, 
+                    followingId: true, 
+                 },
+                },
+              },
         })
 
-    } catch (error) {
+        console.log(followers)
+
+        let followingIds = followers?.followers.map((user) => user.followingId);
+
+        const followerIds = followers?.followers.map((user) => user.followerId);
+
+        console.log(followingIds)
+        console.log(followerIds)
+
+
+        if (!followerIds || !followerIds.includes(user?.id)) {
+            return NextResponse.json({ followingIds: [] }, { status: 200 });
+        }
         
+
+        return NextResponse.json({ followingIds }, { status: 200 });
+
+    } catch (error) {
+        console.error(error);
+        return new Response("Failed to fetch following", { status: 500 });
     }
 }
