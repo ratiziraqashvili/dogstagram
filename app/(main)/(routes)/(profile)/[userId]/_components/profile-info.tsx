@@ -31,6 +31,7 @@ export const ProfileInfo = ({
     setIsLoading(true);
     try {
       await axios.post("/api/users/follow", otherUserId);
+      
 
       router.refresh();
     } catch (error) {
@@ -39,18 +40,22 @@ export const ProfileInfo = ({
       setIsLoading(false);
     }
   };
+  
 
   useEffect(() => {
     // Fetch following data
     const fetchFollowing = async () => {
+      setIsLoading(true);
       try {
         const following = await fetchFollowingData(userId);
         const followingIds = following.followingIds || [];
-        setIsFollowing(followingIds.includes(userId) || false);
+        setIsFollowing(followingIds.includes(userId));
       } catch (error) {
         console.error("Error fetching following data:", error);
         // Set button to say "Follow" instead of unfollow when user already dont follows
         setIsFollowing(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 

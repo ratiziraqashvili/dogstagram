@@ -38,14 +38,9 @@ export async function GET(req: Request) {
               },
         })
 
-        console.log(followers)
-
-        let followingIds = followers?.followers.map((user) => user.followingId);
+        const followingIds = followers?.followers.map((user) => user.followingId);
 
         const followerIds = followers?.followers.map((user) => user.followerId);
-
-        console.log(followingIds)
-        console.log(followerIds)
 
 
         if (!followerIds || !followerIds.includes(user?.id)) {
