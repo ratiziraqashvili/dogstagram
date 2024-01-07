@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useClerk } from "@clerk/nextjs";
-import { MoreHorizontal, Settings } from "lucide-react";
+import { ChevronDown, MoreHorizontal, Settings } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,8 +21,11 @@ export const ProfileInfo = ({
 }: ProfileInfoProps) => {
   const { user } = useClerk();
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
   const otherUserId = JSON.stringify(userId);
 
@@ -31,8 +34,8 @@ export const ProfileInfo = ({
     setIsLoading(true);
     try {
       await axios.post("/api/users/follow", otherUserId);
-      
 
+      setIsFollowing(true);
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -40,20 +43,41 @@ export const ProfileInfo = ({
       setIsLoading(false);
     }
   };
-  
 
   useEffect(() => {
     // Fetch following data
     const fetchFollowing = async () => {
       setIsLoading(true);
       try {
-        const following = await fetchFollowingData(userId);
-        const followingIds = following.followingIds || [];
+        const { followingIds } = await fetchFollowingData(userId);
+        // Getting followingIds to display on profile
+
         setIsFollowing(followingIds.includes(userId));
       } catch (error) {
         console.error("Error fetching following data:", error);
         // Set button to say "Follow" instead of unfollow when user already dont follows
         setIsFollowing(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFollowing();
+  }, [userId]);
+
+  useEffect(() => {
+    // Fetch following data
+    const fetchFollowing = async () => {
+      try {
+        const { followerCount, followingCount } = await fetchFollowingData(
+          userId
+        );
+        // Getting followerCount and followingCount to display on profile
+
+        setFollowerCount(followerCount || 0);
+        setFollowingCount(followingCount || 0);
+      } catch (error) {
+        console.error("Error fetching following data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -76,10 +100,18 @@ export const ProfileInfo = ({
               className="h-[2rem]"
               variant={isFollowing ? "default" : "amber"}
             >
-              {isFollowing ? "Unfollow" : "Follow"}
+              {isFollowing ? (
+              <div className="flex items-center gap-1">
+                  Following
+                  <span>
+                    <ChevronDown className="h-4 w-4" />
+                  </span>
+              </div>
+              ) : "Follow"}
             </Button>
           ) : (
             <Button className="h-[2rem]" variant="default">
+              {/* TODO: see archived stories */}
               View archive
             </Button>
           )}
@@ -93,10 +125,10 @@ export const ProfileInfo = ({
           <span className="font-semibold">0</span> posts
         </div>
         <div className="tracking-[-0.5px]">
-          <span className="font-semibold">0</span> followers
+          <span className="font-semibold">{followerCount}</span> followers
         </div>
         <div className="tracking-[-0.5px]">
-          <span className="font-semibold">0</span> following
+          <span className="font-semibold">{followingCount}</span> following
         </div>
       </div>
       <div className="hidden md:block">

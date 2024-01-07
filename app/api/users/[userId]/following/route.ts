@@ -38,17 +38,29 @@ export async function GET(req: Request) {
               },
         })
 
-        const followingIds = followers?.followers.map((user) => user.followingId);
+        const followerCount = await db.follow.count({
+            where: {
+                followingId: userId || user?.id
+            }
+        })
 
-        const followerIds = followers?.followers.map((user) => user.followerId);
+        const followingCount = await db.follow.count({
+            where: {
+                followerId: userId
+            }
+        })
 
-
-        if (!followerIds || !followerIds.includes(user?.id)) {
-            return NextResponse.json({ followingIds: [] }, { status: 200 });
-        }
         
+        const followingIds = followers?.followers.map((user) => user.followingId);
+        
+        const followerIds = followers?.followers.map((user) => user.followerId);
+        
+        
+        if (!followerIds || !followerIds.includes(user?.id)) {
+            return NextResponse.json({ followingIds: [], followerCount, followingCount }, { status: 200 });
+        }
 
-        return NextResponse.json({ followingIds }, { status: 200 });
+        return NextResponse.json({ followingIds, followerCount, followingCount }, { status: 200 });
 
     } catch (error) {
         console.error(error);
