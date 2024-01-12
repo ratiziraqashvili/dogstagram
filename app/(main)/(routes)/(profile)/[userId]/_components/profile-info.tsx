@@ -7,10 +7,12 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchFollowingData } from "@/lib/following-data";
+import { useModal } from "@/hooks/use-modal-store";
+import { Spinner } from "@/components/spinner";
 
 interface ProfileInfoProps {
-  username: string | null;
-  firstName: string | null;
+  username: string | undefined;
+  firstName: string | null | undefined;
   userId: string;
 }
 
@@ -21,9 +23,11 @@ export const ProfileInfo = ({
 }: ProfileInfoProps) => {
   const { user } = useClerk();
   const router = useRouter();
+  const { onOpen } = useModal();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowerCountLoading, setIsFollowerCountLoading] = useState(true)
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
 
@@ -47,7 +51,6 @@ export const ProfileInfo = ({
   useEffect(() => {
     // Fetch following data
     const fetchFollowing = async () => {
-      setIsLoading(true);
       try {
         const { followingIds } = await fetchFollowingData(userId);
         // Getting followingIds to display on profile
@@ -79,16 +82,20 @@ export const ProfileInfo = ({
       } catch (error) {
         console.error("Error fetching following data:", error);
       } finally {
-        setIsLoading(false);
+        setIsFollowerCountLoading(false)
       }
     };
 
     fetchFollowing();
   }, [userId]);
 
+  const onModalOpen = () => {
+    onOpen("following");
+  };
+
   return (
     <div className="space-y-4">
-      <div className="flex gap-3 md:gap-24 justify-between items-center md:pt-2 flex-col md:flex-row">
+      <div className="flex gap-3 md:gap-24 justify-between  md:pt-2 flex-col md:flex-row">
         <div>
           <span className="text-xl pr-2">{username}</span>
         </div>
@@ -96,18 +103,20 @@ export const ProfileInfo = ({
           {user?.username !== username ? (
             <Button
               disabled={isLoading}
-              onClick={onFollow}
+              onClick={isFollowing ? onModalOpen : onFollow}
               className="h-[2rem]"
               variant={isFollowing ? "default" : "amber"}
             >
               {isFollowing ? (
-              <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1">
                   Following
                   <span>
                     <ChevronDown className="h-4 w-4" />
                   </span>
-              </div>
-              ) : "Follow"}
+                </div>
+              ) : (
+                "Follow"
+              )}
             </Button>
           ) : (
             <Button className="h-[2rem]" variant="default">
@@ -116,19 +125,35 @@ export const ProfileInfo = ({
             </Button>
           )}
           <button>
+            {/* TODO: open modal based on which icon user will click */}
             {user?.username === username ? <Settings /> : <MoreHorizontal />}
           </button>
         </div>
       </div>
       <div className="md:flex hidden gap-9 pt-1">
-        <div className="tracking-[-0.5px]">
-          <span className="font-semibold">0</span> posts
+        <div className="tracking-[-0.5px] space-x-1">
+          {/* TODO: fetch amount of post user has created */}
+          <span className="font-semibold">0</span>
+          <span>posts</span>
         </div>
-        <div className="tracking-[-0.5px]">
-          <span className="font-semibold">{followerCount}</span> followers
+        <div className="tracking-[-0.5px] space-x-1 flex items-center">
+        {isFollowerCountLoading ? (
+            <Spinner />
+            ) : (
+              <span className="font-semibold">
+              {followerCount}
+            </span> 
+            )}
+          <span>followers</span>
         </div>
-        <div className="tracking-[-0.5px]">
-          <span className="font-semibold">{followingCount}</span> following
+        <div className="tracking-[-0.5px] space-x-1 flex items-center">
+        {isFollowerCountLoading ? (
+            <Spinner />
+            ) : (
+              <span className="font-semibold">
+              {followingCount}
+            </span> 
+            )}<span>following</span>
         </div>
       </div>
       <div className="hidden md:block">

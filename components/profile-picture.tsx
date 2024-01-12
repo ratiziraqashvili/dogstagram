@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 interface ProfilePictureProps {
   className?: string;
-  imageUrl?: string; 
+  imageUrl?: string | undefined | null; 
 }
 
 export const ProfilePicture = ({ className = "w-6 h-6", imageUrl }: ProfilePictureProps) => {
