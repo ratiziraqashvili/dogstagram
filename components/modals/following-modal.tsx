@@ -2,17 +2,17 @@
 
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { useParams } from "next/navigation";
-import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { User } from "@prisma/client";
 import { ProfilePicture } from "../profile-picture";
-import { Separator } from "../ui/separator";
 import { Bookmark, ChevronRight, Star } from "lucide-react";
 
 export const FollowingModal = () => {
   const { isOpen, onClose, type } = useModal();
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const params = useParams();
   const userId = params.userId as string;
   const [user, setUser] = useState<Partial<User>>({});
@@ -32,25 +32,38 @@ export const FollowingModal = () => {
     onClose();
   };
 
+  const onUnfollow = async () => {
+    setIsLoading(true);
+    try {
+      await axios.post("/api/users/unfollow", userId);
+
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   const buttons = [
     { label: "Add to favorites", onClick: () => {}, icon: Star },
     { label: "Mute", onClick: () => {}, icon: Bookmark },
     { label: "Restrict", onClick: () => {}, icon: ChevronRight },
-    { label: "Unfollow", onClick: () => {} },
+    { label: "Unfollow", onClick: onUnfollow },
     // ... other buttons
   ];
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="px-0 pb-0 w-[25rem] gap-0">
+      <DialogContent className="px-0 pb-0 w-[70%] sm:w-[25rem] gap-0">
         <DialogHeader>
           <DialogTitle>
-            <div className="flex flex-col justify-center items-center gap-1 w-full border-b-[1px] pb-5">
+            <div className="flex flex-col justify-center items-center gap-1 w-full border-b-[1px] pb-3">
               <div>
                 <ProfilePicture className="w-14 h-14" imageUrl={user?.imageUrl} />
               </div>
               <div>
-                <p className="text-sm font-bold">{user?.username}</p>
+                <p className="text-sm font-semibold">{user?.username}</p>
               </div>
             </div>
           </DialogTitle>
@@ -60,7 +73,7 @@ export const FollowingModal = () => {
           <button
             key={button.label}
             onClick={button.onClick}
-            className="hover:bg-primary/10 py-3 flex justify-between p-3 text-[0.975rem]"
+            className="hover:bg-primary/10 py-3 flex justify-between p-3 text-[0.890rem]"
           >
             {button.label}
             {button.icon ? <button.icon className="w-5 h-5" /> : null}

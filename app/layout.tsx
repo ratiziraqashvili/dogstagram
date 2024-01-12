@@ -27,7 +27,7 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={font.className}>
+        <body>
           <ModalProvider />
           {children}
         </body>

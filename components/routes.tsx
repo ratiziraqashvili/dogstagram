@@ -28,7 +28,7 @@ export const Routes = () => {
             <Link href={route.href}>
               <div className="flex gap-4 items-center">
                 <route.icon className="w-6 h-6" />
-                <span className="hidden xl:block text-md font-[500] pt-[0.20rem]">
+                <span className="hidden xl:block text-md">
                   {route.label}
                 </span>
               </div>
@@ -36,7 +36,7 @@ export const Routes = () => {
           ) : (
             <>
               <route.icon className="w-6 h-6" />
-              <span className="hidden xl:block text-md font-[500] pt-[0.20rem]">
+              <span className="hidden xl:block text-md">
                 {route.label}
               </span>
             </>
