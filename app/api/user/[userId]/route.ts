@@ -1,17 +1,22 @@
-import { currentUser } from "@clerk/nextjs";
-import { NextResponse } from "next/server";
-
-export async function GET(req: Request, params: { userId: string }) {
+import { db } from "@/lib/db";
+import { NextResponse } from "next/server"
+//@ts-ignore
+export async function GET(req: Request, { params }) {
     try {
-        const user = await currentUser();
+        const { userId } = params;
 
-        if (!user || !user.id || !params.userId) {
-            return new NextResponse("Unauthorized", { status: 401 })
+        if (!userId) {
+            return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        
+        const user = await db.user.findUnique({
+            where: {
+                clerkId: userId,
+            }
+        })
 
+        return NextResponse.json(user);
     } catch (error) {
-        
+        console.log("Error in get user router", error)
     }
 }

@@ -2,36 +2,27 @@
 
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { User } from "@prisma/client";
+import { ProfilePicture } from "../profile-picture";
 
 export const FollowingModal = () => {
-  const [isMounted, setIsMounted] = useState(false);
   const { isOpen, onClose, type } = useModal();
   const params = useParams();
-  const userId = params.userId;
+  const userId = params.userId as string;
+  const [user, setUser] = useState<Partial<User>>({});
 
   useEffect(() => {
-    setIsMounted(true);
+    const fetchUser = async () => {
+      const res = await axios.get(`/api/user/${userId}`);
+      setUser(res.data);
+    };
+
+    fetchUser();
   }, []);
-
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        //getting user info from api to display accordingly
-        await axios.get(`/api/user/${userId}`)
-      } catch (error) {
-        console.log("Error while fetching user", error)
-      }
-    }
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
 
   const isModalOpen = isOpen && type === "following";
 
@@ -46,18 +37,9 @@ export const FollowingModal = () => {
           <DialogTitle>
             <div className="flex flex-col justify-center items-center">
               <div>
-                {user?.imageUrl && (
-                  <Image
-                    src={user?.imageUrl}
-                    alt="Profile Picture"
-                    width={200}
-                    height={200}
-                  />
-                )}
+                <ProfilePicture className="w-28 h-28" imageUrl={user?.imageUrl} />
               </div>
-              <div>
-                <p>{user?.username}</p>
-              </div>
+              <div>{user?.username && <p>{user?.username}</p>}</div>
             </div>
           </DialogTitle>
         </DialogHeader>
