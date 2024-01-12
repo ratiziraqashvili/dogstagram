@@ -35,15 +35,16 @@ export const FollowingModal = () => {
   const onUnfollow = async () => {
     setIsLoading(true);
     try {
-      await axios.post("/api/users/unfollow", userId);
+      await axios.delete(`/api/users/unfollow/${userId}`);
 
       router.refresh();
+      handleClose();
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   const buttons = [
     { label: "Add to favorites", onClick: () => {}, icon: Star },
@@ -60,7 +61,10 @@ export const FollowingModal = () => {
           <DialogTitle>
             <div className="flex flex-col justify-center items-center gap-1 w-full border-b-[1px] pb-3">
               <div>
-                <ProfilePicture className="w-14 h-14" imageUrl={user?.imageUrl} />
+                <ProfilePicture
+                  className="w-14 h-14"
+                  imageUrl={user?.imageUrl}
+                />
               </div>
               <div>
                 <p className="text-sm font-semibold">{user?.username}</p>
@@ -69,16 +73,17 @@ export const FollowingModal = () => {
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col h-full">
-        {buttons.map((button) => (
-          <button
-            key={button.label}
-            onClick={button.onClick}
-            className="hover:bg-primary/10 py-3 flex justify-between p-3 text-[0.890rem]"
-          >
-            {button.label}
-            {button.icon ? <button.icon className="w-5 h-5" /> : null}
-          </button>
-        ))}
+          {buttons.map((button) => (
+            <button
+              key={button.label}
+              onClick={button.onClick}
+              className="hover:bg-primary/10 py-3 flex justify-between p-3 text-[0.890rem]"
+              disabled={isLoading}
+            >
+              {button.label}
+              {button.icon ? <button.icon className="w-5 h-5" /> : null}
+            </button>
+          ))}
         </div>
       </DialogContent>
     </Dialog>
