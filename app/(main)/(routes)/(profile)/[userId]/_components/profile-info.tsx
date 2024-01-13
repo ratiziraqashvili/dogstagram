@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { fetchFollowingData } from "@/lib/following-data";
 import { useModal } from "@/hooks/use-modal-store";
 import { Spinner } from "@/components/spinner";
+import { useFollowingStore } from "@/hooks/use-following-store";
 
 interface ProfileInfoProps {
   username: string | undefined;
@@ -25,9 +26,9 @@ export const ProfileInfo = ({
   const router = useRouter();
   const { onOpen } = useModal();
 
+  const { isFollowing, setIsFollowing } = useFollowingStore();
   const [isLoading, setIsLoading] = useState(true);
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [isFollowerCountLoading, setIsFollowerCountLoading] = useState(true)
+  const [isFollowerCountLoading, setIsFollowerCountLoading] = useState(true);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
 
@@ -82,7 +83,7 @@ export const ProfileInfo = ({
       } catch (error) {
         console.error("Error fetching following data:", error);
       } finally {
-        setIsFollowerCountLoading(false)
+        setIsFollowerCountLoading(false);
       }
     };
 
@@ -137,23 +138,20 @@ export const ProfileInfo = ({
           <span>posts</span>
         </div>
         <div className="tracking-[-0.5px] space-x-1 flex items-center">
-        {isFollowerCountLoading ? (
+          {isFollowerCountLoading ? (
             <Spinner />
-            ) : (
-              <span className="font-semibold">
-              {followerCount}
-            </span> 
-            )}
+          ) : (
+            <span className="font-semibold">{followerCount}</span>
+          )}
           <span>followers</span>
         </div>
         <div className="tracking-[-0.5px] space-x-1 flex items-center">
-        {isFollowerCountLoading ? (
+          {isFollowerCountLoading ? (
             <Spinner />
-            ) : (
-              <span className="font-semibold">
-              {followingCount}
-            </span> 
-            )}<span>following</span>
+          ) : (
+            <span className="font-semibold">{followingCount}</span>
+          )}
+          <span>following</span>
         </div>
       </div>
       <div className="hidden md:block">

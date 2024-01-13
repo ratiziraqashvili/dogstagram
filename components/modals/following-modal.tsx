@@ -8,10 +8,12 @@ import axios from "axios";
 import { User } from "@prisma/client";
 import { ProfilePicture } from "../profile-picture";
 import { Bookmark, ChevronRight, Star } from "lucide-react";
+import { useFollowingStore } from "@/hooks/use-following-store";
 
 export const FollowingModal = () => {
   const { isOpen, onClose, type } = useModal();
   const [isLoading, setIsLoading] = useState(false);
+  const { setIsFollowing } = useFollowingStore();
   const router = useRouter();
   const params = useParams();
   const userId = params.userId as string;
@@ -37,6 +39,7 @@ export const FollowingModal = () => {
     try {
       await axios.delete(`/api/users/unfollow/${userId}`);
 
+      setIsFollowing(false);
       router.refresh();
       handleClose();
     } catch (error) {
@@ -77,7 +80,7 @@ export const FollowingModal = () => {
             <button
               key={button.label}
               onClick={button.onClick}
-              className="hover:bg-primary/10 py-3 flex justify-between p-3 text-[0.890rem]"
+              className="hover:bg-primary/10 py-3 flex justify-between p-3 text-[0.890rem] transition disabled:pointer-events-none disabled:opacity-50"
               disabled={isLoading}
             >
               {button.label}
