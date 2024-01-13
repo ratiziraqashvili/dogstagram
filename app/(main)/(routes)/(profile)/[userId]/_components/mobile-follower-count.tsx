@@ -1,13 +1,18 @@
 "use client";
 
 import { Spinner } from "@/components/spinner";
+import { useFollowingStore } from "@/hooks/use-following-store";
 import { fetchFollowingData } from "@/lib/following-data";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export const MobileFollowerCount = () => {
-  const [followerCount, setFollowerCount] = useState(0);
-  const [followingCount, setFollowingCount] = useState(0);
+  const {
+    followerCount,
+    followingCount,
+    setFollowerCount,
+    setFollowingCount,
+  } = useFollowingStore();
   const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
   const userId = pathname.slice(1);

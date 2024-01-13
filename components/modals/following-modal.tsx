@@ -13,7 +13,8 @@ import { useFollowingStore } from "@/hooks/use-following-store";
 export const FollowingModal = () => {
   const { isOpen, onClose, type } = useModal();
   const [isLoading, setIsLoading] = useState(false);
-  const { setIsFollowing } = useFollowingStore();
+  const { setIsFollowing, setFollowerCount, followerCount } =
+    useFollowingStore();
   const router = useRouter();
   const params = useParams();
   const userId = params.userId as string;
@@ -41,6 +42,7 @@ export const FollowingModal = () => {
 
       setIsFollowing(false);
       router.refresh();
+      setFollowerCount(followerCount - 1);
       handleClose();
     } catch (error) {
       console.error(error);

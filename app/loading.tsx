@@ -12,7 +12,7 @@ const Loader = () => {
         </div>
         <div className="flex items-center -space-x-2 pr-4">
           <Image className="text-yellow-800" src="/main-logo.png" alt="Logo" width={50} height={50} />
-          <p className="bg-gradient-to-r from-amber-400 to-amber-700 bg-clip-text text-transparent font-bold text-xl">Rati</p>
+          <p className="bg-gradient-to-r from-amber-400 to-amber-700 bg-clip-text text-transparent font-semibold text-xl">Rati</p>
         </div>
       </div>
     </div>

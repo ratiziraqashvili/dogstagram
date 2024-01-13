@@ -26,11 +26,16 @@ export const ProfileInfo = ({
   const router = useRouter();
   const { onOpen } = useModal();
 
-  const { isFollowing, setIsFollowing } = useFollowingStore();
+  const {
+    isFollowing,
+    setIsFollowing,
+    followerCount,
+    followingCount,
+    setFollowerCount,
+    setFollowingCount,
+  } = useFollowingStore();
   const [isLoading, setIsLoading] = useState(true);
   const [isFollowerCountLoading, setIsFollowerCountLoading] = useState(true);
-  const [followerCount, setFollowerCount] = useState(0);
-  const [followingCount, setFollowingCount] = useState(0);
 
   const otherUserId = JSON.stringify(userId);
 
@@ -41,6 +46,7 @@ export const ProfileInfo = ({
       await axios.post("/api/users/follow", otherUserId);
 
       setIsFollowing(true);
+      setFollowerCount(followerCount + 1);
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -96,11 +102,11 @@ export const ProfileInfo = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-3 md:gap-24 justify-between  md:pt-2 flex-col md:flex-row">
+      <div className="flex gap-3 justify-between flex-wrap md:pt-2 flex-col md:flex-row">
         <div>
           <span className="text-xl pr-2">{username}</span>
         </div>
-        <div className="flex gap-4 ">
+        <div className="flex gap-2">
           {user?.username !== username ? (
             <Button
               disabled={isLoading}
@@ -120,12 +126,17 @@ export const ProfileInfo = ({
               )}
             </Button>
           ) : (
-            <Button className="h-[2rem]" variant="default">
-              {/* TODO: see archived stories */}
-              View archive
-            </Button>
+            <>
+              <Button className="h-[2rem]" variant="default">
+                Edit Profile
+              </Button>
+              <Button className="h-[2rem]" variant="default">
+                {/* TODO: see archived stories */}
+                View archive
+              </Button>
+            </>
           )}
-          <button>
+          <button className="hidden sm:block">
             {/* TODO: open modal based on which icon user will click */}
             {user?.username === username ? <Settings /> : <MoreHorizontal />}
           </button>
