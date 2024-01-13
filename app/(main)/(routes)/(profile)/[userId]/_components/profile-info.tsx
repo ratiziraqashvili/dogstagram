@@ -127,10 +127,10 @@ export const ProfileInfo = ({
             </Button>
           ) : (
             <>
-              <Button className="h-[2rem]" variant="default">
+              <Button className="h-[2rem] whitespace-normal" variant="default">
                 Edit Profile
               </Button>
-              <Button className="h-[2rem]" variant="default">
+              <Button className="h-[2rem] whitespace-normal" variant="default">
                 {/* TODO: see archived stories */}
                 View archive
               </Button>

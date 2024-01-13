@@ -1,6 +1,7 @@
 const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
     return (
-        <div className="xl:pl-[16rem] mt-[3.8rem] md:mt-0">
+        <div className="xl:pl-[16rem]">
+            <ProfileNavbar />
             {children}
         </div>
     )
