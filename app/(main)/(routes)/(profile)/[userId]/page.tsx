@@ -13,6 +13,10 @@ const ProfilePage = async ({ params }: { params: { userId: string }} ) => {
     }
   })
 
+  if (!user) {
+    throw new Error("User not found")
+  }
+
   return (
     <>
       <ProfileNavbar username={user?.username} profileId={user?.clerkId} />
