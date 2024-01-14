@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useModal } from "@/hooks/use-modal-store";
 import { useAuth } from "@clerk/nextjs";
 import { ChevronLeft, Settings } from "lucide-react";
 import Link from "next/link";
@@ -13,12 +14,16 @@ interface ProfileNavbar {
 
 export const ProfileNavbar = ({ username, profileId }: ProfileNavbar) => {
   const { userId } = useAuth();
+  const { onOpen } = useModal();
 
+  const SettingsModalOpen = () => {
+    onOpen("settings")
+  }
 
   return (
     <div className="flex items-center md:hidden border-b-[1px] h-[2.8rem]">
       <div className="flex-1">
-        <Button variant="ghost" className="hover:text-amber-0">
+        <Button onClick={profileId === userId ? SettingsModalOpen : undefined} variant="ghost" className="hover:text-amber-0">
           {profileId === userId ? (
             <Settings />
           ) : (
@@ -28,7 +33,7 @@ export const ProfileNavbar = ({ username, profileId }: ProfileNavbar) => {
           )}
         </Button>
       </div>
-      <div className=" mr-[45%]">
+      <div className="mr-[43%]">
         <p className="font-semibold">{username}</p>
       </div>
     </div>

@@ -2,22 +2,24 @@
 
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
-import { useClerk } from "@clerk/nextjs";
+import { cn } from "@/lib/utils";
 
-export const SettingsModal = () => {
+export const MoreHorizontalModal = () => {
   const { isOpen, onClose, type } = useModal();
-  const { signOut } = useClerk();
 
-  const isModalOpen = isOpen && type === "settings";
+  const isModalOpen = isOpen && type === "moreHorizontal";
 
   const handleClose = () => {
     onClose();
   };
 
   const buttons = [
-    { label: "Notifications", onClick: () => {} },
+    //TODO: Block account
+    { label: "Block", onClick: () => {} },
     //TODO: Redirect to notifications page
-    { label: "Log Out", onClick: () => signOut() },
+    { label: "Share to...", onClick: () => {} },
+    //TODO: Create about this account modal
+    { label: "About this account", onClick: () => {} },
   ];
 
   return (
@@ -28,7 +30,10 @@ export const SettingsModal = () => {
             <button
               key={button.label}
               onClick={button.onClick}
-              className="hover:bg-primary/10 w-full py-3.5 flex justify-center p-3 text-[0.890rem] transition disabled:pointer-events-none disabled:opacity-50 text-center border-b-[1px]"
+              className={cn(
+                "hover:bg-primary/10 w-full py-3 flex justify-center p-3 text-[0.890rem] transition disabled:pointer-events-none disabled:opacity-50 text-center border-b-[1px]",
+                button.label === "Block" && "text-red-600 font-bold"
+                )}
             >
               <span>{button.label}</span>
             </button>

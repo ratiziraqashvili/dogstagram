@@ -102,8 +102,12 @@ export const ProfileInfo = ({
   };
 
   const onSettingsModalOpen = () => {
-    onOpen("settings")
-  }
+    onOpen("settings");
+  };
+
+  const onMoreHorizontalModalOpen = () => {
+    onOpen("moreHorizontal");
+  };
 
   return (
     <div className="space-y-4">
@@ -132,18 +136,26 @@ export const ProfileInfo = ({
             </Button>
           ) : (
             <>
-         <Link href={`/${userId}/edit`}>
-                <Button className="h-[2rem] whitespace-normal" variant="default">
+              <Link href={`/${userId}/edit`}>
+                <Button
+                  className="h-[2rem] whitespace-normal"
+                  variant="default"
+                >
                   Edit Profile
                 </Button>
-         </Link>
+              </Link>
               <Button className="h-[2rem] whitespace-normal" variant="default">
                 {/* TODO: see archived stories */}
                 View archive
               </Button>
             </>
           )}
-          <button onClick={user?.username === username ? onSettingsModalOpen : () => {}} className="hidden md:block">
+          <button
+            onClick={
+              user?.username === username ? onSettingsModalOpen : onMoreHorizontalModalOpen
+            }
+            className="hidden md:block"
+          >
             {/* TODO: open modal based on which icon user will click */}
             {user?.username === username ? <Settings /> : <MoreHorizontal />}
           </button>
@@ -161,7 +173,7 @@ export const ProfileInfo = ({
           ) : (
             <span className="font-semibold">{followerCount}</span>
           )}
-          <span>followers</span>
+          <span className="cursor-pointer">followers</span>
         </div>
         <div className="tracking-[-0.5px] space-x-1 flex items-center">
           {isFollowerCountLoading ? (
@@ -169,11 +181,11 @@ export const ProfileInfo = ({
           ) : (
             <span className="font-semibold">{followingCount}</span>
           )}
-          <span>following</span>
+          <span className="cursor-pointer">following</span>
         </div>
       </div>
       <div className="hidden md:block">
-        <p className="lowercase font-bold">{firstName}</p>
+        <p className="lowercase font-semibold">{firstName}</p>
       </div>
     </div>
   );

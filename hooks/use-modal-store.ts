@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type ModalType = "following" | "settings"
+export type ModalType = "following" | "settings" | "moreHorizontal"
 
 type ModalStore = {
     type: ModalType | null;

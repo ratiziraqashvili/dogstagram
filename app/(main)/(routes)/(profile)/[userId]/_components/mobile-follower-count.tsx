@@ -49,20 +49,20 @@ export const MobileFollowerCount = () => {
           {isLoading ? (
             <div className="pb-[0.23rem]"><Spinner /></div>
           ) : (
-            <span className="font-semibold">{followerCount}</span>
+            <span className="font-semibold cursor-pointer">{followerCount}</span>
           )}
         </span>
-        <span className="text-muted-foreground">followers</span>
+        <span className="text-muted-foreground cursor-pointer">followers</span>
       </div>
       <div className="flex flex-col items-center text-sm">
         <span className="font-semibold">
         {isLoading ? (
             <div className="pb-[0.23rem]"><Spinner /></div>
           ) : (
-            <span className="font-semibold">{followingCount}</span>
+            <span className="font-semibold cursor-pointer">{followingCount}</span>
           )}
         </span>
-        <span className="text-muted-foreground">following</span>
+        <span className="text-muted-foreground cursor-pointer">following</span>
       </div>
     </>
   );
