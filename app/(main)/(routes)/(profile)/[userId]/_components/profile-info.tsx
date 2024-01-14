@@ -97,9 +97,13 @@ export const ProfileInfo = ({
     fetchFollowing();
   }, [userId]);
 
-  const onModalOpen = () => {
+  const onFollowingModalOpen = () => {
     onOpen("following");
   };
+
+  const onSettingsModalOpen = () => {
+    onOpen("settings")
+  }
 
   return (
     <div className="space-y-4">
@@ -111,7 +115,7 @@ export const ProfileInfo = ({
           {user?.username !== username ? (
             <Button
               disabled={isLoading}
-              onClick={isFollowing ? onModalOpen : onFollow}
+              onClick={isFollowing ? onFollowingModalOpen : onFollow}
               className="h-[2rem]"
               variant={isFollowing ? "default" : "amber"}
             >
@@ -139,7 +143,7 @@ export const ProfileInfo = ({
               </Button>
             </>
           )}
-          <button className="hidden md:block">
+          <button onClick={user?.username === username ? onSettingsModalOpen : () => {}} className="hidden md:block">
             {/* TODO: open modal based on which icon user will click */}
             {user?.username === username ? <Settings /> : <MoreHorizontal />}
           </button>

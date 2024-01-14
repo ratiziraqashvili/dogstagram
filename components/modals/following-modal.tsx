@@ -56,7 +56,6 @@ export const FollowingModal = () => {
     { label: "Mute", onClick: () => {}, icon: Bookmark },
     { label: "Restrict", onClick: () => {}, icon: ChevronRight },
     { label: "Unfollow", onClick: onUnfollow },
-    // ... other buttons
   ];
 
   return (
