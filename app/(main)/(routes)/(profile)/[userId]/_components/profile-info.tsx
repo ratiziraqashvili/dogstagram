@@ -10,6 +10,7 @@ import { fetchFollowingData } from "@/lib/following-data";
 import { useModal } from "@/hooks/use-modal-store";
 import { Spinner } from "@/components/spinner";
 import { useFollowingStore } from "@/hooks/use-following-store";
+import Link from "next/link";
 
 interface ProfileInfoProps {
   username: string | undefined;
@@ -127,16 +128,18 @@ export const ProfileInfo = ({
             </Button>
           ) : (
             <>
-              <Button className="h-[2rem] whitespace-normal" variant="default">
-                Edit Profile
-              </Button>
+         <Link href={`/${userId}/edit`}>
+                <Button className="h-[2rem] whitespace-normal" variant="default">
+                  Edit Profile
+                </Button>
+         </Link>
               <Button className="h-[2rem] whitespace-normal" variant="default">
                 {/* TODO: see archived stories */}
                 View archive
               </Button>
             </>
           )}
-          <button className="hidden sm:block">
+          <button className="hidden md:block">
             {/* TODO: open modal based on which icon user will click */}
             {user?.username === username ? <Settings /> : <MoreHorizontal />}
           </button>

@@ -6,10 +6,13 @@ import { Input } from "./ui/input";
 import { Heart, Search, X } from "lucide-react";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 export const MobileNavbar = () => {
   const [isSearching, setIsSearching] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const pathname = usePathname();
+  const isProfilePage = pathname.split("/")[1].startsWith("user_")
 
   const onClear = (e: React.SyntheticEvent) => {
     e.stopPropagation();
@@ -27,6 +30,10 @@ export const MobileNavbar = () => {
       setIsSearching(false);
     }
   };
+
+  if (isProfilePage) {
+    return null;
+  }
 
   return (
     <nav className="border-b-[1px] h-[3.8rem] flex justify-between items-center w-full fixed">

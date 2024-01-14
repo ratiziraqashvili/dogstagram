@@ -27,7 +27,7 @@ export const ProfileIndicator = () => {
           <div>
             <Button
               onClick={() => signOut()}
-              className="text-xs text-amber-500 font-bold"
+              className="text-xs text-amber-500 font-semibold"
               variant="ghost"
             >
               Logout
