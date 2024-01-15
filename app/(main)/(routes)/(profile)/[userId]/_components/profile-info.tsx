@@ -109,6 +109,10 @@ export const ProfileInfo = ({
     onOpen("moreHorizontal");
   };
 
+  const onDisplayFollowersModalOpen = () => {
+    onOpen("displayFollowers");
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex gap-3 justify-between flex-wrap md:pt-2 flex-col md:flex-row">
@@ -152,7 +156,9 @@ export const ProfileInfo = ({
           )}
           <button
             onClick={
-              user?.username === username ? onSettingsModalOpen : onMoreHorizontalModalOpen
+              user?.username === username
+                ? onSettingsModalOpen
+                : onMoreHorizontalModalOpen
             }
             className="hidden md:block"
           >
@@ -167,15 +173,15 @@ export const ProfileInfo = ({
           <span className="font-semibold">0</span>
           <span>posts</span>
         </div>
-        <div className="tracking-[-0.5px] space-x-1 flex items-center">
+        <div onClick={onDisplayFollowersModalOpen} className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground">
           {isFollowerCountLoading ? (
             <Spinner />
           ) : (
             <span className="font-semibold">{followerCount}</span>
           )}
-          <span className="cursor-pointer">followers</span>
+          <span className="">followers</span>
         </div>
-        <div className="tracking-[-0.5px] space-x-1 flex items-center">
+        <div className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground">
           {isFollowerCountLoading ? (
             <Spinner />
           ) : (

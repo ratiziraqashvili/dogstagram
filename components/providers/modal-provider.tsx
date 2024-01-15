@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FollowingModal } from "../modals/following-modal";
 import { SettingsModal } from "../modals/settings-modal";
 import { MoreHorizontalModal } from "../modals/more-vertical-modal";
+import { DisplayFollowersModal } from "../modals/display-followers-modal";
 
 export const ModalProvider = () => {
     const [isMounted, setIsMounted] = useState(false);
@@ -21,6 +22,7 @@ export const ModalProvider = () => {
           <FollowingModal />
           <SettingsModal />
           <MoreHorizontalModal />
+          <DisplayFollowersModal />
         </>
     )
 }

@@ -17,9 +17,12 @@ export const ProfileIndicator = () => {
               <div>
                 <ProfilePicture className="w-10 h-10" />
               </div>
-              <div className="">
-                <span className="lowercase font-[600] text-sm">
+              <div className="flex flex-col">
+                <span className="lowercase font-[600] text-sm active:text-muted-foreground">
                   {user?.username}
+                </span>
+                <span className="lowercase text-muted-foreground text-sm">
+                  {user?.firstName}
                 </span>
               </div>
             </div>
