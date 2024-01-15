@@ -1,5 +1,6 @@
+"use client";
+
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -7,13 +8,35 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 import { useModal } from "@/hooks/use-modal-store";
+import axios from "axios";
 import { X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export const DisplayFollowersModal = () => {
+  const [followers, setFollowers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { isOpen, onClose, type } = useModal();
+  const userId = usePathname().split("/")[1];
+
+  useEffect(() => {
+    // Fetch following data
+    const fetchFollowers = async () => {
+      try {
+        const response = await axios.get(`/api/${userId}/followerdata`)
+
+        setFollowers(response.data);
+      } catch (error) {
+        console.error("Error fetching following data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFollowers();
+  }, [userId]);
 
   const isModalOpen = isOpen && type === "displayFollowers";
 
@@ -34,7 +57,9 @@ export const DisplayFollowersModal = () => {
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="">
-          
+            <CommandItem>
+                
+            </CommandItem>
         </CommandGroup>
       </CommandList>
     </CommandDialog>
