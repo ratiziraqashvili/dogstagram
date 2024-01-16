@@ -16,7 +16,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export const DisplayFollowersModal = () => {
-  const [followers, setFollowers] = useState([]);
+  const [followers, setFollowers] = useState<{ follower: { username: string; imageUrl: string; firstName: string | null; } }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { isOpen, onClose, type } = useModal();
   const userId = usePathname().split("/")[1];
@@ -25,9 +25,9 @@ export const DisplayFollowersModal = () => {
     // Fetch following data
     const fetchFollowers = async () => {
       try {
-        const response = await axios.get(`/api/${userId}/followerdata`)
-
+        const response = await axios.get(`/api/${userId}/followerdata`);
         setFollowers(response.data);
+
       } catch (error) {
         console.error("Error fetching following data:", error);
       } finally {
@@ -36,7 +36,7 @@ export const DisplayFollowersModal = () => {
     };
 
     fetchFollowers();
-  }, [userId]);
+  }, []);
 
   const isModalOpen = isOpen && type === "displayFollowers";
 
@@ -57,9 +57,17 @@ export const DisplayFollowersModal = () => {
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="">
-            <CommandItem>
-                
-            </CommandItem>
+          <CommandItem>
+            {isLoading ? (
+              <p>loading...</p>
+            ) : (
+              <div>
+                {followers.map((follower) => (
+                  <div key={follower.follower.username}>{follower.follower?.username!}</div>
+                ))}
+              </div>
+            )}
+          </CommandItem>
         </CommandGroup>
       </CommandList>
     </CommandDialog>
