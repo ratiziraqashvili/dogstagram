@@ -32,6 +32,7 @@ export async function GET(req: Request) {
                     imageUrl: true,
                     username: true,
                     firstName: true,
+                    clerkId: true,
                 }
             }
         }

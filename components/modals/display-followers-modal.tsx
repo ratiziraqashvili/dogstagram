@@ -7,16 +7,28 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from "@/components/ui/command";
 import { useModal } from "@/hooks/use-modal-store";
 import axios from "axios";
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import SkeletonItem from "../skeleton-item";
+import { ProfilePicture } from "../profile-picture";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export const DisplayFollowersModal = () => {
-  const [followers, setFollowers] = useState<{ follower: { username: string; imageUrl: string; firstName: string | null; } }[]>([]);
+  const [followers, setFollowers] = useState<
+    {
+      follower: {
+        username: string;
+        imageUrl: string;
+        firstName: string | null;
+        clerkId: string;
+      };
+    }[]
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
   const { isOpen, onClose, type } = useModal();
   const userId = usePathname().split("/")[1];
@@ -27,7 +39,6 @@ export const DisplayFollowersModal = () => {
       try {
         const response = await axios.get(`/api/${userId}/followerdata`);
         setFollowers(response.data);
-
       } catch (error) {
         console.error("Error fetching following data:", error);
       } finally {
@@ -36,7 +47,7 @@ export const DisplayFollowersModal = () => {
     };
 
     fetchFollowers();
-  }, []);
+  }, [userId]);
 
   const isModalOpen = isOpen && type === "displayFollowers";
 
@@ -59,11 +70,41 @@ export const DisplayFollowersModal = () => {
         <CommandGroup heading="">
           <CommandItem>
             {isLoading ? (
-              <p>loading...</p>
+              <div className="flex flex-col gap-4">
+                {Array(4)
+                  .fill(undefined)
+                  .map((_, index) => (
+                    <SkeletonItem key={index} />
+                  ))}
+              </div>
             ) : (
-              <div>
+              <div
+                className={cn(
+                  "w-full",
+                  followers.length > 5 && "overflow-y-scroll"
+                )}
+              >
                 {followers.map((follower) => (
-                  <div key={follower.follower.username}>{follower.follower?.username!}</div>
+                  <div className="pb-4" key={follower.follower.username}>
+                    <div className="flex items-center space-x-4">
+                      <Link onClick={handleClose} href={`/${follower.follower.clerkId}`}>
+                        <ProfilePicture
+                          className="h-10 w-10 cursor-pointer"
+                          imageUrl={follower.follower.imageUrl}
+                        />
+                      </Link>
+                      <Link onClick={handleClose} href={`/${follower.follower.clerkId}`}>
+                        <div className="cursor-pointer">
+                          <h2 className="font-semibold">
+                            {follower.follower.username}
+                          </h2>
+                          <h2 className="text-muted-foreground">
+                            {follower.follower.firstName}
+                          </h2>
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}

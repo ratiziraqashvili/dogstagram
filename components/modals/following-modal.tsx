@@ -27,7 +27,7 @@ export const FollowingModal = () => {
     };
 
     fetchUser();
-  }, []);
+  }, [userId]);
 
   const isModalOpen = isOpen && type === "following";
 
