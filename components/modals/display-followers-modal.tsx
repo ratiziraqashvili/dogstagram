@@ -31,8 +31,8 @@ export const DisplayFollowersModal = () => {
         imageUrl: string;
         firstName: string | null;
         clerkId: string;
-        isFollowing: boolean;
       };
+      isFollowing: boolean;
     }[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,31 +52,27 @@ export const DisplayFollowersModal = () => {
   useEffect(() => {
     // Fetch users who follow current profile
     const fetchFollowers = async () => {
-  
       try {
         // Fetch followers
         const response = await axios.get(`/api/${otherUserId}/followerdata`);
-        const followers = response.data;
+        const followersList = response.data;
   
         // Fetch following ids for current user  
         const followingRes = await axios.get(`/api/followerlist/${userId}`);
         const followingIds = followingRes.data;
 
-        console.log(followingIds)
-  
-        // Set following status on each follower
-        const updatedFollowers = followers.map((follower: { clerkId: string; }) => {
-          const isFollowing = followingIds.includes(follower.clerkId); 
-          return {
-            ...follower,
-            isFollowing: followingIds
-          };
-        });
-  
-        // Update state  
-        setFollowers(updatedFollowers);
+        const updatedFollowers = followersList.map((follower: { follower: { clerkId: string; }; }) => {
 
-        console.log(followers)
+          const isFollowing = followingIds.includes(follower.follower.clerkId);
+        
+          return {
+            ...follower, 
+            isFollowing
+          };
+        
+        });
+
+        setFollowers(updatedFollowers);
       } catch (error) {
         console.error("Error fetching following data:", error);
       } finally {
@@ -118,12 +114,6 @@ export const DisplayFollowersModal = () => {
       setIsLoading(false);
     }
   };
-
-  // const check = followers.map((follower) => {
-  //   return follower.follower.isFollowing
-  // })
-
-  // console.log(check);
 
   return (
     <CommandDialog open={isModalOpen} onOpenChange={handleClose}>
@@ -216,26 +206,26 @@ export const DisplayFollowersModal = () => {
                           <Button
                             className="h-[2rem] w-[6rem]"
                             variant={
-                              follower.follower.isFollowing !== undefined &&
-                              follower.follower.isFollowing
+                              follower.isFollowing !== undefined &&
+                              follower.isFollowing
                                 ? "default"
                                 : "amber"
                             }
                             disabled={
                               isLoading ||
-                              follower.follower.isFollowing === undefined
+                              follower.isFollowing === undefined
                             }
                             onClick={() => {
-                              if (follower.follower.isFollowing) {
+                              if (follower.isFollowing) {
                                 onRemoveFollow(follower.follower.clerkId);
                               } else {
                                 onFollow(follower.follower.clerkId);
                               }
                             }}
                           >
-                            {follower.follower.isFollowing === undefined
+                            {follower.isFollowing === undefined
                               ? "Loading"
-                              : follower.follower.isFollowing
+                              : follower.isFollowing
                               ? "Unfollow"
                               : "Follow"}
                           </Button>
