@@ -33,7 +33,7 @@ export const ProfileNavbar = ({ username, profileId }: ProfileNavbar) => {
           )}
         </Button>
       </div>
-      <div className="mr-[43%]">
+      <div className="mr-[40%]">
         <p className="font-semibold">{username}</p>
       </div>
     </div>
