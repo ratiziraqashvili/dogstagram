@@ -5,6 +5,7 @@ import { FollowingModal } from "../modals/following-modal";
 import { SettingsModal } from "../modals/settings-modal";
 import { MoreHorizontalModal } from "../modals/more-vertical-modal";
 import { DisplayFollowersModal } from "../modals/display-followers-modal";
+import { DisplayFollowingsModal } from "../modals/display-followings-modal";
 
 export const ModalProvider = () => {
     const [isMounted, setIsMounted] = useState(false);
@@ -23,6 +24,7 @@ export const ModalProvider = () => {
           <SettingsModal />
           <MoreHorizontalModal />
           <DisplayFollowersModal />
+          <DisplayFollowingsModal />
         </>
     )
 }

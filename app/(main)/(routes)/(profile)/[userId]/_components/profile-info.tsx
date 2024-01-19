@@ -113,6 +113,10 @@ export const ProfileInfo = ({
     onOpen("displayFollowers");
   };
 
+  const onDisplayFollowingsModalOpen = () => {
+    onOpen("displayFollowings");
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex gap-3 justify-between flex-wrap md:pt-2 flex-col md:flex-row">
@@ -181,7 +185,7 @@ export const ProfileInfo = ({
           )}
           <span className="">followers</span>
         </div>
-        <div className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground">
+        <div onClick={onDisplayFollowingsModalOpen} className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground">
           {isFollowerCountLoading ? (
             <Spinner />
           ) : (
