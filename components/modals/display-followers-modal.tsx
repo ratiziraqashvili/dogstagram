@@ -21,9 +21,12 @@ import { useAuth } from "@clerk/nextjs";
 import { useFollowingStore } from "@/hooks/use-following-store";
 
 export const DisplayFollowersModal = () => {
+  //currentUser id
   const { userId } = useAuth();
+  //getting states from zustand
   const { setIsFollowing, setFollowerCount, followerCount } =
     useFollowingStore();
+  //storing followers of profile in this state
   const [followers, setFollowers] = useState<
     {
       follower: {
@@ -37,6 +40,7 @@ export const DisplayFollowersModal = () => {
   >([]);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
+  //loader for only skeleton
   const [skeleton, setSkeleton] = useState(true);
   const [removedFollowers, setRemovedFollowers] = useState<string[]>([]);
   const { isOpen, onClose, type } = useModal();
@@ -53,24 +57,26 @@ export const DisplayFollowersModal = () => {
     // Fetch users who follow current profile
     const fetchFollowers = async () => {
       try {
-        // Fetch followers
+        // Fetch followers that currentProfile has
         const response = await axios.get(`/api/${otherUserId}/followerdata`);
         const followersList = response.data;
-  
-        // Fetch following ids for current user  
+
+        // Fetch following ids for current user
         const followingRes = await axios.get(`/api/followerlist/${userId}`);
         const followingIds = followingRes.data;
 
-        const updatedFollowers = followersList.map((follower: { follower: { clerkId: string; }; }) => {
+        const updatedFollowers = followersList.map(
+          (follower: { follower: { clerkId: string } }) => {
+            const isFollowing = followingIds.includes(
+              follower.follower.clerkId
+            );
 
-          const isFollowing = followingIds.includes(follower.follower.clerkId);
-        
-          return {
-            ...follower, 
-            isFollowing
-          };
-        
-        });
+            return {
+              ...follower,
+              isFollowing,
+            };
+          }
+        );
 
         setFollowers(updatedFollowers);
       } catch (error) {
@@ -84,6 +90,7 @@ export const DisplayFollowersModal = () => {
   }, [otherUserId]);
 
   const onRemoveFollow = async (clerkId: string) => {
+    //Making api req to remove/delete follow
     setIsLoading(true);
     try {
       await axios.delete(`/api/users/remove/${clerkId}`);
@@ -99,14 +106,53 @@ export const DisplayFollowersModal = () => {
     }
   };
 
+  const onUnfollow = async (clerkId: string) => {
+    // making req to api route to unfollow user
+    setIsLoading(true);
+    try {
+      await axios.delete(`/api/users/unfollow/${clerkId}`);
+
+      setFollowers((prevFollowers) => {
+        const updated = prevFollowers.map((follower) => {
+          if (follower.follower.clerkId === clerkId) {
+            return {
+              ...follower,
+              isFollowing: false,
+            };
+          }
+          return follower;
+        });
+        return updated;
+      });
+
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const onFollow = async (clerkId: string) => {
     // Making req to api route to follow user
     setIsLoading(true);
     try {
       await axios.post("/api/users/follow", clerkId);
 
-      setIsFollowing(true);
-      setFollowerCount(followerCount + 1);
+      setFollowers((prevFollowers) => {
+        const updated = prevFollowers.map((follower) => {
+          if (follower.follower.clerkId === clerkId) {
+            return {
+              ...follower,
+              isFollowing: true,
+            };
+          }
+          return follower;
+        });
+        return updated;
+      });
+
+
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -184,6 +230,7 @@ export const DisplayFollowersModal = () => {
                       </Link>
                     </div>
                     <div className="flex items-center">
+                      {/* if user is on current profile show remove button instead of follow/unfollow which is useless in this occasion */}
                       {userId === otherUserId && (
                         <Button
                           disabled={
@@ -201,6 +248,7 @@ export const DisplayFollowersModal = () => {
                             : "Remove"}
                         </Button>
                       )}
+                      {/* we are not showing buttons if user is currentUser because user can not follow ourself */}
                       {userId !== follower.follower.clerkId &&
                         userId !== otherUserId && (
                           <Button
@@ -212,15 +260,12 @@ export const DisplayFollowersModal = () => {
                                 : "amber"
                             }
                             disabled={
-                              isLoading ||
-                              follower.isFollowing === undefined
+                              isLoading || follower.isFollowing === undefined
                             }
                             onClick={() => {
-                              if (follower.isFollowing) {
-                                onRemoveFollow(follower.follower.clerkId);
-                              } else {
-                                onFollow(follower.follower.clerkId);
-                              }
+                              follower.isFollowing
+                                ? onUnfollow(follower.follower.clerkId)
+                                : onFollow(follower.follower.clerkId);
                             }}
                           >
                             {follower.isFollowing === undefined

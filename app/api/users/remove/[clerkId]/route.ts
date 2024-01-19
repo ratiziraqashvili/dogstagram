@@ -19,7 +19,7 @@ export async function DELETE(req: Request, { params }: { params: { clerkId: stri
         })
 
         if (!existingFollow) {
-            return new NextResponse("Not following", {status: 400}) 
+            return new NextResponse("Not following", {status: 404}) 
           }
 
         const follow = await db.follow.delete({

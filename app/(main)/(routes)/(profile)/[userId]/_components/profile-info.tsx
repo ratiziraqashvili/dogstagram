@@ -142,13 +142,13 @@ export const ProfileInfo = ({
             <>
               <Link href={`/${userId}/edit`}>
                 <Button
-                  className="h-[2rem] whitespace-normal"
+                  className="sm:h-[2rem] h-full whitespace-normal"
                   variant="default"
                 >
                   Edit Profile
                 </Button>
               </Link>
-              <Button className="h-[2rem] whitespace-normal" variant="default">
+              <Button className="sm:h-[2rem] h-full whitespace-normal" variant="default">
                 {/* TODO: see archived stories */}
                 View archive
               </Button>

@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     try {
         const user = await currentUser();
-        const otherUserId = await req.json();
+        const otherUserId = await req.text();
 
         if (!user || !user.id || !otherUserId) {
             return new NextResponse("Unauthorized", { status: 401 })
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         return NextResponse.json(follow)
 
     } catch (error) {
-        console.error(error)
+        console.error("Error on follow:", error)
         return new NextResponse("Internal Error", { status: 500 })
     }
 }

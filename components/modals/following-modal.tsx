@@ -20,6 +20,7 @@ export const FollowingModal = () => {
   const userId = params.userId as string;
   const [user, setUser] = useState<Partial<User>>({});
 
+  //just getting user info
   useEffect(() => {
     const fetchUser = async () => {
       const res = await axios.get(`/api/user/${userId}`);
@@ -35,6 +36,7 @@ export const FollowingModal = () => {
     onClose();
   };
 
+  //unfollowing user
   const onUnfollow = async () => {
     setIsLoading(true);
     try {
