@@ -3,6 +3,7 @@ import { ProfileInfo } from "./_components/profile-info";
 import { MobileFollowerCount } from "./_components/mobile-follower-count";
 import { db } from "@/lib/db";
 import { ProfileNavbar } from "../_components/profile-navbar";
+import { ProfileFilters } from "./_components/profile-filters";
 
 const ProfilePage = async ({ params }: { params: { userId: string }} ) => {
   const { userId } = params;
@@ -32,6 +33,7 @@ const ProfilePage = async ({ params }: { params: { userId: string }} ) => {
       <div className="flex md:hidden justify-around w-full p-3 border-b-[1px]">
         <MobileFollowerCount />
       </div>
+        <ProfileFilters />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { Compass, Home, Search } from "lucide-react";
+import { Compass, Home, PlusIcon, Search } from "lucide-react";
 import Link from "next/link";
 
 export const Routes = () => {
@@ -18,6 +18,11 @@ export const Routes = () => {
       href: "/explore",
       icon: Compass,
     },
+    {
+      label: "Create",
+      href: null,
+      icon: PlusIcon
+    }
   ];
 
   return (
