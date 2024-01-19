@@ -18,18 +18,14 @@ import { ProfilePicture } from "../profile-picture";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useAuth } from "@clerk/nextjs";
-import { useFollowingStore } from "@/hooks/use-following-store";
 
 export const DisplayFollowingsModal = () => {
   //currentUser id
   const { userId } = useAuth();
-  //getting states from zustand
-  const { setIsFollowing, setFollowerCount, followerCount } =
-    useFollowingStore();
   //storing followers of profile in this state
-  const [followers, setFollowers] = useState<
+  const [followings, setFollowings] = useState<
     {
-      follower: {
+      following: {
         username: string;
         imageUrl: string;
         firstName: string | null;
@@ -42,7 +38,6 @@ export const DisplayFollowingsModal = () => {
   const [search, setSearch] = useState("");
   //loader for only skeleton
   const [skeleton, setSkeleton] = useState(true);
-  const [removedFollowers, setRemovedFollowers] = useState<string[]>([]);
   const { isOpen, onClose, type } = useModal();
   const otherUserId = usePathname().split("/")[1];
   const router = useRouter();
@@ -55,30 +50,30 @@ export const DisplayFollowingsModal = () => {
 
   useEffect(() => {
     // Fetch users who follow current profile
-    const fetchFollowers = async () => {
+    const fetchFollowings = async () => {
       try {
         // Fetch followers that currentProfile has
-        const response = await axios.get(`/api/${otherUserId}/followerdata`);
-        const followersList = response.data;
+        const response = await axios.get(`/api/${otherUserId}/followingdata`);
+        const followingsList = response.data;
 
         // Fetch following ids for current user
         const followingRes = await axios.get(`/api/followerlist/${userId}`);
         const followingIds = followingRes.data;
 
-        const updatedFollowers = followersList.map(
-          (follower: { follower: { clerkId: string } }) => {
+        const updatedFollowings = followingsList.map(
+          (following: { following: { clerkId: string } }) => {
             const isFollowing = followingIds.includes(
-              follower.follower.clerkId
+              following.following.clerkId
             );
 
             return {
-              ...follower,
+              ...following,
               isFollowing,
             };
           }
         );
 
-        setFollowers(updatedFollowers);
+        setFollowings(updatedFollowings);
       } catch (error) {
         console.error("Error fetching following data:", error);
       } finally {
@@ -86,25 +81,8 @@ export const DisplayFollowingsModal = () => {
       }
     };
 
-    fetchFollowers();
+    fetchFollowings();
   }, [otherUserId]);
-
-  const onRemoveFollow = async (clerkId: string) => {
-    //Making api req to remove/delete follow
-    setIsLoading(true);
-    try {
-      await axios.delete(`/api/users/remove/${clerkId}`);
-
-      setIsFollowing(false);
-      setFollowerCount(followerCount - 1);
-      setRemovedFollowers((prevRemoved) => [...prevRemoved, clerkId]);
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const onUnfollow = async (clerkId: string) => {
     // making req to api route to unfollow user
@@ -112,15 +90,15 @@ export const DisplayFollowingsModal = () => {
     try {
       await axios.delete(`/api/users/unfollow/${clerkId}`);
 
-      setFollowers((prevFollowers) => {
-        const updated = prevFollowers.map((follower) => {
-          if (follower.follower.clerkId === clerkId) {
+      setFollowings((prevFollowings) => {
+        const updated = prevFollowings.map((following) => {
+          if (following.following.clerkId === clerkId) {
             return {
-              ...follower,
+              ...following,
               isFollowing: false,
             };
           }
-          return follower;
+          return following;
         });
         return updated;
       });
@@ -139,19 +117,18 @@ export const DisplayFollowingsModal = () => {
     try {
       await axios.post("/api/users/follow", clerkId);
 
-      setFollowers((prevFollowers) => {
-        const updated = prevFollowers.map((follower) => {
-          if (follower.follower.clerkId === clerkId) {
+      setFollowings((prevFollowings) => {
+        const updated = prevFollowings.map((following) => {
+          if (following.following.clerkId === clerkId) {
             return {
-              ...follower,
+              ...following,
               isFollowing: true,
             };
           }
-          return follower;
+          return following;
         });
         return updated;
       });
-
 
       router.refresh();
     } catch (error) {
@@ -181,7 +158,7 @@ export const DisplayFollowingsModal = () => {
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="">
           <CommandItem>
-            {followers.length === 0 && !skeleton && (
+            {followings.length === 0 && !skeleton && (
               <div className="pl-[35.5%] whitespace-nowrap flex justify-center">
                 <p className="text-muted-foreground">No result found.</p>
               </div>
@@ -196,81 +173,63 @@ export const DisplayFollowingsModal = () => {
               </div>
             )}
             <div className="w-full">
-              {followers
-                .filter((follower) =>
-                  follower.follower.username.includes(search)
+              {followings
+                .filter((following) =>
+                  following.following.username.includes(search)
                 )
-                .map((follower) => (
+                .map((following) => (
                   <div
                     className="flex justify-between pb-4"
-                    key={follower.follower.username}
+                    key={following.following.username}
                   >
                     <div className="flex items-center space-x-4">
                       <Link
                         onClick={handleClose}
-                        href={`/${follower.follower.clerkId}`}
+                        href={`/${following.following.clerkId}`}
                       >
                         <ProfilePicture
                           className="h-11 w-11 cursor-pointer"
-                          imageUrl={follower.follower.imageUrl}
+                          imageUrl={following.following.imageUrl}
                         />
                       </Link>
                       <Link
                         onClick={handleClose}
-                        href={`/${follower.follower.clerkId}`}
+                        href={`/${following.following.clerkId}`}
                       >
                         <div className="cursor-pointer">
                           <h2 className="font-semibold">
-                            {follower.follower.username}
+                            {following.following.username}
                           </h2>
                           <h2 className="text-muted-foreground">
-                            {follower.follower.firstName}
+                            {following.following.firstName}
                           </h2>
                         </div>
                       </Link>
                     </div>
                     <div className="flex items-center">
-                      {/* if user is on current profile show remove button instead of follow/unfollow which is useless in this occasion */}
-                      {userId === otherUserId && (
-                        <Button
-                          disabled={
-                            isLoading ||
-                            removedFollowers.includes(follower.follower.clerkId)
-                          }
-                          className="h-[2rem] w-[6rem]"
-                          onClick={() =>
-                            onRemoveFollow(follower.follower.clerkId)
-                          }
-                          variant="default"
-                        >
-                          {removedFollowers.includes(follower.follower.clerkId)
-                            ? "Removed"
-                            : "Remove"}
-                        </Button>
-                      )}
                       {/* we are not showing buttons if user is currentUser because user can not follow ourself */}
-                      {userId !== follower.follower.clerkId &&
+                      {userId !== following.following.clerkId &&
                         userId !== otherUserId && (
                           <Button
                             className="h-[2rem] w-[6rem]"
                             variant={
-                              follower.isFollowing !== undefined &&
-                              follower.isFollowing
+                              following.isFollowing !== undefined &&
+                              following.isFollowing
                                 ? "default"
                                 : "amber"
                             }
                             disabled={
-                              isLoading || follower.isFollowing === undefined
+                              isLoading || following.isFollowing === undefined
                             }
                             onClick={() => {
-                              follower.isFollowing
-                                ? onUnfollow(follower.follower.clerkId)
-                                : onFollow(follower.follower.clerkId);
+                              following.isFollowing
+                                ? onUnfollow(following.following.clerkId)
+                                : onFollow(following.following.clerkId);
                             }}
                           >
-                            {follower.isFollowing === undefined
+                            {following.isFollowing === undefined
                               ? "Loading"
-                              : follower.isFollowing
+                              : following.isFollowing
                               ? "Unfollow"
                               : "Follow"}
                           </Button>
