@@ -7,7 +7,11 @@ import { Posts } from "./posts";
 import { SavedPosts } from "./saved-posts";
 import { useAuth } from "@clerk/nextjs";
 
-export const ProfileFilters = () => {
+interface ProfileFiltersProps {
+  profileId: string;
+}
+
+export const ProfileFilters = ({ profileId }: ProfileFiltersProps) => {
   const [filter, setFilter] = useState("posts");
   const { userId } = useAuth();
 
@@ -40,28 +44,30 @@ export const ProfileFilters = () => {
             Posts
           </span>
         </div>
-        <div
-          onClick={() => onFilterClick("saved")}
-          className={cn(
-            "flex items-center justify-center px-1 py-3 gap-1.5 cursor-pointer border-t-[1px] border-black border-opacity-0",
-            filter === "saved" && "border-opacity-100 transition"
-          )}
-        >
-          <Bookmark
+        {userId === profileId && (
+          <div
+            onClick={() => onFilterClick("saved")}
             className={cn(
-              "h-3.5 w-3.5 text-muted-foreground",
-              filter === "saved" && "text-black"
-            )}
-          />
-          <span
-            className={cn(
-              "text-muted-foreground uppercase text-[0.8rem] font-[500]",
-              filter === "saved" && "text-black"
+              "flex items-center justify-center px-1 py-3 gap-1.5 cursor-pointer border-t-[1px] border-black border-opacity-0",
+              filter === "saved" && "border-opacity-100 transition"
             )}
           >
-            Saved
-          </span>
-        </div>
+            <Bookmark
+              className={cn(
+                "h-3.5 w-3.5 text-muted-foreground",
+                filter === "saved" && "text-black"
+              )}
+            />
+            <span
+              className={cn(
+                "text-muted-foreground uppercase text-[0.8rem] font-[500]",
+                filter === "saved" && "text-black"
+              )}
+            >
+              Saved
+            </span>
+          </div>
+        )}
       </div>
       <div className="md:hidden w-full flex justify-around sm:justify-center">
         <div
@@ -78,20 +84,22 @@ export const ProfileFilters = () => {
             )}
           />
         </div>
-        <div
-          className={cn(
-            "cursor-pointer w-full border-t-[1px] border-black border-opacity-0 py-3 flex justify-center",
-            filter === "saved" && "border-opacity-100"
-          )}
-          onClick={() => onFilterClick("saved")}
-        >
-          <Bookmark
+        {userId === profileId && (
+          <div
             className={cn(
-              "text-muted-foreground",
-              filter === "saved" && "text-sky-500"
+              "cursor-pointer w-full border-t-[1px] border-black border-opacity-0 py-3 flex justify-center",
+              filter === "saved" && "border-opacity-100"
             )}
-          />
-        </div>
+            onClick={() => onFilterClick("saved")}
+          >
+            <Bookmark
+              className={cn(
+                "text-muted-foreground",
+                filter === "saved" && "text-sky-500"
+              )}
+            />
+          </div>
+        )}
       </div>
       <div className="md:w-[80%] mx-auto">
         {filter === "posts" && <Posts />}

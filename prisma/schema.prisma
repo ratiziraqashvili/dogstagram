@@ -15,6 +15,7 @@ model User {
   email     String   @unique
   imageUrl  String?  @db.Text
   clerkId   String   @unique
+  location  String   @default("Unspecified")
   following Follow[] @relation("follower")
   followers Follow[] @relation("following")
 

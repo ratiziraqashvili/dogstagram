@@ -9,6 +9,7 @@ const webhookSecret = process.env.WEBHOOK_SECRET!
 async function handler(request: Request) {
     const payload = await request.json();
     const headersList = headers();
+    const ipAddress = headersList.get("x-forwarded-for");
     const heads = {
         "svix-id": headersList.get("svix-id"),
         "svix-timestamp": headersList.get("svix-timestamp"),
@@ -30,7 +31,12 @@ async function handler(request: Request) {
         const { id, first_name, username, email_addresses, image_url } = evt.data;
 
         const email_address = email_addresses[0].email_address;
+
+        const res = await fetch(`https://ipinfo.io/${ipAddress}?token=${process.env.IPINFO_TOKEN}`);
+        const locationData = await res.json();
       
+        const country = locationData.country;
+
        const user = await db.user.upsert({
             where: {
                 clerkId: id as string
@@ -41,12 +47,14 @@ async function handler(request: Request) {
                 username: username as string,
                 email: email_address as string,
                 imageUrl: image_url as string,
+                location: country
             },
             update: {
                 firstName: first_name as string,
                 username: username as string,
                 email: email_address as string,
                 imageUrl: image_url as string,
+                location: country
             }
         })
 

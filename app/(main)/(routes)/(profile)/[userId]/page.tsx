@@ -33,7 +33,7 @@ const ProfilePage = async ({ params }: { params: { userId: string }} ) => {
       <div className="flex md:hidden justify-around w-full p-3 border-b-[1px]">
         <MobileFollowerCount />
       </div>
-        <ProfileFilters />
+        <ProfileFilters profileId={userId} />
     </>
   );
 };

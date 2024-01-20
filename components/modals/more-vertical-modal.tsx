@@ -5,12 +5,16 @@ import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
 import { cn } from "@/lib/utils";
 
 export const MoreHorizontalModal = () => {
-  const { isOpen, onClose, type } = useModal();
+  const { isOpen, onClose, type, onOpen } = useModal();
 
   const isModalOpen = isOpen && type === "moreHorizontal";
 
   const handleClose = () => {
     onClose();
+  };
+
+  const onDisplayFollowingsModalOpen = () => {
+    onOpen("aboutAccount");
   };
 
   const buttons = [
@@ -19,7 +23,7 @@ export const MoreHorizontalModal = () => {
     //TODO: Redirect to notifications page
     { label: "Share to...", onClick: () => {} },
     //TODO: Create about this account modal
-    { label: "About this account", onClick: () => {} },
+    { label: "About this account", onClick: onDisplayFollowingsModalOpen },
   ];
 
   return (

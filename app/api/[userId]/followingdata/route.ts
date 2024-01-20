@@ -19,8 +19,6 @@ export async function GET(req: Request) {
         }
     }
 
-    console.log("this is userId:", userId);
-
     if (!userId) {
         return new NextResponse("Unauthorized", { status: 401 });
     }
