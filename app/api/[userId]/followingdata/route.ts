@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
    try {
     const url = req.url;
+    
        
     const parts = url.split("/")
 
@@ -18,13 +19,15 @@ export async function GET(req: Request) {
         }
     }
 
+    console.log("this is userId:", userId);
+
     if (!userId) {
         return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const followingDetails = await db.follow.findMany({
         where: {
-            followerId: userId
+            followerId: userId,
         },
         select: {
             following: {
@@ -37,7 +40,7 @@ export async function GET(req: Request) {
             }
         }
     })
-
+    
     return NextResponse.json(followingDetails, { status: 200 });
 
    } catch (error) {

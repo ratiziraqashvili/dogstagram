@@ -5,9 +5,11 @@ import { Bookmark, Grid3X3 } from "lucide-react";
 import { useState } from "react";
 import { Posts } from "./posts";
 import { SavedPosts } from "./saved-posts";
+import { useAuth } from "@clerk/nextjs";
 
 export const ProfileFilters = () => {
   const [filter, setFilter] = useState("posts");
+  const { userId } = useAuth();
 
   const onFilterClick = (type: string) => {
     setFilter(type);
@@ -20,7 +22,7 @@ export const ProfileFilters = () => {
           onClick={() => onFilterClick("posts")}
           className={cn(
             "flex items-center justify-center px-1 py-3 gap-1.5 cursor-pointer border-t-[1px] border-black border-opacity-0",
-            filter === "posts" && "border-opacity-100"
+            filter === "posts" && "border-opacity-100 transition"
           )}
         >
           <Grid3X3
@@ -42,7 +44,7 @@ export const ProfileFilters = () => {
           onClick={() => onFilterClick("saved")}
           className={cn(
             "flex items-center justify-center px-1 py-3 gap-1.5 cursor-pointer border-t-[1px] border-black border-opacity-0",
-            filter === "saved" && "border-opacity-100"
+            filter === "saved" && "border-opacity-100 transition"
           )}
         >
           <Bookmark
@@ -61,10 +63,10 @@ export const ProfileFilters = () => {
           </span>
         </div>
       </div>
-      <div className="md:hidden flex justify-center gap-10">
+      <div className="md:hidden w-full flex justify-around sm:justify-center">
         <div
           className={cn(
-            "cursor-pointer border-t-[1px] border-black border-opacity-0 py-3",
+            "cursor-pointer border-t-[1px] border-black border-opacity-0 py-3 w-full flex justify-center",
             filter === "posts" && "border-opacity-100"
           )}
           onClick={() => onFilterClick("posts")}
@@ -78,7 +80,7 @@ export const ProfileFilters = () => {
         </div>
         <div
           className={cn(
-            "cursor-pointer border-t-[1px] border-black border-opacity-0 py-3",
+            "cursor-pointer w-full border-t-[1px] border-black border-opacity-0 py-3 flex justify-center",
             filter === "saved" && "border-opacity-100"
           )}
           onClick={() => onFilterClick("saved")}

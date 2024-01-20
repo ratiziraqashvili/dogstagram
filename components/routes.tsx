@@ -27,8 +27,8 @@ export const Routes = () => {
 
   return (
     <>
-      {routes.map((route) => (
-        <div key={route.href} className="flex items-center gap-4 p-3 w-full rounded-lg transition hover:bg-primary/5 cursor-pointer duration-300">
+      {routes.map((route, index) => (
+        <div key={index} className="flex items-center gap-4 p-3 w-full rounded-lg transition hover:bg-primary/5 cursor-pointer duration-300">
           {route.href ? (
             <Link href={route.href}>
               <div className="flex gap-4 items-center">

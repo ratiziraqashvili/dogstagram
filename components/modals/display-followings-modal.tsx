@@ -56,6 +56,8 @@ export const DisplayFollowingsModal = () => {
         const response = await axios.get(`/api/${otherUserId}/followingdata`);
         const followingsList = response.data;
 
+        console.log(followingsList)
+
         // Fetch following ids for current user
         const followingRes = await axios.get(`/api/followerlist/${userId}`);
         const followingIds = followingRes.data;

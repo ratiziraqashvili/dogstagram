@@ -52,10 +52,23 @@ async function handler(request: Request) {
 
         return NextResponse.json(user)
     }
+
+    if (eventType === "user.deleted") {
+        const { id } = evt.data;
+
+      
+       const user = await db.user.delete({
+            where: {
+                clerkId: id as string
+            },
+        })
+
+        return NextResponse.json(user)
+    }
     return NextResponse.json(null)
 }
 
-type EventType = "user.created" | "user.updated"  | "*";
+type EventType = "user.created" | "user.updated"  | "user.deleted" | "*";
 
 interface EventData {
     id: string;
