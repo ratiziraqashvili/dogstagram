@@ -23,7 +23,7 @@ const ProfilePage = async ({ params }: { params: { userId: string }} ) => {
       <ProfileNavbar username={user?.username} profileId={user?.clerkId} />
       <div className="md:w-[80%] xl:pr-44 md:pt-7 p-4 md:mx-auto  md:justify-center flex gap-5 md:gap-24 md:border-b-[1px] md:pb-12 pb-5">
         <div className="md:pl-7">
-          <ProfilePicture imageUrl={user?.imageUrl} className="md:w-36 md:h-36 w-[4.6rem] h-[4.6rem]" />
+          <ProfilePicture onClick imageUrl={user?.imageUrl} className="md:w-36 md:h-36 w-[4.6rem] h-[4.6rem]" />
         </div>
         <div>
           <ProfileInfo userId={userId} username={user?.username} firstName={user?.firstName} />

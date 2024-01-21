@@ -8,6 +8,7 @@ import { ProfilePicture } from "../profile-picture";
 import { CalendarDays, MapPin } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
+import { countryCodes } from "@/constants/country-codes";
 
 export const AboutAccountModal = () => {
   const { isOpen, onClose, type } = useModal();
@@ -38,6 +39,8 @@ export const AboutAccountModal = () => {
       fetchUser();
     }
   }, [userId]);
+
+  const userCountry = countryCodes[user?.location!];
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
@@ -86,7 +89,9 @@ export const AboutAccountModal = () => {
               <MapPin className="w-7 h-7" />
               <div className="flex flex-col">
                 <span>Account based in</span>
-                <span className="text-muted-foreground text-sm">Georgia</span>
+                <span className="text-muted-foreground text-sm">
+                  {userCountry}
+                </span>
               </div>
             </div>
           </div>

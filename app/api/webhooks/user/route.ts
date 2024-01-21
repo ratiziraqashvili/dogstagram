@@ -47,36 +47,24 @@ async function handler(request: Request) {
                 username: username as string,
                 email: email_address as string,
                 imageUrl: image_url as string,
-                location: country
+                location: country || null
             },
             update: {
                 firstName: first_name as string,
                 username: username as string,
                 email: email_address as string,
                 imageUrl: image_url as string,
-                location: country
+                location: country || null
             }
         })
 
         return NextResponse.json(user)
     }
 
-    if (eventType === "user.deleted") {
-        const { id } = evt.data;
-
-      
-       const user = await db.user.delete({
-            where: {
-                clerkId: id as string
-            },
-        })
-
-        return NextResponse.json(user)
-    }
     return NextResponse.json(null)
 }
 
-type EventType = "user.created" | "user.updated"  | "user.deleted" | "*";
+type EventType = "user.created" | "user.updated"  |  "*";
 
 interface EventData {
     id: string;

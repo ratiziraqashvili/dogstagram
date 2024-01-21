@@ -13,7 +13,7 @@ export const MoreHorizontalModal = () => {
     onClose();
   };
 
-  const onDisplayFollowingsModalOpen = () => {
+  const onAboutAccountModalOpen = () => {
     onOpen("aboutAccount");
   };
 
@@ -23,7 +23,7 @@ export const MoreHorizontalModal = () => {
     //TODO: Redirect to notifications page
     { label: "Share to...", onClick: () => {} },
     //TODO: Create about this account modal
-    { label: "About this account", onClick: onDisplayFollowingsModalOpen },
+    { label: "About this account", onClick: onAboutAccountModalOpen },
   ];
 
   return (
