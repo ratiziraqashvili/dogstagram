@@ -11,6 +11,17 @@ export async function POST(req: Request) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
+        const alreadyFollowing = await db.follow.findFirst({
+            where: {
+                followerId: user.id,
+                followingId: otherUserId
+            }
+        })
+
+        if (alreadyFollowing) {
+            return new NextResponse("Already following this user", { status: 400 })
+        }
+
         const follow = await db.follow.create({
             data: {
                 followerId: user.id,

@@ -1,5 +1,3 @@
-"use client";
-
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useParams, useRouter } from "next/navigation";

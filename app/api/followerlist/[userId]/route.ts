@@ -24,7 +24,7 @@ export async function GET(req: Request) {
               },
         })
         
-        const followingIds = followeringList?.following.map((follow) => follow.followingId)
+        const followingIds = followeringList?.following.map((follow) => follow.followingId.replace(/"/g, ''))
 
         return NextResponse.json(followingIds)
     } catch (error) {

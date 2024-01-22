@@ -24,7 +24,7 @@ export async function GET(req: Request) {
 
     const followerDetails = await db.follow.findMany({
         where: {
-            followingId: userId
+            followingId: userId 
         },
         select: {
             follower: {
@@ -38,10 +38,14 @@ export async function GET(req: Request) {
         }
     })
 
+    if (!followerDetails) {
+        return new NextResponse("No follower")
+    }
+
     return NextResponse.json(followerDetails, { status: 200 });
 
    } catch (error) {
-    console.log(error);
+    console.log("Error in Follower Data", error);
     return new NextResponse("Failed to get followerDetails", { status: 500 });
    }
 }

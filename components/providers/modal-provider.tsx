@@ -7,6 +7,7 @@ import { MoreHorizontalModal } from "../modals/more-vertical-modal";
 import { DisplayFollowersModal } from "../modals/display-followers-modal";
 import { DisplayFollowingsModal } from "../modals/display-followings-modal";
 import { AboutAccountModal } from "../modals/about-account-modal";
+import { BlockConfirmModal } from "../modals/block-confirm-modal";
 
 export const ModalProvider = () => {
     const [isMounted, setIsMounted] = useState(false);
@@ -27,6 +28,7 @@ export const ModalProvider = () => {
           <DisplayFollowersModal />
           <DisplayFollowingsModal />
           <AboutAccountModal />
+          <BlockConfirmModal />
         </>
     )
 }

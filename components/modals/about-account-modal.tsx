@@ -90,7 +90,7 @@ export const AboutAccountModal = () => {
               <div className="flex flex-col">
                 <span>Account based in</span>
                 <span className="text-muted-foreground text-sm">
-                  {userCountry}
+                  {userCountry || "Unspecified"} 
                 </span>
               </div>
             </div>

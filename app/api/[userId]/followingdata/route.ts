@@ -28,21 +28,34 @@ export async function GET(req: Request) {
             followerId: userId,
         },
         select: {
-            following: {
-                select: {
-                    imageUrl: true,
-                    username: true,
-                    firstName: true,
-                    clerkId: true,
-                }
+           followingId: true,
+        }
+    })
+
+    if (!followingDetails || followingDetails.length === 0) {
+        return new NextResponse("No following", { status: 404 })
+    }
+
+   const followingIds = followingDetails.map(f => f.followingId.replace(/"/g, ''))
+
+    const users = await db.user.findMany({
+        where: {
+           clerkId: {
+                in: followingIds
             }
+        },
+        select: {
+            imageUrl: true,
+            username: true,
+            firstName: true,
+            clerkId: true,
         }
     })
     
-    return NextResponse.json(followingDetails, { status: 200 });
+    return NextResponse.json(users, { status: 200 });
 
    } catch (error) {
-    console.log(error);
-    return new NextResponse("Failed to get followerDetails", { status: 500 });
+    console.log("Error in Following Data", error);
+    return new NextResponse("Failed to get followingDetails", { status: 500 });
    }
 }

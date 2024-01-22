@@ -1,5 +1,3 @@
-"use client";
-
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
 import { cn } from "@/lib/utils";
@@ -17,12 +15,15 @@ export const MoreHorizontalModal = () => {
     onOpen("aboutAccount");
   };
 
+  const onBlockConfirmModalOpen = () => {
+    onOpen("blockConfirm");
+  }
+
   const buttons = [
     //TODO: Block account
-    { label: "Block", onClick: () => {} },
+    { label: "Block", onClick: onBlockConfirmModalOpen },
     //TODO: Redirect to notifications page
     { label: "Share to...", onClick: () => {} },
-    //TODO: Create about this account modal
     { label: "About this account", onClick: onAboutAccountModalOpen },
   ];
 
@@ -36,7 +37,7 @@ export const MoreHorizontalModal = () => {
               onClick={button.onClick}
               className={cn(
                 "hover:bg-primary/10 w-full py-3 flex justify-center p-3 text-[0.890rem] transition disabled:pointer-events-none disabled:opacity-50 text-center border-b-[1px]",
-                button.label === "Block" && "text-red-600 font-bold"
+                button.label === "Block" && "text-red-600 font-bold opacity-85"
                 )}
             >
               <span>{button.label}</span>

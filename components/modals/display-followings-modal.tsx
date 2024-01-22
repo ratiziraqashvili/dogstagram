@@ -1,5 +1,3 @@
-"use client";
-
 import {
   CommandDialog,
   CommandEmpty,
@@ -25,12 +23,10 @@ export const DisplayFollowingsModal = () => {
   //storing followers of profile in this state
   const [followings, setFollowings] = useState<
     {
-      following: {
-        username: string;
-        imageUrl: string;
-        firstName: string | null;
-        clerkId: string;
-      };
+      username: string;
+      imageUrl: string;
+      firstName: string | null;
+      clerkId: string;
       isFollowing: boolean;
     }[]
   >([]);
@@ -56,15 +52,17 @@ export const DisplayFollowingsModal = () => {
         const response = await axios.get(`/api/${otherUserId}/followingdata`);
         const followingsList = response.data;
 
+        console.log(followingsList);
+
         // Fetch following ids for current user
         const followingRes = await axios.get(`/api/followerlist/${userId}`);
         const followingIds = followingRes.data;
 
+        console.log(followingIds);
+
         const updatedFollowings = followingsList.map(
-          (following: { following: { clerkId: string } }) => {
-            const isFollowing = followingIds.includes(
-              following.following.clerkId
-            );
+          (following: { clerkId: string } ) => {
+            const isFollowing = followingIds.includes(following.clerkId);
 
             return {
               ...following,
@@ -92,7 +90,7 @@ export const DisplayFollowingsModal = () => {
 
       setFollowings((prevFollowings) => {
         const updated = prevFollowings.map((following) => {
-          if (following.following.clerkId === clerkId) {
+          if (following.clerkId === clerkId) {
             return {
               ...following,
               isFollowing: false,
@@ -119,7 +117,7 @@ export const DisplayFollowingsModal = () => {
 
       setFollowings((prevFollowings) => {
         const updated = prevFollowings.map((following) => {
-          if (following.following.clerkId === clerkId) {
+          if (following.clerkId === clerkId) {
             return {
               ...following,
               isFollowing: true,
@@ -174,41 +172,39 @@ export const DisplayFollowingsModal = () => {
             )}
             <div className="w-full">
               {followings
-                .filter((following) =>
-                  following.following.username.includes(search)
-                )
+                .filter((following) => following.username.includes(search))
                 .map((following) => (
                   <div
                     className="flex justify-between pb-4"
-                    key={following.following.username}
+                    key={following.username}
                   >
                     <div className="flex items-center space-x-4">
                       <Link
                         onClick={handleClose}
-                        href={`/${following.following.clerkId}`}
+                        href={`/${following.clerkId}`}
                       >
                         <ProfilePicture
                           className="h-11 w-11 cursor-pointer"
-                          imageUrl={following.following.imageUrl}
+                          imageUrl={following.imageUrl}
                         />
                       </Link>
                       <Link
                         onClick={handleClose}
-                        href={`/${following.following.clerkId}`}
+                        href={`/${following.clerkId}`}
                       >
                         <div className="cursor-pointer">
                           <h2 className="font-semibold">
-                            {following.following.username}
+                            {following.username}
                           </h2>
                           <h2 className="text-muted-foreground">
-                            {following.following.firstName}
+                            {following.firstName}
                           </h2>
                         </div>
                       </Link>
                     </div>
                     <div className="flex items-center">
                       {/* we are not showing buttons if user is currentUser because user can not follow ourself */}
-                      {userId !== following.following.clerkId &&
+                      {userId !== following.clerkId &&
                         userId !== otherUserId && (
                           <Button
                             className="h-[2rem] w-[6rem]"
@@ -223,8 +219,8 @@ export const DisplayFollowingsModal = () => {
                             }
                             onClick={() => {
                               following.isFollowing
-                                ? onUnfollow(following.following.clerkId)
-                                : onFollow(following.following.clerkId);
+                                ? onUnfollow(following.clerkId)
+                                : onFollow(following.clerkId);
                             }}
                           >
                             {following.isFollowing === undefined

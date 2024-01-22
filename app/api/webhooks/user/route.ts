@@ -47,14 +47,14 @@ async function handler(request: Request) {
                 username: username as string,
                 email: email_address as string,
                 imageUrl: image_url as string,
-                location: country || null
+                location: country
             },
             update: {
                 firstName: first_name as string,
                 username: username as string,
                 email: email_address as string,
                 imageUrl: image_url as string,
-                location: country || null
+                location: country
             }
         })
 

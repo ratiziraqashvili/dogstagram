@@ -1,5 +1,3 @@
-"use client";
-
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
 import { useClerk } from "@clerk/nextjs";
