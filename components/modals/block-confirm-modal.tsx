@@ -1,10 +1,11 @@
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
+import { useToast } from "../ui/use-toast";
 
 interface LimitedUser {
   clerkId: string;
@@ -12,11 +13,15 @@ interface LimitedUser {
 }
 
 export const BlockConfirmModal = () => {
-  const { isOpen, onClose, type } = useModal();
-  const params = useParams();
   const [user, setUser] = useState<LimitedUser>({} as LimitedUser);
-  const { userId } = params;
   const [isLoading, setIsLoading] = useState(true);
+  const { isOpen, onClose, type, onOpen } = useModal();
+  const { toast } = useToast();
+
+  const params = useParams();
+  const router = useRouter();
+
+  const { userId } = params;
 
   const isModalOpen = isOpen && type === "blockConfirm";
 
@@ -44,6 +49,25 @@ export const BlockConfirmModal = () => {
     }
   }, [userId]);
 
+  const onBlockIndicatorModalOpen = () => {
+    onOpen("blockIndicator")
+  }
+
+  const onBlock = async () => {
+    try {
+      const response = await axios.post(`/api/block/${userId}`)
+
+      onBlockIndicatorModalOpen();
+      toast({
+        title: "Blocked",
+        variant: "default"
+      })
+      router.refresh();
+    } catch (error) {
+      console.error("Error blocking user in block-confirm-modal:", error)
+    }
+  }
+
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent className="w-[70%] sm:w-[25rem] pt-3 pb-0 px-0">
@@ -63,18 +87,18 @@ export const BlockConfirmModal = () => {
         </div>
         <div>
           <Button
+            onClick={onBlock}
             className="hover:text-red-600 border-t-[1px] w-full h-[3rem] font-bold text-red-600 opacity-85"
             variant="ghost"
           >
             Block
           </Button>
           <DialogClose className="w-full">
-            <Button
-              className="hover:text-black h-[3rem] w-full border-t-[1px]"
-              variant="ghost"
+            <div
+              className="h-[3rem] w-full flex justify-center items-center border-t-[1px]"
             >
-              Close
-            </Button>
+              <span className="text-sm">Cancel</span>
+            </div>
           </DialogClose>
         </div>
       </DialogContent>

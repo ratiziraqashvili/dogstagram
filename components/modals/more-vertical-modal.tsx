@@ -17,7 +17,7 @@ export const MoreHorizontalModal = () => {
 
   const onBlockConfirmModalOpen = () => {
     onOpen("blockConfirm");
-  }
+  };
 
   const buttons = [
     //TODO: Block account
@@ -38,16 +38,16 @@ export const MoreHorizontalModal = () => {
               className={cn(
                 "hover:bg-primary/10 w-full py-3 flex justify-center p-3 text-[0.890rem] transition disabled:pointer-events-none disabled:opacity-50 text-center border-b-[1px]",
                 button.label === "Block" && "text-red-600 font-bold opacity-85"
-                )}
+              )}
             >
               <span>{button.label}</span>
             </button>
           ))}
         </div>
         <DialogClose>
-          <button className="hover:bg-primary/10 py-3 flex justify-center text-center p-3 text-[0.890rem] transition disabled:pointer-events-none disabled:opacity-50 w-full items-center">
+          <div className="hover:bg-primary/10 py-3 flex justify-center text-center p-3 text-[0.890rem] transition disabled:pointer-events-none disabled:opacity-50 w-full items-center">
             <span>Cancel</span>
-          </button>
+          </div>
         </DialogClose>
       </DialogContent>
     </Dialog>

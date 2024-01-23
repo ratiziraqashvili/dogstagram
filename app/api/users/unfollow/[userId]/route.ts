@@ -20,6 +20,10 @@ export async function DELETE(req: Request, { params }: { params: { userId: strin
            }
         })
 
+        if (!follow) {
+            return new NextResponse("There are no follow to delete", { status: 404 })
+        }
+
         return NextResponse.json(follow)
 
     } catch (error) {

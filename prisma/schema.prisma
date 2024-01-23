@@ -9,20 +9,31 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  firstName String?
-  username  String   @unique
-  email     String   @unique
-  imageUrl  String?  @db.Text
-  clerkId   String   @unique
-  location  String   @default("Unspecified")
-  following Follow[] @relation("follower")
-  followers Follow[] @relation("following")
+  id           String        @id @default(uuid())
+  firstName    String?
+  username     String        @unique
+  email        String        @unique
+  imageUrl     String?       @db.Text
+  clerkId      String        @unique
+  location     String        @default("Unspecified")
+  blockedUsers BlockedUser[]
+  following    Follow[]      @relation("follower")
+  followers    Follow[]      @relation("following")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   posts Post[]
+}
+
+model BlockedUser {
+  userId        String
+  blockedUserId String
+
+  user User @relation(fields: [userId], references: [clerkId])
+
+  @@id([userId, blockedUserId])
+  @@index([userId])
 }
 
 model Post {

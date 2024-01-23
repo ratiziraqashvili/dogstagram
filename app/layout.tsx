@@ -3,6 +3,7 @@ import "./globals.css";
 import { ClerkProvider, currentUser, redirectToSignIn } from "@clerk/nextjs";
 import { Nunito } from "next/font/google";
 import { ModalProvider } from "@/components/providers/modal-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 const font = Nunito({
   subsets: ["latin"],
@@ -36,6 +37,7 @@ export default async function RootLayout({
         <body>
           <ModalProvider />
           {children}
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>
