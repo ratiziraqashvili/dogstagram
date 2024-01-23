@@ -33,9 +33,9 @@ export const SettingsModal = () => {
           ))}
         </div>
         <DialogClose>
-          <button className="hover:bg-primary/10 py-3 flex justify-center text-center p-3 text-[0.890rem] transition disabled:pointer-events-none disabled:opacity-50 w-full items-center">
-            <span>Cancel</span>
-          </button>
+          <span className="hover:bg-primary/10 py-3 flex justify-center text-center p-3 text-[0.890rem] transition disabled:pointer-events-none disabled:opacity-50 w-full items-center">
+            Cancel
+          </span>
         </DialogClose>
       </DialogContent>
     </Dialog>

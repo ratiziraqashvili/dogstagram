@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, currentUser, redirectToSignIn } from "@clerk/nextjs";
 import { Nunito } from "next/font/google";
 import { ModalProvider } from "@/components/providers/modal-provider";
 
@@ -24,6 +24,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const user = await currentUser();
+
+  if (!user || !user.id) {
+    redirectToSignIn({ returnBackUrl: `${process.env.NEXT_APPLICATION_URL}/sign-in` })
+  }
+
   return (
     <ClerkProvider>
       <html lang="en">

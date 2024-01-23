@@ -25,7 +25,7 @@ export async function GET(req: Request) {
 
     const followingDetails = await db.follow.findMany({
         where: {
-            followerId: userId,
+           followerId: userId,
         },
         select: {
            followingId: true,
@@ -33,7 +33,7 @@ export async function GET(req: Request) {
     })
 
     if (!followingDetails || followingDetails.length === 0) {
-        return new NextResponse("No following", { status: 404 })
+        return new NextResponse("User is not following anyone [FOLLOWING_DATA_ROUTE.TS_LINE_36]", { status: 200 })
     }
 
    const followingIds = followingDetails.map(f => f.followingId.replace(/"/g, ''))

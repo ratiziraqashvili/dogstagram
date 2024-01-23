@@ -97,12 +97,11 @@ export const AboutAccountModal = () => {
           </div>
           <DialogClose>
             <div className="flex justify-center items-center">
-              <Button
-                className="hover:text-black font-normal pt-4"
-                variant="ghost"
+              <div
+                className="hover:text-black font-normal pt-3"
               >
-                Close
-              </Button>
+                <span className="text-sm">Close</span>
+              </div>
             </div>
           </DialogClose>
         </div>

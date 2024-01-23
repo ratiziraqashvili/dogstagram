@@ -52,13 +52,9 @@ export const DisplayFollowingsModal = () => {
         const response = await axios.get(`/api/${otherUserId}/followingdata`);
         const followingsList = response.data;
 
-        console.log(followingsList);
-
         // Fetch following ids for current user
         const followingRes = await axios.get(`/api/followerlist/${userId}`);
         const followingIds = followingRes.data;
-
-        console.log(followingIds);
 
         const updatedFollowings = followingsList.map(
           (following: { clerkId: string } ) => {
@@ -209,7 +205,6 @@ export const DisplayFollowingsModal = () => {
                           <Button
                             className="h-[2rem] w-[6rem]"
                             variant={
-                              following.isFollowing !== undefined &&
                               following.isFollowing
                                 ? "default"
                                 : "amber"

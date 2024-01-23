@@ -28,7 +28,7 @@ export async function GET(req: Request) {
             where: {
                 clerkId: userId,
             },
-            select: {
+            include: {
                 followers: {
                   select: { 
                     followerId: true, 
