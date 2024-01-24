@@ -200,8 +200,7 @@ export const DisplayFollowingsModal = () => {
                     </div>
                     <div className="flex items-center">
                       {/* we are not showing buttons if user is currentUser because user can not follow ourself */}
-                      {userId !== following.clerkId &&
-                        userId !== otherUserId && (
+                      {userId !== following.clerkId && (
                           <Button
                             className="h-[2rem] w-[6rem]"
                             variant={

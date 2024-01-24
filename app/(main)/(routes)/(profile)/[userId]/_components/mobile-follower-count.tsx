@@ -44,6 +44,10 @@ export const MobileFollowerCount = () => {
     onOpen("displayFollowers");
   };
 
+  const onDisplayFollowingsModalOpen = () => {
+    onOpen("displayFollowings")
+  }
+
   return (
     <>
       <div className="flex flex-col items-center text-sm">
@@ -65,10 +69,10 @@ export const MobileFollowerCount = () => {
         {isLoading ? (
             <div className="pb-[0.23rem]"><Spinner /></div>
           ) : (
-            <span className="font-semibold cursor-pointer">{followingCount}</span>
+            <span onClick={onDisplayFollowingsModalOpen} className="font-semibold cursor-pointer">{followingCount}</span>
           )}
         </span>
-        <span className="text-muted-foreground cursor-pointer">following</span>
+        <span onClick={onDisplayFollowingsModalOpen}  className="text-muted-foreground cursor-pointer">following</span>
       </div>
     </>
   );

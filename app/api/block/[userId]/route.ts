@@ -2,9 +2,12 @@ import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request, params : { userId: string }) {
+export async function POST(req: Request, { params }: { params: { userId: string }}) {
     try {
         const profileId = params.userId;
+
+        console.log(profileId)
+
         const currUser = await currentUser();
 
         if (!currUser || !currUser.id) {
@@ -20,6 +23,55 @@ export async function POST(req: Request, params : { userId: string }) {
         }
 
         console.log(`User ${currUser.id} is blocking user ${profileId}`)
+
+        const alreadyBlocked = await db.blockedUser.findFirst({
+            where: {
+                userId: currUser.id,
+                blockedUserId: profileId 
+            }
+        })
+
+        if (alreadyBlocked) {
+            return new NextResponse("User already blocked", { status: 400 })
+        }
+
+        const userFollowingBlocked = await db.follow.findFirst({
+            where: {
+                followerId: currUser.id,
+                followingId: profileId
+            }
+        })
+
+        const blockedFollowingUser = await db.follow.findFirst({
+            where: {
+                followerId: profileId,
+                followingId: currUser.id,
+            }
+        })
+
+        console.log(userFollowingBlocked, blockedFollowingUser)
+
+        if (userFollowingBlocked) {
+            await db.follow.delete({
+                where: {
+                    followerId_followingId: {
+                        followerId: currUser.id,
+                        followingId: profileId
+                    }
+                }
+            })
+        }
+
+        if (blockedFollowingUser) {
+            await db.follow.delete({
+                where: {
+                    followerId_followingId: {
+                        followerId: currUser.id,
+                        followingId: profileId,
+                    }
+                }
+            })
+        }
 
         const block = await db.blockedUser.create({
             data: {

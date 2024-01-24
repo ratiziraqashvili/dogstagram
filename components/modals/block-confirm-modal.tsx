@@ -15,6 +15,7 @@ interface LimitedUser {
 export const BlockConfirmModal = () => {
   const [user, setUser] = useState<LimitedUser>({} as LimitedUser);
   const [isLoading, setIsLoading] = useState(true);
+  const [isBlocking, setIsBlocking] = useState(false);
   const { isOpen, onClose, type, onOpen } = useModal();
   const { toast } = useToast();
 
@@ -54,8 +55,9 @@ export const BlockConfirmModal = () => {
   }
 
   const onBlock = async () => {
+    setIsBlocking(true)
     try {
-      const response = await axios.post(`/api/block/${userId}`)
+      await axios.post(`/api/block/${userId}`)
 
       onBlockIndicatorModalOpen();
       toast({
@@ -65,6 +67,8 @@ export const BlockConfirmModal = () => {
       router.refresh();
     } catch (error) {
       console.error("Error blocking user in block-confirm-modal:", error)
+    } finally {
+      setIsBlocking(false)
     }
   }
 
@@ -87,6 +91,7 @@ export const BlockConfirmModal = () => {
         </div>
         <div>
           <Button
+            disabled={isBlocking}
             onClick={onBlock}
             className="hover:text-red-600 border-t-[1px] w-full h-[3rem] font-bold text-red-600 opacity-85"
             variant="ghost"
