@@ -52,25 +52,33 @@ export async function POST(req: Request, { params }: { params: { userId: string 
         console.log(userFollowingBlocked, blockedFollowingUser)
 
         if (userFollowingBlocked) {
-            await db.follow.delete({
-                where: {
-                    followerId_followingId: {
-                        followerId: currUser.id,
-                        followingId: profileId
-                    }
-                }
-            })
+            try {
+                await db.follow.delete({
+                    where: {
+                        followerId_followingId: {
+                            followerId: currUser.id,
+                            followingId: profileId
+                        }
+                    },
+                })
+            } catch (error) {
+                console.log("Error while deleting userFollowingBlocked or record just dont exist", error)
+            }
         }
 
         if (blockedFollowingUser) {
-            await db.follow.delete({
-                where: {
-                    followerId_followingId: {
-                        followerId: currUser.id,
-                        followingId: profileId,
-                    }
-                }
-            })
+            try {
+                await db.follow.delete({
+                    where: {
+                        followerId_followingId: {
+                            followerId: profileId,
+                            followingId: currUser.id,
+                        }
+                    },
+                })
+            } catch (error) {
+                console.log("Error while deleting blockedFollowingUser or record just dont exist")
+            }
         }
 
         const block = await db.blockedUser.create({

@@ -1,6 +1,6 @@
 "use client"
 
-import { Menu } from "lucide-react";
+import { AlertCircle, Menu } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,9 +8,11 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export const MoreDropDown = () => {
   const { signOut } = useClerk();
+  const router = useRouter();
 
   return (
     <DropdownMenu>
@@ -23,6 +25,10 @@ export const MoreDropDown = () => {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent side="top" className="w-56 p-2 ml-2">
+        <DropdownMenuItem onClick={() => router.push("/blocked-users")} className="flex items-center gap-2">
+          <AlertCircle className="h-5 w-5" />
+          <button className="p-2 pl-0 ">Blocked users</button>
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => signOut()} className="h-12">
           <button className="text-md">Log out</button>
         </DropdownMenuItem>

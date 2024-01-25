@@ -7,7 +7,6 @@ import axios from "axios";
 import { ProfilePicture } from "../profile-picture";
 import { CalendarDays, MapPin } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
-import { Button } from "../ui/button";
 import { countryCodes } from "@/constants/country-codes";
 
 export const AboutAccountModal = () => {
@@ -79,7 +78,7 @@ export const AboutAccountModal = () => {
                 <span className="text-muted-foreground text-sm">
                   {isLoading ? (
                     <Skeleton className="h-3 w-5" />
-                  ) : user.createdAt ? (
+                  ) : user?.createdAt ? (
                     new Date(user.createdAt).getFullYear()
                   ) : null}
                 </span>

@@ -4,10 +4,8 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
-import { Button } from "../ui/button";
 
 interface LimitedUser {
-  clerkId: string;
   username: string;
 }
 
@@ -29,7 +27,6 @@ export const BlockIndicator = () => {
       try {
         const res = await axios.get(`/api/user/${userId}`);
         setUser({
-          clerkId: res.data.clerkId,
           username: res.data.username,
         });
       } catch (error) {
@@ -46,8 +43,24 @@ export const BlockIndicator = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="w-[70%] sm:w-[25rem] pt-3 pb-0 px-0">
-        user blocked
+      <DialogContent className="w-[70%] sm:w-[25rem] px-0 pb-0 pt-6 gap-0">
+        <div className="flex justify-center items-center flex-col gap-1 border-b-[1px] pb-8">
+          <h1 className="text-xl flex items-center gap-1">
+            <span>Blocked </span>
+            <span>
+              {" "}
+              {isLoading ? (
+                <Skeleton className="w-20 h-4" />
+              ) : (
+                user.username + "."
+              )}{" "}
+            </span>
+          </h1>
+          <span className="text-sm text-muted-foreground">
+            You can unblock them anytime from their profile.
+          </span>
+        </div>
+        <DialogClose className="p-3 text-sm">Dismiss</DialogClose>
       </DialogContent>
     </Dialog>
   );

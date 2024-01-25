@@ -6,4 +6,4 @@ const NotFound = () => {
   );
 };
 
-export default Error;
+export default NotFound;
