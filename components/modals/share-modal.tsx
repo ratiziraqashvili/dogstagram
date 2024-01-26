@@ -1,14 +1,33 @@
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogContent } from "../ui/dialog";
-import { Clipboard } from "lucide-react";
+import { Clipboard, ClipboardCheck } from "lucide-react";
+import { useOrigin } from "@/hooks/use-origin";
+import { useParams } from "next/navigation";
+import { useToast } from "../ui/use-toast";
 
 export const ShareModal = () => {
-  const { isOpen, onClose, type, onOpen } = useModal();
+  const params = useParams();
+  const { isOpen, onClose, type } = useModal();
+  const origin = useOrigin();
+  const { toast } = useToast();
 
   const isModalOpen = isOpen && type === "shareTo";
 
+  const profileId = params.userId;
+  const profileUrl = `${origin}/${profileId}`;
+
   const handleClose = () => {
     onClose();
+  };
+
+  const onCopy = () => {
+    navigator.clipboard.writeText(profileUrl);
+    toast({
+      title: "Link copied to clipboard.",
+      variant: "default",
+    });
+
+    handleClose();
   };
 
   return (
@@ -17,9 +36,12 @@ export const ShareModal = () => {
         <div className="flex justify-center items-center py-3 border-b-[1px]">
           <h1 className="font-semibold font-lg">Share to...</h1>
         </div>
-        <div className="flex p-5 gap-2 hover:bg-primary/5 cursor-pointer">
+        <div
+          onClick={onCopy}
+          className="flex p-5 gap-2 hover:bg-primary/5 cursor-pointer"
+        >
           <Clipboard />
-          <span>Copy link</span>
+          <span className="text-sm">Copy link</span>
         </div>
       </DialogContent>
     </Dialog>
