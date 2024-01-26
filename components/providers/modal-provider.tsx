@@ -9,6 +9,7 @@ import { DisplayFollowingsModal } from "../modals/display-followings-modal";
 import { AboutAccountModal } from "../modals/about-account-modal";
 import { BlockConfirmModal } from "../modals/block-confirm-modal";
 import { BlockIndicator } from "../modals/block-indicator-modal";
+import { ShareModal } from "../modals/share-modal";
 
 export const ModalProvider = () => {
     const [isMounted, setIsMounted] = useState(false);
@@ -31,6 +32,7 @@ export const ModalProvider = () => {
           <AboutAccountModal />
           <BlockConfirmModal />
           <BlockIndicator />
+          <ShareModal />
         </>
     )
 }

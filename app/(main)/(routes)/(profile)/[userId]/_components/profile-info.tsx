@@ -195,7 +195,7 @@ export const ProfileInfo = ({
         </div>
       </div>
       <div className="hidden md:block">
-        <p className="lowercase font-semibold">{firstName}</p>
+        <p className="font-semibold">{firstName}</p>
       </div>
     </div>
   );

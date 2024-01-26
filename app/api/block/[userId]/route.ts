@@ -4,9 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request, { params }: { params: { userId: string }}) {
     try {
-        const profileId = params.userId;
-
-        console.log(profileId)
+        const blockedUserId = params.userId;
 
         const currUser = await currentUser();
 
@@ -14,20 +12,20 @@ export async function POST(req: Request, { params }: { params: { userId: string 
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!profileId) {
+        if (!blockedUserId) {
             return new NextResponse("profileId is missing but it is required", { status: 400 })
         }
 
-        if (profileId === currUser.id) {
+        if (blockedUserId === currUser.id) {
             return new NextResponse("User can not block itself", { status: 400 })
         }
 
-        console.log(`User ${currUser.id} is blocking user ${profileId}`)
+        console.log(`User ${currUser.id} is blocking user ${blockedUserId}`)
 
         const alreadyBlocked = await db.blockedUser.findFirst({
             where: {
                 userId: currUser.id,
-                blockedUserId: profileId 
+                blockedUserId 
             }
         })
 
@@ -38,13 +36,13 @@ export async function POST(req: Request, { params }: { params: { userId: string 
         const userFollowingBlocked = await db.follow.findFirst({
             where: {
                 followerId: currUser.id,
-                followingId: profileId
+                followingId: blockedUserId
             }
         })
 
         const blockedFollowingUser = await db.follow.findFirst({
             where: {
-                followerId: profileId,
+                followerId: blockedUserId,
                 followingId: currUser.id,
             }
         })
@@ -57,7 +55,7 @@ export async function POST(req: Request, { params }: { params: { userId: string 
                     where: {
                         followerId_followingId: {
                             followerId: currUser.id,
-                            followingId: profileId
+                            followingId: blockedUserId
                         }
                     },
                 })
@@ -71,7 +69,7 @@ export async function POST(req: Request, { params }: { params: { userId: string 
                 await db.follow.delete({
                     where: {
                         followerId_followingId: {
-                            followerId: profileId,
+                            followerId: blockedUserId,
                             followingId: currUser.id,
                         }
                     },
@@ -84,7 +82,7 @@ export async function POST(req: Request, { params }: { params: { userId: string 
         const block = await db.blockedUser.create({
             data: {
                 userId: currUser.id,
-                blockedUserId: profileId
+                blockedUserId: blockedUserId
             }
         })
 
@@ -94,6 +92,48 @@ export async function POST(req: Request, { params }: { params: { userId: string 
 
     } catch (error) {
         console.log("blocking user has failed", error)
+        return new NextResponse("Internal error", { status: 500 })
+    }
+}
+
+export async function DELETE(req: Request, { params }: { params: { userId: string } }) {
+    try {
+        const { userId } = params;
+
+        const currUser = await currentUser();
+
+        if (!currUser || !currUser.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (!userId) {
+            return new NextResponse("Missing required parameter blockedUserId", { status: 400 })
+        }
+
+        if (userId === currUser.id) return;
+
+        const isBlockExist = await db.blockedUser.findFirst({
+            where: {
+                userId: currUser.id,
+                blockedUserId: userId,
+            }
+        })
+
+        if (!isBlockExist) return;
+
+        const blockDeletion = await db.blockedUser.delete({
+            where: {
+                userId_blockedUserId:{
+                    userId: currUser.id,
+                    blockedUserId: userId
+                }
+            }
+        })
+
+        return NextResponse.json(blockDeletion);
+
+    } catch (error) {
+        console.log("Error in [BLOCK_DELETE]", error);
         return new NextResponse("Internal error", { status: 500 })
     }
 }

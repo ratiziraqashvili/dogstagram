@@ -22,7 +22,7 @@ const BlockedUsers = async () => {
   });
 
   return (
-    <div className="flex justify-center max-w-4xl mx-auto">
+    <div className="flex justify-center max-w-xl md:max-w-lg md:pt-0 pt-14 mx-auto p-3">
       <BlockList blockedUser={blockedUser} />
     </div>
   );

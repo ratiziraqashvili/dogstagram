@@ -27,9 +27,9 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
 
   if (isUserBlocked) {
     return (
-        <div className="flex justify-center items-center h-[40rem]">
-          <NotFound />
-        </div>
+      <div className="flex justify-center items-center h-[40rem]">
+        <NotFound />
+      </div>
     );
   }
 
@@ -52,7 +52,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
           />
         </div>
       </div>
-      <div className="pl-5 lowercase font-semibold border-b-[1px] md:border-b-[0px] md:pb-0 pb-5 block md:hidden">
+      <div className="pl-5 font-semibold border-b-[1px] md:border-b-[0px] md:pb-0 pb-5 block md:hidden">
         {user?.firstName}
       </div>
       <div className="flex md:hidden justify-around w-full p-3 border-b-[1px]">
