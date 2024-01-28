@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     try {
         const user = await currentUser();
-        const otherUserId = await req.text()
+        const otherUserId = JSON.parse(await req.text())
 
         if (!user || !user.id || !otherUserId) {
             return new NextResponse("Unauthorized", { status: 401 })

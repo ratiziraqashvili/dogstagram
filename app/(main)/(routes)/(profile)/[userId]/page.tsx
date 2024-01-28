@@ -16,7 +16,11 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
   });
 
   if (!user) {
-    throw new Error("User not found");
+    return (
+      <div className="flex justify-center items-center h-[40rem]">
+        <NotFound />
+      </div>
+    );
   }
 
   const isUserBlocked = await db.blockedUser.findFirst({

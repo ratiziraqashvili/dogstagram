@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server"
-//@ts-ignore
-export async function GET(req: Request, { params }) {
+
+export async function GET(req: Request, { params }: { params: { userId: string } }) {
     try {
         const { userId } = params;
 

@@ -134,8 +134,9 @@ export const DisplayFollowersModal = () => {
   const onFollow = async (clerkId: string) => {
     // Making req to api route to follow user
     setIsLoading(true);
+    const profileId = JSON.stringify(clerkId);
     try {
-      await axios.post("/api/users/follow", clerkId);
+      await axios.post("/api/users/follow", profileId);
 
       setFollowers((prevFollowers) => {
         const updated = prevFollowers.map((follower) => {
@@ -149,7 +150,6 @@ export const DisplayFollowersModal = () => {
         });
         return updated;
       });
-
 
       router.refresh();
     } catch (error) {

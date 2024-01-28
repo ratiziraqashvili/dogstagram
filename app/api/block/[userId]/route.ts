@@ -20,8 +20,6 @@ export async function POST(req: Request, { params }: { params: { userId: string 
             return new NextResponse("User can not block itself", { status: 400 })
         }
 
-        console.log(`User ${currUser.id} is blocking user ${blockedUserId}`)
-
         const alreadyBlocked = await db.blockedUser.findFirst({
             where: {
                 userId: currUser.id,
@@ -46,8 +44,6 @@ export async function POST(req: Request, { params }: { params: { userId: string 
                 followingId: currUser.id,
             }
         })
-
-        console.log(userFollowingBlocked, blockedFollowingUser)
 
         if (userFollowingBlocked) {
             try {
@@ -85,8 +81,6 @@ export async function POST(req: Request, { params }: { params: { userId: string 
                 blockedUserId: blockedUserId
             }
         })
-
-        console.log(block)
 
         return NextResponse.json(block)
 
