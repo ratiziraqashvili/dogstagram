@@ -10,7 +10,7 @@ import { AboutAccountModal } from "../modals/about-account-modal";
 import { BlockConfirmModal } from "../modals/block-confirm-modal";
 import { BlockIndicator } from "../modals/block-indicator-modal";
 import { ShareModal } from "../modals/share-modal";
-import { CreatePost } from "../modals/create-post";
+import { CreatePostModal } from "../modals/create-post";
 
 export const ModalProvider = () => {
     const [isMounted, setIsMounted] = useState(false);
@@ -34,7 +34,7 @@ export const ModalProvider = () => {
           <BlockConfirmModal />
           <BlockIndicator />
           <ShareModal />
-          <CreatePost />
+          <CreatePostModal />
         </>
     )
 }

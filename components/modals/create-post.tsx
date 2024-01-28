@@ -3,7 +3,7 @@ import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
 import { Image, X } from "lucide-react";
 import { Button } from "../ui/button";
 
-export const CreatePost = () => {
+export const CreatePostModal = () => {
   const { isOpen, onClose, type } = useModal();
 
   const isModalOpen = isOpen && type === "createPost";
