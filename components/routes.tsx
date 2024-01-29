@@ -50,7 +50,12 @@ export const Routes = () => {
               </div>
             </Link>
           ) : (
-            <CldUploadWidget>
+            <CldUploadWidget
+              uploadPreset="fcbztrpi"
+              options={{
+                maxFiles: 6,
+              }}
+            >
               {({ open }) => (
                 <div
                   onClick={route.label === "Search" ? () => {} : () => open?.()}

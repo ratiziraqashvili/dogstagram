@@ -6,7 +6,7 @@ import { ProfilePicture } from "./profile-picture";
 import { currentUser } from "@clerk/nextjs";
 
 export const Sidebar = async () => {
-  const user = await currentUser()
+  const user = await currentUser();
 
   return (
     <div className="xl:w-[15.3rem] w-[4.6rem] border-r-[1px] h-full flex flex-col p-3 gap-7 fixed">
