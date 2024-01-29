@@ -19,6 +19,7 @@ export const Routes = () => {
     widget.close();
 
     addUploadedData(result);
+    localStorage.setItem('uploadedData', JSON.stringify(result));
 
     onCreatePostModalOpen();
   };
