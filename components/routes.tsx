@@ -4,12 +4,23 @@ import { useModal } from "@/hooks/use-modal-store";
 import { Compass, Home, PlusIcon, Search } from "lucide-react";
 import Link from "next/link";
 import { CldUploadWidget } from "next-cloudinary";
+import { usePostDataStore } from "@/hooks/use-post-data-store";
 
 export const Routes = () => {
   const { onOpen } = useModal();
+  const { addUploadedData } = usePostDataStore();
 
   const onCreatePostModalOpen = () => {
     onOpen("createPost");
+  };
+
+  const onUpload = (result: any, widget: any) => {
+    console.log(result);
+    widget.close();
+
+    addUploadedData(result);
+
+    onCreatePostModalOpen();
   };
 
   const routes = [
@@ -51,6 +62,7 @@ export const Routes = () => {
             </Link>
           ) : (
             <CldUploadWidget
+              onUpload={onUpload}
               uploadPreset="fcbztrpi"
               options={{
                 maxFiles: 6,
