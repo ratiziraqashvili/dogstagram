@@ -66,7 +66,7 @@ export const Routes = () => {
               onUpload={onUpload}
               uploadPreset="fcbztrpi"
               options={{
-                maxFiles: 6,
+                maxFiles: 1,
               }}
             >
               {({ open }) => (

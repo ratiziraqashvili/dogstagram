@@ -1,6 +1,6 @@
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
-import { X } from "lucide-react";
+import { Smile, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { usePostDataStore } from "@/hooks/use-post-data-store";
 import Image from "next/image";
@@ -66,45 +66,54 @@ export const CreatePostModal = () => {
 
   return (
     <Dialog open={true} onOpenChange={handleClose}>
-      <DialogContent className="p-0 gap-0 w-10 sm:w-[65rem]">
-        <div className="flex justify-between items-center border-b-[1px]">
-          <DialogClose className="pl-1">
-            <X className="w-5 h-5 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground outline-none cursor-pointer" />
-          </DialogClose>
-          <h1 className="font-semibold font-lg pl-5 md:pl-14">Share to...</h1>
-          <Button className="text-amber-600 p-3" variant="ghost">
-            Share
-          </Button>
-        </div>
-        <div className="flex">
-          <div className="w-[40rem] h-[40rem] aspect-auto flex justify-center items-center bg-black relative">
-            <Image
-              src={uploadedData?.info?.secure_url || data?.info?.secure_url}
-              alt="Image"
-              fill
-              objectFit="cover"
-              className="object-cover"
-            />
-          </div>
-          <div className="flex flex-col flex-1">
-            <div className="flex items-center p-3 gap-3">
-              <ProfilePicture className="w-8 h-8" />
-              <span className="font-semibold text-sm">{user?.username}</span>
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogContent className="p-0 gap-0 sm:w-[30rem] w-[15rem] h-[95%] lg:w-[65rem] overflow-y-auto">
+            <div className="flex justify-between items-center border-b-[1px]">
+              <DialogClose className="pl-1">
+                <X className="w-5 h-5 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground outline-none cursor-pointer" />
+              </DialogClose>
+              <h1 className="font-semibold font-lg pl-5 md:pl-10">
+                Share to...
+              </h1>
+              <Button
+                type="submit"
+                className="text-amber-600 p-3"
+                variant="ghost"
+              >
+                Share
+              </Button>
             </div>
-            <div className="">
-              <Form {...form}>
-                <form className="" onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex lg:flex-row flex-col">
+              <div className="lg:w-[40rem] lg:h-[41.160rem] sm:h-[20rem] sm:w-[20rem] w-[10rem] h-[10rem] aspect-auto flex justify-center items-center bg-black relative mx-auto">
+                <Image
+                  src={uploadedData?.info?.secure_url || data?.info?.secure_url}
+                  alt="Image"
+                  fill
+                  objectFit="cover"
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex flex-col flex-1 overflow-y-auto">
+                <div className="flex items-center p-3 gap-3">
+                  <ProfilePicture className="w-8 h-8" />
+                  <span className="font-semibold text-sm">
+                    {user?.username}
+                  </span>
+                </div>
+                <div>
                   <FormField
                     control={form.control}
                     name="caption"
                     render={({ field }) => (
                       <FormItem>
-                        <FormControl>
+                        <FormControl className="relative">
                           <Textarea
                             placeholder="Write a caption..."
                             {...field}
                           />
                         </FormControl>
+                        <Smile className="text-muted-foreground h-8 w-8 cursor-pointer pb-3 ml-3" />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -116,7 +125,7 @@ export const CreatePostModal = () => {
                       <FormItem>
                         <FormControl>
                           <Input
-                            className="relative"
+                            className="relative rounded-none"
                             placeholder="Add location"
                             {...field}
                           />
@@ -178,12 +187,12 @@ export const CreatePostModal = () => {
                       )}
                     />
                   </div>
-                </form>
-              </Form>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </DialogContent>
+          </DialogContent>
+        </form>
+      </Form>
     </Dialog>
   );
 };
