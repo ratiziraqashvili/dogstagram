@@ -117,6 +117,7 @@ export const CreatePostModal = () => {
                       <FormItem>
                         <FormControl className="relative">
                           <Textarea
+                            rows={6}
                             placeholder="Write a caption..."
                             {...field}
                           />
@@ -136,9 +137,12 @@ export const CreatePostModal = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Select>
-                            <SelectTrigger className="">
-                              <SelectValue placeholder="Theme" />
+                          <Select onValueChange={field.onChange}>
+                            <SelectTrigger>
+                              <SelectValue
+                                className="placeholder:text-muted-foreground"
+                                placeholder="All location"
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="light">Light</SelectItem>
