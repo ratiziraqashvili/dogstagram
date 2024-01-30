@@ -9,6 +9,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useUser } from "@clerk/nextjs";
 import { ProfilePicture } from "../profile-picture";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../ui/form";
+import { Textarea } from "../ui/textarea";
+import { Input } from "../ui/input";
 
 const formSchema = z.object({
   caption: z.string().max(2200, {
@@ -17,6 +26,8 @@ const formSchema = z.object({
   location: z.string().max(40, {
     message: "Location is too long.",
   }),
+  hideLikes: z.boolean().optional(),
+  hideComments: z.boolean().optional(),
 });
 
 export const CreatePostModal = () => {
@@ -31,8 +42,12 @@ export const CreatePostModal = () => {
     defaultValues: {
       caption: "",
       location: "",
+      hideLikes: false,
+      hideComments: false,
     },
   });
+
+  const { handleSubmit } = form;
 
   const isModalOpen = isOpen && type === "createPost";
 
@@ -41,8 +56,8 @@ export const CreatePostModal = () => {
   };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values)
-  }
+    console.log(values);
+  };
 
   return (
     <Dialog open={true} onOpenChange={handleClose}>
@@ -66,11 +81,38 @@ export const CreatePostModal = () => {
             />
           </div>
           <div className="flex flex-col">
-              <div className="flex items-center p-3 gap-3">
-                  <ProfilePicture className="w-8 h-8" />
-                  <span className="font-semibold text-sm">{user?.username}</span>
-              </div>
-
+            <div className="flex items-center p-3 gap-3">
+              <ProfilePicture className="w-8 h-8" />
+              <span className="font-semibold text-sm">{user?.username}</span>
+            </div>
+            <Form {...form}>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <FormField
+                  control={form.control}
+                  name="caption"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea placeholder="Write a caption..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Add location" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
           </div>
         </div>
       </DialogContent>
