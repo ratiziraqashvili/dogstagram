@@ -20,17 +20,11 @@ export const metadata: Metadata = {
   ]
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = await currentUser();
-
-  if (!user || !user.id) {
-    redirectToSignIn({ returnBackUrl: `${process.env.NEXT_APPLICATION_URL}/sign-in` })
-  }
-
   return (
     <ClerkProvider>
       <html lang="en">
