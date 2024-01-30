@@ -1,6 +1,6 @@
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
-import { Smile, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Button } from "../ui/button";
 import { usePostDataStore } from "@/hooks/use-post-data-store";
 import Image from "next/image";
@@ -21,6 +21,14 @@ import {
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import { Switch } from "../ui/switch";
+import { EmojiPicker } from "../emoji-pickers";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const formSchema = z.object({
   imageUrl: z.string(),
@@ -113,7 +121,11 @@ export const CreatePostModal = () => {
                             {...field}
                           />
                         </FormControl>
-                        <Smile className="text-muted-foreground h-8 w-8 cursor-pointer pb-3 ml-3" />
+                        <EmojiPicker
+                          onChange={(emoji: string) =>
+                            field.onChange(`${field.value} ${emoji}`)
+                          }
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -124,11 +136,16 @@ export const CreatePostModal = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input
-                            className="relative rounded-none"
-                            placeholder="Add location"
-                            {...field}
-                          />
+                          <Select>
+                            <SelectTrigger className="">
+                              <SelectValue placeholder="Theme" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="light">Light</SelectItem>
+                              <SelectItem value="dark">Dark</SelectItem>
+                              <SelectItem value="system">System</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
