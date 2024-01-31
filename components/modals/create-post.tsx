@@ -31,15 +31,17 @@ import {
 } from "../ui/select";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useToast } from "../ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  imageUrl: z.string(),
+  imageUrl: z.string().min(1, {
+    message: "Image is somehow missing.",
+  }),
   caption: z.string().max(2200, {
     message: "Caption should contain less that 2200 characters.",
   }),
-  location: z.string().max(40, {
-    message: "Location is too long.",
-  }),
+  location: z.string().optional(),
   hideLikes: z.boolean().optional(),
   hideComments: z.boolean().optional(),
 });
@@ -51,6 +53,8 @@ export const CreatePostModal = () => {
   const data = storedData ? JSON.parse(storedData) : uploadedData;
   const { user } = useUser();
   const [locations, setLocations] = useState([]);
+  const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -87,9 +91,8 @@ export const CreatePostModal = () => {
     fetchLocations();
   }, []);
 
-  console.log(locations);
-
   const { handleSubmit } = form;
+  const isLoading = form.formState.isSubmitting;
 
   const isModalOpen = isOpen && type === "createPost";
 
@@ -97,15 +100,34 @@ export const CreatePostModal = () => {
     onClose();
   };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await axios.post("/api/posts/create", values);
+
+      toast({
+        description: "Posted successfully.",
+        duration: 4000,
+      });
+
+      router.push(`/${user?.id}`);
+      router.refresh();
+    } catch (error) {
+      console.log(error);
+      toast({
+        description: "Something went wrong.",
+        duration: 4000,
+      });
+    }
   };
 
   return (
     <Dialog open={true} onOpenChange={handleClose}>
-      <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogContent className="p-0 gap-0 sm:w-[30rem] w-[15rem] h-[95%] lg:w-[65rem] overflow-y-auto">
+      <DialogContent
+        aria-disabled={isLoading}
+        className="p-0 gap-0 sm:w-[30rem] w-[15rem] h-[95%] lg:w-[65rem] overflow-y-auto"
+      >
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-between items-center border-b-[1px]">
               <DialogClose className="pl-1">
                 <X className="w-5 h-5 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground outline-none cursor-pointer" />
@@ -114,6 +136,7 @@ export const CreatePostModal = () => {
                 Share to...
               </h1>
               <Button
+                disabled={isLoading}
                 type="submit"
                 className="text-amber-600 p-3"
                 variant="ghost"
@@ -168,35 +191,30 @@ export const CreatePostModal = () => {
                         <FormControl>
                           <Select onValueChange={field.onChange}>
                             <SelectTrigger>
-                              <SelectValue
-                                className="placeholder:text-muted-foreground"
-                                placeholder="All location"
-                              />
+                              <SelectValue placeholder="All location" />
                             </SelectTrigger>
                             <SelectContent>
-                              {locations.map(
-                                (loc: { flag: string; name: string }) => (
-                                  <SelectItem
-                                    className="flex gap-2"
-                                    key={loc.name}
-                                    value={loc.name}
-                                  >
-                                    <div>
-                                      <Image
-                                        src={loc.flag}
-                                        alt="Flag"
-                                        width={20}
-                                        height={20}
-                                      />
-                                    </div>
+                              {locations
+                                .slice()
+                                .sort(
+                                  (a: { name: string }, b: { name: string }) =>
+                                    a.name.localeCompare(b.name)
+                                )
+                                .map((loc: { flag: string; name: string }) => (
+                                  <SelectItem key={loc.name} value={loc.name}>
+                                    <Image
+                                      src={loc.flag}
+                                      alt="Flag"
+                                      width={20}
+                                      height={20}
+                                      className="inline mr-2"
+                                    />
                                     <span>{loc.name}</span>
                                   </SelectItem>
-                                )
-                              )}
+                                ))}
                             </SelectContent>
                           </Select>
                         </FormControl>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -224,7 +242,6 @@ export const CreatePostModal = () => {
                             hide like counts on other people's posts, go to your
                             account settings.
                           </FormDescription>
-                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -248,7 +265,6 @@ export const CreatePostModal = () => {
                             You can change this later by going to the ··· menu
                             at the top of your post.
                           </FormDescription>
-                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -256,9 +272,9 @@ export const CreatePostModal = () => {
                 </div>
               </div>
             </div>
-          </DialogContent>
-        </form>
-      </Form>
+          </form>
+        </Form>
+      </DialogContent>
     </Dialog>
   );
 };

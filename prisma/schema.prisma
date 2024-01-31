@@ -39,7 +39,7 @@ model BlockedUser {
 model Post {
   id           String   @id @default(uuid())
   userId       String
-  imageUrl     String
+  imageUrl     String   @db.Text
   caption      String?
   location     String?
   hideLikes    Boolean?
