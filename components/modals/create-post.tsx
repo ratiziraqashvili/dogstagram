@@ -44,7 +44,27 @@ const formSchema = z.object({
   location: z.string().optional(),
   hideLikes: z.boolean().optional(),
   hideComments: z.boolean().optional(),
+  isDog: z.boolean(),
 });
+
+interface UploadResults {
+  public_id: string;
+  info: {
+    detections: {
+      object_detection: {
+        data: {
+          coco: {
+            tags: object;
+          };
+        };
+      };
+    };
+  };
+}
+
+interface UploadResultsTags {
+  dog?: Array<object>;
+}
 
 export const CreatePostModal = () => {
   const { isOpen, onClose, type } = useModal();
@@ -56,6 +76,11 @@ export const CreatePostModal = () => {
   const { toast } = useToast();
   const router = useRouter();
 
+  const uploadResultsTags: UploadResultsTags =
+    uploadedData.info.info.detection.object_detection.data.coco.tags ||
+    data.info.info.detection.object_detection.data.coco.tags;
+  const isDog = !!uploadResultsTags["dog"] || false;
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -64,6 +89,7 @@ export const CreatePostModal = () => {
       location: "",
       hideLikes: false,
       hideComments: false,
+      isDog,
     },
   });
 
@@ -121,10 +147,10 @@ export const CreatePostModal = () => {
   };
 
   return (
-    <Dialog open={true} onOpenChange={handleClose}>
+    <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent
         aria-disabled={isLoading}
-        className="p-0 gap-0 sm:w-[30rem] w-[15rem] h-[95%] lg:w-[65rem] overflow-y-auto"
+        className="p-0 gap-0 sm:w-[30rem] w-[80%] h-[95%] lg:w-[65rem] overflow-y-auto"
       >
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -150,8 +176,9 @@ export const CreatePostModal = () => {
                   src={uploadedData?.info?.secure_url || data?.info?.secure_url}
                   alt="Image"
                   fill
-                  objectFit="cover"
+                  sizes="auto"
                   className="object-cover"
+                  priority
                 />
               </div>
               <div className="flex flex-col flex-1 overflow-y-auto">

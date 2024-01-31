@@ -12,7 +12,7 @@ export const MobileNavbar = () => {
   const [isSearching, setIsSearching] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
-  const isProfilePage = pathname.split("/")[1].startsWith("user_")
+  const isProfilePage = pathname.split("/")[1].startsWith("user_");
 
   const onClear = (e: React.SyntheticEvent) => {
     e.stopPropagation();
@@ -39,7 +39,7 @@ export const MobileNavbar = () => {
     <nav className="border-b-[1px] h-[3.8rem] flex justify-between items-center w-full fixed">
       <div className="cursor-pointer">
         <Link href="/">
-          <Image src="/logo.png" alt="Dogstagram" width={130} height={130} unoptimized  />
+          <Image src="/logo.png" alt="Dogstagram" width={130} height={130} />
         </Link>
       </div>
       <div className="flex items-center gap-3 pr-5">
@@ -68,7 +68,7 @@ export const MobileNavbar = () => {
           )}
         </div>
         <Link href="/notifications">
-        <Heart className="w-6 h-6 cursor-pointer hover:scale-105 transition" />
+          <Heart className="w-6 h-6 cursor-pointer hover:scale-105 transition" />
         </Link>
       </div>
     </nav>
