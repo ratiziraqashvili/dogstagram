@@ -18,7 +18,6 @@ export const MobileBottomNavbar = () => {
   };
 
   const onUpload = (result: any, widget: any) => {
-    console.log(result);
     widget.close();
 
     addUploadedData(result);

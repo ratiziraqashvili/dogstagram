@@ -29,6 +29,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const formSchema = z.object({
   imageUrl: z.string(),
@@ -48,6 +50,7 @@ export const CreatePostModal = () => {
   const storedData = localStorage.getItem("uploadedData");
   const data = storedData ? JSON.parse(storedData) : uploadedData;
   const { user } = useUser();
+  const [locations, setLocations] = useState([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,6 +62,32 @@ export const CreatePostModal = () => {
       hideComments: false,
     },
   });
+
+  useEffect(() => {
+    // Fetch locations when the component mounts
+    const fetchLocations = async () => {
+      try {
+        const response = await axios.get("https://restcountries.com/v3.1/all");
+
+        // Extract locations from the response
+        const filteredLocations = response.data.map(
+          (country: { name: { common: string }; flags: { png: string } }) => ({
+            name: country.name.common,
+            flag: country.flags.png,
+          })
+        );
+
+        // Update the state with the fetched locations
+        setLocations(filteredLocations);
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
+  console.log(locations);
 
   const { handleSubmit } = form;
 
@@ -145,9 +174,25 @@ export const CreatePostModal = () => {
                               />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="light">Light</SelectItem>
-                              <SelectItem value="dark">Dark</SelectItem>
-                              <SelectItem value="system">System</SelectItem>
+                              {locations.map(
+                                (loc: { flag: string; name: string }) => (
+                                  <SelectItem
+                                    className="flex gap-2"
+                                    key={loc.name}
+                                    value={loc.name}
+                                  >
+                                    <div>
+                                      <Image
+                                        src={loc.flag}
+                                        alt="Flag"
+                                        width={20}
+                                        height={20}
+                                      />
+                                    </div>
+                                    <span>{loc.name}</span>
+                                  </SelectItem>
+                                )
+                              )}
                             </SelectContent>
                           </Select>
                         </FormControl>

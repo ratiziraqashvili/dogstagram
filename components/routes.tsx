@@ -15,7 +15,6 @@ export const Routes = () => {
   };
 
   const onUpload = (result: any, widget: any) => {
-    console.log(result);
     widget.close();
 
     addUploadedData(result);

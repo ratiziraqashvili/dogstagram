@@ -5,12 +5,22 @@ const nextConfig = {
             {
                 protocol: "https",
                 hostname: "img.clerk.com",
-                pathname: "**"
+                pathname: "**",
             },
             {
                 protocol: "https",
                 hostname: "res.cloudinary.com",
-                pathname: "**"
+                pathname: "**",
+            },
+            {
+                protocol: "https",
+                hostname: "flagcdn.com",
+                pathname: "**",
+            },
+            {
+                protocol: "https",
+                hostname: "upload.wikimedia.org",
+                pathname: "**",
             }
         ]
     }
