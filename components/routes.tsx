@@ -5,10 +5,12 @@ import { Compass, Home, PlusIcon, Search } from "lucide-react";
 import Link from "next/link";
 import { CldUploadWidget } from "next-cloudinary";
 import { usePostDataStore } from "@/hooks/use-post-data-store";
+import { useToast } from "./ui/use-toast";
 
 export const Routes = () => {
   const { onOpen } = useModal();
   const { addUploadedData } = usePostDataStore();
+  const { toast } = useToast();
 
   const onCreatePostModalOpen = () => {
     onOpen("createPost");
@@ -17,8 +19,22 @@ export const Routes = () => {
   const onUpload = (result: any, widget: any) => {
     widget.close();
 
+    // Get file type from result
+    const { resource_type } = result.info;
+
+    // Check if file is an image
+    if (resource_type !== "image") {
+      // Handle invalid file type
+      toast({
+        title: "Make sure that uploaded file is valid image.",
+        variant: "default",
+        duration: 3000,
+      });
+      return;
+    }
+
     addUploadedData(result);
-    localStorage.setItem('uploadedData', JSON.stringify(result));
+    localStorage.setItem("uploadedData", JSON.stringify(result));
 
     onCreatePostModalOpen();
   };

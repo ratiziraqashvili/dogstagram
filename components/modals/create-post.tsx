@@ -1,13 +1,15 @@
-import { useModal } from "@/hooks/use-modal-store";
-import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
-import { X } from "lucide-react";
-import { Button } from "../ui/button";
-import { usePostDataStore } from "@/hooks/use-post-data-store";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import axios from "axios";
+import { useModal } from "@/hooks/use-modal-store";
+import { usePostDataStore } from "@/hooks/use-post-data-store";
+import { useUser } from "@clerk/nextjs";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useUser } from "@clerk/nextjs";
+import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
+import { Button } from "../ui/button";
 import { ProfilePicture } from "../profile-picture";
 import {
   Form,
@@ -19,7 +21,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Textarea } from "../ui/textarea";
-import { Input } from "../ui/input";
 import { Switch } from "../ui/switch";
 import { EmojiPicker } from "../emoji-pickers";
 import {
@@ -29,10 +30,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { useToast } from "../ui/use-toast";
-import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, {
@@ -46,21 +45,6 @@ const formSchema = z.object({
   hideComments: z.boolean().optional(),
   isDog: z.boolean(),
 });
-
-interface UploadResults {
-  public_id: string;
-  info: {
-    detections: {
-      object_detection: {
-        data: {
-          coco: {
-            tags: object;
-          };
-        };
-      };
-    };
-  };
-}
 
 interface UploadResultsTags {
   dog?: Array<object>;
@@ -77,7 +61,7 @@ export const CreatePostModal = () => {
   const router = useRouter();
 
   const uploadResultsTags: UploadResultsTags =
-    uploadedData.info.info.detection.object_detection.data.coco.tags ||
+    uploadedData.info?.info?.detection?.object_detection?.data?.coco?.tags ||
     data.info.info.detection.object_detection.data.coco.tags;
   const isDog = !!uploadResultsTags["dog"] || false;
 
@@ -97,7 +81,9 @@ export const CreatePostModal = () => {
     // Fetch locations when the component mounts
     const fetchLocations = async () => {
       try {
-        const response = await axios.get("https://restcountries.com/v3.1/all");
+        const response = await axios.get(
+          "https://restcountries.com/v3.1/all?fields=name,flags"
+        );
 
         // Extract locations from the response
         const filteredLocations = response.data.map(
@@ -119,7 +105,6 @@ export const CreatePostModal = () => {
 
   const { handleSubmit } = form;
   const isLoading = form.formState.isSubmitting;
-
   const isModalOpen = isOpen && type === "createPost";
 
   const handleClose = () => {
@@ -127,6 +112,7 @@ export const CreatePostModal = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
     try {
       await axios.post("/api/posts/create", values);
 
@@ -176,7 +162,6 @@ export const CreatePostModal = () => {
                   src={uploadedData?.info?.secure_url || data?.info?.secure_url}
                   alt="Image"
                   fill
-                  sizes="auto"
                   className="object-cover"
                   priority
                 />
