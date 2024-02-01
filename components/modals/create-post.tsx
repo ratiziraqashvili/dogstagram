@@ -127,9 +127,17 @@ export const CreatePostModal = () => {
       values.imageUrl = croppedCanvas?.toDataURL() || image;
       setShowCropper(false); // Close the cropper
     }
-    // Get the cropped data
+
     console.log(values);
     try {
+      if (!values.isDog) {
+        toast({
+          description: "Dog must be in the photo.",
+          duration: 4000,
+        });
+        return;
+      }
+
       await axios.post("/api/posts/create", values);
 
       toast({
