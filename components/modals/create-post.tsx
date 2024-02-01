@@ -159,7 +159,7 @@ export const CreatePostModal = () => {
   };
 
   return (
-    <Dialog open={true} onOpenChange={handleClose}>
+    <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent
         aria-disabled={isLoading}
         className="p-0 gap-0 sm:w-[30rem] w-[80%] h-[95%] lg:w-[65rem] overflow-y-auto"

@@ -1,6 +1,13 @@
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
+    api_secret: process.env.NEXT_SECRET_CLOUDINARY_API_KEY
+})
 
 export async function POST(req: Request) {
     try {
@@ -28,11 +35,25 @@ export async function POST(req: Request) {
             return;
         }
 
-        // const post = await db.post.create({
-        //     data: {
-                
-        //     }
-        // })
+        let cloudinaryUrl = imageUrl;
+
+        if (isCropped) {
+          const cloudinaryResponse = await cloudinary.uploader.upload(imageUrl);
+          cloudinaryUrl = cloudinaryResponse.secure_url; 
+        }
+
+        const post = await db.post.create({
+            data: {
+                imageUrl: cloudinaryUrl || imageUrl,
+                userId: user.id,
+                caption,
+                location,
+                hideLikes,
+                hideComments
+            }
+        })
+
+        return NextResponse.json(post);
 
     } catch (error) {
         console.error("Error in [API_POSTS_CREATE]", error);
