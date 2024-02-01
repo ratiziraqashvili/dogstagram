@@ -46,6 +46,7 @@ const formSchema = z.object({
   hideLikes: z.boolean().optional(),
   hideComments: z.boolean().optional(),
   isDog: z.boolean(),
+  isCropped: z.boolean().optional(),
 });
 
 interface UploadResultsTags {
@@ -79,6 +80,7 @@ export const CreatePostModal = () => {
       hideLikes: false,
       hideComments: false,
       isDog,
+      isCropped: showCropper,
     },
   });
 
@@ -166,7 +168,7 @@ export const CreatePostModal = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-between items-center border-b-[1px]">
               <DialogClose className="pl-1">
-                <X className="w-5 h-5 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground outline-none cursor-pointer" />
+                <X className="w-5 h-5 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground outline-none cursor-pointer" />
               </DialogClose>
               <h1 className="font-semibold font-lg pl-5 md:pl-10">
                 Share to...
