@@ -7,10 +7,5 @@ interface PostDataStore {
 
 export const usePostDataStore = create<PostDataStore>((set) => ({
     uploadedData: {},
-    addUploadedData: (uploadedData: any) => set((state) => ({
-        uploadedData: {
-          ...state.uploadedData,
-          ...uploadedData,
-        },
-      })),
+    addUploadedData: (uploadedData: any) => set({ uploadedData }),
 }))

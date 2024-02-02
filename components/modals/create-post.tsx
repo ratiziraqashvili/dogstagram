@@ -38,9 +38,12 @@ const formSchema = z.object({
   imageUrl: z.string().min(1, {
     message: "Image is somehow missing.",
   }),
-  caption: z.string().max(2200, {
-    message: "Caption should contain less that 2200 characters.",
-  }),
+  caption: z
+    .string()
+    .max(2200, {
+      message: "Caption should contain less that 2200 characters.",
+    })
+    .optional(),
   location: z.string().optional(),
   hideLikes: z.boolean().optional(),
   hideComments: z.boolean().optional(),
@@ -103,20 +106,31 @@ export const CreatePostModal = () => {
     fetchLocations();
   }, []);
 
-  const { handleSubmit } = form;
+  const { handleSubmit, setValue } = form;
   const isModalOpen = isOpen && type === "createPost";
+
+  useEffect(() => {
+    setValue("imageUrl", image);
+    setValue("isDog", isDog);
+    setValue("caption", "");
+    setValue("location", "");
+    setValue("hideLikes", false);
+    setValue("hideComments", false);
+  }, [image, isDog, setValue]);
 
   const handleClose = () => {
     onClose();
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
     try {
       setIsLoading(true);
 
       if (!values.isDog) {
         toast({
-          description: "We appreciate your participation, but we kindly request that only photos featuring dogs be posted.",
+          description:
+            "We appreciate your participation, but we kindly request that only photos featuring dogs be posted.",
           duration: 4000,
         });
         return;
@@ -167,6 +181,7 @@ export const CreatePostModal = () => {
             <div className="flex lg:flex-row flex-col">
               <div className=" aspect-auto flex justify-center items-center bg-black relative mx-auto z-50">
                 <CldImage
+                  key={image}
                   src={image}
                   alt="Image"
                   width="600"
