@@ -1,13 +1,6 @@
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import { v2 as cloudinary } from 'cloudinary';
-
-cloudinary.config({
-    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
-    api_secret: process.env.NEXT_SECRET_CLOUDINARY_API_KEY
-})
 
 export async function POST(req: Request) {
     try {
@@ -20,8 +13,9 @@ export async function POST(req: Request) {
             hideLikes,
             hideComments,
             isDog,
-            isCropped
         } = body;
+
+        console.log(imageUrl)
 
         if (!user || !user.id) {
             return new NextResponse("Unauthorized", { status: 401 });
@@ -35,16 +29,9 @@ export async function POST(req: Request) {
             return;
         }
 
-        let cloudinaryUrl = imageUrl;
-
-        if (isCropped) {
-          const cloudinaryResponse = await cloudinary.uploader.upload(imageUrl);
-          cloudinaryUrl = cloudinaryResponse.secure_url; 
-        }
-
         const post = await db.post.create({
             data: {
-                imageUrl: cloudinaryUrl || imageUrl,
+                imageUrl: imageUrl,
                 userId: user.id,
                 caption,
                 location,

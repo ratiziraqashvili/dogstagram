@@ -34,7 +34,6 @@ export const Routes = () => {
     }
 
     addUploadedData(result);
-    localStorage.setItem("uploadedData", JSON.stringify(result));
 
     onCreatePostModalOpen();
   };

@@ -31,9 +31,8 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useToast } from "../ui/use-toast";
-import { Crop, X } from "lucide-react";
-import Cropper, { ReactCropperElement } from "react-cropper";
-import "cropperjs/dist/cropper.css"; // importing the Cropper styles
+import { X } from "lucide-react";
+import { CldImage } from "next-cloudinary";
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, {
@@ -46,7 +45,6 @@ const formSchema = z.object({
   hideLikes: z.boolean().optional(),
   hideComments: z.boolean().optional(),
   isDog: z.boolean(),
-  isCropped: z.boolean().optional(),
 });
 
 interface UploadResultsTags {
@@ -56,20 +54,16 @@ interface UploadResultsTags {
 export const CreatePostModal = () => {
   const { isOpen, onClose, type } = useModal();
   const { uploadedData } = usePostDataStore();
-  const storedData = localStorage.getItem("uploadedData");
-  const data = storedData ? JSON.parse(storedData) : uploadedData;
   const { user } = useUser();
   const [locations, setLocations] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const [showCropper, setShowCropper] = useState(false);
-  const cropperRef = useRef<ReactCropperElement>(null);
 
-  const image = uploadedData?.info?.secure_url || data?.info?.secure_url;
+  const image = uploadedData?.info?.secure_url;
   const uploadResultsTags: UploadResultsTags =
-    uploadedData.info?.info?.detection?.object_detection?.data?.coco?.tags ||
-    data.info.info.detection.object_detection.data.coco.tags;
-  const isDog = !!uploadResultsTags["dog"] || false;
+    uploadedData.info?.info?.detection?.object_detection?.data?.coco?.tags;
+  const isDog = !!uploadResultsTags?.["dog"] ?? false;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,13 +74,8 @@ export const CreatePostModal = () => {
       hideLikes: false,
       hideComments: false,
       isDog,
-      isCropped: showCropper,
     },
   });
-
-  const toggleCrop = () => {
-    setShowCropper((prev) => !prev);
-  };
 
   useEffect(() => {
     // Fetch locations when the component mounts
@@ -115,7 +104,6 @@ export const CreatePostModal = () => {
   }, []);
 
   const { handleSubmit } = form;
-  const isLoading = form.formState.isSubmitting;
   const isModalOpen = isOpen && type === "createPost";
 
   const handleClose = () => {
@@ -123,18 +111,12 @@ export const CreatePostModal = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (showCropper) {
-      // If the cropper is still open, perform the cropping
-      const croppedCanvas = cropperRef.current?.cropper.getCroppedCanvas();
-      values.imageUrl = croppedCanvas?.toDataURL() || image;
-      setShowCropper(false); // Close the cropper
-    }
-
-    console.log(values);
     try {
+      setIsLoading(true);
+
       if (!values.isDog) {
         toast({
-          description: "Dog must be in the photo.",
+          description: "We appreciate your participation, but we kindly request that only photos featuring dogs be posted.",
           duration: 4000,
         });
         return;
@@ -147,6 +129,7 @@ export const CreatePostModal = () => {
         duration: 4000,
       });
 
+      handleClose();
       router.push(`/${user?.id}`);
       router.refresh();
     } catch (error) {
@@ -155,15 +138,14 @@ export const CreatePostModal = () => {
         description: "Something went wrong.",
         duration: 4000,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent
-        aria-disabled={isLoading}
-        className="p-0 gap-0 sm:w-[30rem] w-[80%] h-[95%] lg:w-[65rem] overflow-y-auto"
-      >
+      <DialogContent className="p-0 gap-0 sm:w-[30rem] w-[80%] h-[95%] lg:w-[65rem] overflow-y-auto">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-between items-center border-b-[1px]">
@@ -183,37 +165,16 @@ export const CreatePostModal = () => {
               </Button>
             </div>
             <div className="flex lg:flex-row flex-col">
-              <div className="lg:w-[40rem] lg:h-[41.160rem] sm:h-[20rem] sm:w-[20rem] w-[10rem] h-[10rem] aspect-auto flex justify-center items-center bg-black relative mx-auto z-50">
-                <>
-                  {showCropper && (
-                    <Cropper
-                      src={image}
-                      ref={cropperRef}
-                      guides={true}
-                      dragMode="move"
-                      scalable={true}
-                      cropBoxResizable={true}
-                      cropBoxMovable={true}
-                      zoomable={true}
-                      viewMode={1}
-                      className="z-50"
-                      style={{ height: "100%", width: "100%" }}
-                    />
-                  )}
-                  <Image
-                    src={image}
-                    alt="Image"
-                    fill
-                    className="object-cover relative"
-                    priority
-                  />
-                  <div>
-                    <Crop
-                      className="absolute top-2 right-2 cursor-pointer text-mute hover:text-primary/85 transition z-[9999]"
-                      onClick={toggleCrop}
-                    />
-                  </div>
-                </>
+              <div className=" aspect-auto flex justify-center items-center bg-black relative mx-auto z-50">
+                <CldImage
+                  src={image}
+                  alt="Image"
+                  width="600"
+                  height="658"
+                  crop="fill"
+                  className="object-cover relative"
+                  priority
+                />
               </div>
               <div className="flex flex-col flex-1 overflow-y-auto">
                 <div className="flex items-center p-3 gap-3">
@@ -230,6 +191,7 @@ export const CreatePostModal = () => {
                       <FormItem>
                         <FormControl className="relative">
                           <Textarea
+                            disabled={isLoading}
                             rows={6}
                             placeholder="Write a caption..."
                             {...field}
@@ -250,7 +212,10 @@ export const CreatePostModal = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Select onValueChange={field.onChange}>
+                          <Select
+                            disabled={isLoading}
+                            onValueChange={field.onChange}
+                          >
                             <SelectTrigger>
                               <SelectValue placeholder="All location" />
                             </SelectTrigger>
@@ -291,6 +256,7 @@ export const CreatePostModal = () => {
                             </FormLabel>
                             <FormControl>
                               <Switch
+                                disabled={isLoading}
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
                               />
@@ -317,6 +283,7 @@ export const CreatePostModal = () => {
                             </FormLabel>
                             <FormControl>
                               <Switch
+                                disabled={isLoading}
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
                               />
