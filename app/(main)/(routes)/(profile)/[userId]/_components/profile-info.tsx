@@ -17,13 +17,17 @@ interface ProfileInfoProps {
   firstName: string | null | undefined;
   userId: string;
   postCount: number;
+  followerCountNumber: number;
+  followingCountNumber: number;
 }
 
 export const ProfileInfo = ({
   username,
   firstName,
   userId,
-  postCount
+  postCount,
+  followingCountNumber,
+  followerCountNumber,
 }: ProfileInfoProps) => {
   const { user } = useClerk();
   const router = useRouter();
@@ -38,7 +42,6 @@ export const ProfileInfo = ({
     setFollowingCount,
   } = useFollowingStore();
   const [isLoading, setIsLoading] = useState(true);
-  const [isFollowerCountLoading, setIsFollowerCountLoading] = useState(true);
 
   const otherUserId = JSON.stringify(userId);
 
@@ -78,26 +81,6 @@ export const ProfileInfo = ({
     fetchFollowing();
   }, [userId]);
 
-  useEffect(() => {
-    // Fetch following data
-    const fetchFollowing = async () => {
-      try {
-        const { followerCount, followingCount } = await fetchFollowingData(
-          userId
-        );
-        // Getting followerCount and followingCount to display on profile
-
-        setFollowerCount(followerCount || 0);
-        setFollowingCount(followingCount || 0);
-      } catch (error) {
-        console.error("Error fetching following data:", error);
-      } finally {
-        setIsFollowerCountLoading(false);
-      }
-    };
-
-    fetchFollowing();
-  }, [userId]);
 
   const onFollowingModalOpen = () => {
     onOpen("following");
@@ -154,7 +137,10 @@ export const ProfileInfo = ({
                   Edit Profile
                 </Button>
               </Link>
-              <Button className="sm:h-[2rem] h-full whitespace-normal" variant="default">
+              <Button
+                className="sm:h-[2rem] h-full whitespace-normal"
+                variant="default"
+              >
                 {/* TODO: see archived stories */}
                 View archive
               </Button>
@@ -179,20 +165,19 @@ export const ProfileInfo = ({
           <span className="font-semibold">{postCount}</span>
           <span>posts</span>
         </div>
-        <div onClick={onDisplayFollowersModalOpen} className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground">
-          {isFollowerCountLoading ? (
-            <Spinner />
-          ) : (
-            <span className="font-semibold">{followerCount}</span>
-          )}
+        <div
+          onClick={onDisplayFollowersModalOpen}
+          className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground"
+        >
+            <span className="font-semibold">{followerCountNumber}</span>
+
           <span className="">followers</span>
         </div>
-        <div onClick={onDisplayFollowingsModalOpen} className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground">
-          {isFollowerCountLoading ? (
-            <Spinner />
-          ) : (
-            <span className="font-semibold">{followingCount}</span>
-          )}
+        <div
+          onClick={onDisplayFollowingsModalOpen}
+          className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground"
+        >
+            <span className="font-semibold">{followingCountNumber}</span>
           <span className="cursor-pointer">following</span>
         </div>
       </div>

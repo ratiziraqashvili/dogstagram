@@ -33,14 +33,26 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     where: {
       userId,
     },
-    include: {
-      likes: {},
+    orderBy: {
+      createdAt: "desc",
     },
   });
 
   const postCount = await db.post.count({
     where: {
       userId,
+    },
+  });
+
+  const followerCount = await db.follow.count({
+    where: {
+      followingId: params.userId,
+    },
+  });
+
+  const followingCount = await db.follow.count({
+    where: {
+      followerId: params.userId,
     },
   });
 
@@ -65,6 +77,8 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         </div>
         <div>
           <ProfileInfo
+            followerCountNumber={followerCount}
+            followingCountNumber={followingCount}
             postCount={postCount}
             userId={userId}
             username={user?.username}
