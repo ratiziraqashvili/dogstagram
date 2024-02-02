@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchFollowingData } from "@/lib/following-data";
 import { useModal } from "@/hooks/use-modal-store";
-import { Spinner } from "@/components/spinner";
 import { useFollowingStore } from "@/hooks/use-following-store";
 import Link from "next/link";
 
@@ -19,6 +18,7 @@ interface ProfileInfoProps {
   postCount: number;
   followerCountNumber: number;
   followingCountNumber: number;
+  isFollowing: boolean;
 }
 
 export const ProfileInfo = ({
@@ -28,20 +28,12 @@ export const ProfileInfo = ({
   postCount,
   followingCountNumber,
   followerCountNumber,
+  isFollowing,
 }: ProfileInfoProps) => {
   const { user } = useClerk();
   const router = useRouter();
   const { onOpen } = useModal();
-
-  const {
-    isFollowing,
-    setIsFollowing,
-    followerCount,
-    followingCount,
-    setFollowerCount,
-    setFollowingCount,
-  } = useFollowingStore();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const otherUserId = JSON.stringify(userId);
 
@@ -51,8 +43,6 @@ export const ProfileInfo = ({
     try {
       await axios.post("/api/users/follow", otherUserId);
 
-      setIsFollowing(true);
-      setFollowerCount(followerCount + 1);
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -61,26 +51,25 @@ export const ProfileInfo = ({
     }
   };
 
-  useEffect(() => {
-    // Fetch following data
-    const fetchFollowing = async () => {
-      try {
-        const { followingIds } = await fetchFollowingData(userId);
-        // Getting followingIds to display on profile
+  // useEffect(() => {
+  //   // Fetch following data
+  //   const fetchFollowing = async () => {
+  //     try {
+  //       const { followingIds } = await fetchFollowingData(userId);
+  //       // Getting followingIds to display on profile
 
-        setIsFollowing(followingIds.includes(userId));
-      } catch (error) {
-        console.error("Error fetching following data:", error);
-        // Set button to say "Follow" instead of unfollow when user already dont follows
-        setIsFollowing(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  //       setIsFollowing(followingIds.includes(userId));
+  //     } catch (error) {
+  //       console.error("Error fetching following data:", error);
+  //       // Set button to say "Follow" instead of unfollow when user already dont follows
+  //       setIsFollowing(false);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    fetchFollowing();
-  }, [userId]);
-
+  //   fetchFollowing();
+  // }, [userId]);
 
   const onFollowingModalOpen = () => {
     onOpen("following");
@@ -169,7 +158,7 @@ export const ProfileInfo = ({
           onClick={onDisplayFollowersModalOpen}
           className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground"
         >
-            <span className="font-semibold">{followerCountNumber}</span>
+          <span className="font-semibold">{followerCountNumber}</span>
 
           <span className="">followers</span>
         </div>
@@ -177,7 +166,7 @@ export const ProfileInfo = ({
           onClick={onDisplayFollowingsModalOpen}
           className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground"
         >
-            <span className="font-semibold">{followingCountNumber}</span>
+          <span className="font-semibold">{followingCountNumber}</span>
           <span className="cursor-pointer">following</span>
         </div>
       </div>

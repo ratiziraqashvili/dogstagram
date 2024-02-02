@@ -5,9 +5,11 @@ import { db } from "@/lib/db";
 import { ProfileNavbar } from "../_components/profile-navbar";
 import { ProfileFilters } from "./_components/profile-filters";
 import NotFound from "@/app/not-found";
+import { currentUser } from "@clerk/nextjs";
 
 const ProfilePage = async ({ params }: { params: { userId: string } }) => {
   const { userId } = params;
+  const currUser = await currentUser();
 
   const user = await db.user.findUnique({
     where: {
@@ -46,15 +48,34 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
 
   const followerCount = await db.follow.count({
     where: {
-      followingId: params.userId,
+      followingId: userId,
     },
   });
 
   const followingCount = await db.follow.count({
     where: {
-      followerId: params.userId,
+      followerId: userId,
     },
   });
+
+  const followers = await db.user.findUnique({
+    where: {
+      clerkId: userId,
+    },
+    select: {
+      followers: {
+        select: {
+          followerId: true,
+          followingId: true,
+        },
+      },
+    },
+  });
+
+  const followingIds = followers?.followers.map((user) => user.followingId)!;
+  const followerIds = followers?.followers.map((user) => user.followerId)!;
+
+  const isFollowing = followerIds.includes(currUser!.id);
 
   if (isUserBlocked) {
     return (
@@ -77,6 +98,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         </div>
         <div>
           <ProfileInfo
+            isFollowing={isFollowing}
             followerCountNumber={followerCount}
             followingCountNumber={followingCount}
             postCount={postCount}
@@ -90,7 +112,11 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         {user?.firstName}
       </div>
       <div className="flex md:hidden justify-around w-full p-3 border-b-[1px]">
-        <MobileFollowerCount postCount={postCount} />
+        <MobileFollowerCount
+          postCount={postCount}
+          followerCountNumber={followerCount}
+          followingCountNumber={followingCount}
+        />
       </div>
       <ProfileFilters posts={posts} profileId={userId} />
     </div>

@@ -23,28 +23,16 @@ export async function GET(req: Request, { params }: { params: { userId: string }
                 },
               },
         })
-
-        const followerCount = await db.follow.count({
-            where: {
-                followingId: params.userId
-            }
-        })
-
-        const followingCount = await db.follow.count({
-            where: {
-                followerId: params.userId
-            }
-        })
         
         const followingIds = followers?.followers.map((user) => user.followingId);
         
         const followerIds = followers?.followers.map((user) => user.followerId);
         
         if (!followerIds || !followerIds.includes(user?.id)) {
-            return NextResponse.json({ followingIds: [], followerCount, followingCount }, { status: 200 });
+            return NextResponse.json({ followingIds: [], }, { status: 200 });
         }
 
-        return NextResponse.json({ followingIds, followerCount, followingCount }, { status: 200 });
+        return NextResponse.json({ followingIds }, { status: 200 });
 
     } catch (error) {
         console.error(error);

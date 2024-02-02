@@ -6,12 +6,10 @@ export async function fetchFollowingData(userId: string) {
         const following = response.data;
 
         const followingIds = following.followingIds;
-        const followerCount = following.followerCount;
-        const followingCount = following.followingCount;
 
-        return { followingIds, followerCount, followingCount };
+        return { followingIds };
     } catch (error) {
         console.error("Error fetching following data:", error);
-        return { followingIds: [], followerCount: 0, followingCount: 0 };
+        return { followingIds: [] };
     }
 }
