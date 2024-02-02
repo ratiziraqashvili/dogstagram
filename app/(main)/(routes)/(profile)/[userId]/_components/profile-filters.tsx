@@ -6,12 +6,14 @@ import { useState } from "react";
 import { Posts } from "./posts";
 import { SavedPosts } from "./saved-posts";
 import { useAuth } from "@clerk/nextjs";
+import { Post } from "@prisma/client";
 
 interface ProfileFiltersProps {
   profileId: string;
+  posts: Post[];
 }
 
-export const ProfileFilters = ({ profileId }: ProfileFiltersProps) => {
+export const ProfileFilters = ({ profileId, posts }: ProfileFiltersProps) => {
   const [filter, setFilter] = useState("posts");
   const { userId } = useAuth();
 
@@ -21,7 +23,7 @@ export const ProfileFilters = ({ profileId }: ProfileFiltersProps) => {
 
   return (
     <div>
-      <div className="md:w-[80%] md:mx-auto md:justify-center md:flex gap-10 hidden">
+      <div className="md:w-[73%] md:mx-auto md:justify-center md:flex gap-10 hidden">
         <div
           onClick={() => onFilterClick("posts")}
           className={cn(
@@ -101,8 +103,8 @@ export const ProfileFilters = ({ profileId }: ProfileFiltersProps) => {
           </div>
         )}
       </div>
-      <div className="md:w-[80%] mx-auto">
-        {filter === "posts" && <Posts />}
+      <div className="md:w-[73%] mt-2 mx-auto">
+        {filter === "posts" && <Posts posts={posts} />}
         {filter === "saved" && <SavedPosts />}
       </div>
     </div>

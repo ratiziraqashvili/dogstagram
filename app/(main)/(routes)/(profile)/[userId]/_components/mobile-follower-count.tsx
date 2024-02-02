@@ -7,13 +7,9 @@ import { fetchFollowingData } from "@/lib/following-data";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export const MobileFollowerCount = () => {
-  const {
-    followerCount,
-    followingCount,
-    setFollowerCount,
-    setFollowingCount,
-  } = useFollowingStore();
+export const MobileFollowerCount = ({ postCount }: { postCount: number }) => {
+  const { followerCount, followingCount, setFollowerCount, setFollowingCount } =
+    useFollowingStore();
   const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
   const userId = pathname.slice(1);
@@ -45,34 +41,58 @@ export const MobileFollowerCount = () => {
   };
 
   const onDisplayFollowingsModalOpen = () => {
-    onOpen("displayFollowings")
-  }
+    onOpen("displayFollowings");
+  };
 
   return (
     <>
       <div className="flex flex-col items-center text-sm">
-        <span className="font-semibold">0</span>
+        <span className="font-semibold">{postCount}</span>
         <span className="text-muted-foreground">posts</span>
       </div>
       <div className="flex flex-col items-center text-sm">
         <span className="font-semibold">
           {isLoading ? (
-            <div className="pb-[0.23rem]"><Spinner /></div>
+            <div className="pb-[0.23rem]">
+              <Spinner />
+            </div>
           ) : (
-            <span onClick={onDisplayFollowersModalOpen} className="font-semibold cursor-pointer">{followerCount}</span>
+            <span
+              onClick={onDisplayFollowersModalOpen}
+              className="font-semibold cursor-pointer"
+            >
+              {followerCount}
+            </span>
           )}
         </span>
-        <span onClick={onDisplayFollowersModalOpen} className="text-muted-foreground cursor-pointer">followers</span>
+        <span
+          onClick={onDisplayFollowersModalOpen}
+          className="text-muted-foreground cursor-pointer"
+        >
+          followers
+        </span>
       </div>
       <div className="flex flex-col items-center text-sm">
         <span className="font-semibold">
-        {isLoading ? (
-            <div className="pb-[0.23rem]"><Spinner /></div>
+          {isLoading ? (
+            <div className="pb-[0.23rem]">
+              <Spinner />
+            </div>
           ) : (
-            <span onClick={onDisplayFollowingsModalOpen} className="font-semibold cursor-pointer">{followingCount}</span>
+            <span
+              onClick={onDisplayFollowingsModalOpen}
+              className="font-semibold cursor-pointer"
+            >
+              {followingCount}
+            </span>
           )}
         </span>
-        <span onClick={onDisplayFollowingsModalOpen}  className="text-muted-foreground cursor-pointer">following</span>
+        <span
+          onClick={onDisplayFollowingsModalOpen}
+          className="text-muted-foreground cursor-pointer"
+        >
+          following
+        </span>
       </div>
     </>
   );

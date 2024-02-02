@@ -29,6 +29,21 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     },
   });
 
+  const posts = await db.post.findMany({
+    where: {
+      userId,
+    },
+    include: {
+      likes: {},
+    },
+  });
+
+  const postCount = await db.post.count({
+    where: {
+      userId,
+    },
+  });
+
   if (isUserBlocked) {
     return (
       <div className="flex justify-center items-center h-[40rem]">
@@ -38,9 +53,9 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
   }
 
   return (
-    <>
+    <div className="md:pl-10 xl:pr-0">
       <ProfileNavbar username={user?.username} profileId={user?.clerkId} />
-      <div className="md:w-[80%] xl:pr-44 md:pt-7 p-4 md:mx-auto  md:justify-center flex gap-5 md:gap-24 md:border-b-[1px] md:pb-12 pb-5">
+      <div className="md:w-[73%] xl:pr-44 md:pt-7 p-4 md:mx-auto  md:justify-center flex gap-5 md:gap-24 md:border-b-[1px] md:pb-12 pb-5">
         <div className="md:pl-7">
           <ProfilePicture
             onClick
@@ -50,6 +65,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         </div>
         <div>
           <ProfileInfo
+            postCount={postCount}
             userId={userId}
             username={user?.username}
             firstName={user?.firstName}
@@ -60,10 +76,10 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         {user?.firstName}
       </div>
       <div className="flex md:hidden justify-around w-full p-3 border-b-[1px]">
-        <MobileFollowerCount />
+        <MobileFollowerCount postCount={postCount} />
       </div>
-      <ProfileFilters profileId={userId} />
-    </>
+      <ProfileFilters posts={posts} profileId={userId} />
+    </div>
   );
 };
 

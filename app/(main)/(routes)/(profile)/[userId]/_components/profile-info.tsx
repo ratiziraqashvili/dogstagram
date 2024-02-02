@@ -16,12 +16,14 @@ interface ProfileInfoProps {
   username: string | undefined;
   firstName: string | null | undefined;
   userId: string;
+  postCount: number;
 }
 
 export const ProfileInfo = ({
   username,
   firstName,
   userId,
+  postCount
 }: ProfileInfoProps) => {
   const { user } = useClerk();
   const router = useRouter();
@@ -174,7 +176,7 @@ export const ProfileInfo = ({
       <div className="md:flex hidden gap-9 pt-1">
         <div className="tracking-[-0.5px] space-x-1">
           {/* TODO: fetch amount of post user has created */}
-          <span className="font-semibold">0</span>
+          <span className="font-semibold">{postCount}</span>
           <span>posts</span>
         </div>
         <div onClick={onDisplayFollowersModalOpen} className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground">
