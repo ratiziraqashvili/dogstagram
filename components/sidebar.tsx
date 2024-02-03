@@ -34,8 +34,8 @@ export const Sidebar = async () => {
       <div className="flex flex-col gap-2 flex-1">
         <Routes />
         <Link href={`/${user?.id}`}>
-          <div className="flex items-center justify-center xl:justify-normal gap-[1rem] p-3 w-full rounded-md transition hover:bg-primary/10 cursor-pointer duration-300 pl-[0.770rem]">
-            <ProfilePicture className="w-6 h-6" />
+          <div className="flex items-center justify-center xl:justify-normal gap-[1rem] p-3 w-full rounded-md transition hover:bg-primary/10 cursor-pointer duration-300 pl-[0.770rem] group">
+            <ProfilePicture className="w-6 h-6 group-hover:scale-105 transition" />
             <span className="hidden xl:block pt-0.5">Profile</span>
           </div>
         </Link>

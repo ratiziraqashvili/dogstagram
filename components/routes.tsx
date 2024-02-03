@@ -69,7 +69,7 @@ export const Routes = () => {
           className="flex items-center gap-4 p-3 w-full rounded-lg transition hover:bg-primary/5 cursor-pointer duration-300 group"
         >
           {route.href ? (
-            <Link href={route.href}>
+            <Link className="w-full" href={route.href}>
               <div className="flex gap-4 items-center">
                 <route.icon className="w-6 h-6 group-hover:scale-105 transition" />
                 <span className="hidden xl:block text-md">{route.label}</span>
@@ -86,7 +86,7 @@ export const Routes = () => {
               {({ open }) => (
                 <div
                   onClick={route.label === "Search" ? () => {} : () => open?.()}
-                  className="flex gap-4 items-center"
+                  className="flex gap-4 items-center w-full"
                 >
                   <route.icon className="w-6 h-6 group-hover:scale-105 transition" />
                   <span className="hidden xl:block text-md">{route.label}</span>

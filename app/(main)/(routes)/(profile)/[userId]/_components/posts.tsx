@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Post } from "@prisma/client";
 import { Camera, Heart, MessageCircle } from "lucide-react";
-import { CldImage } from "next-cloudinary";
+import { CldImage, CldUploadWidget } from "next-cloudinary";
 
 interface PostsProps {
   posts: (Post & {
@@ -16,16 +16,36 @@ interface PostsProps {
 export const Posts = ({ posts }: PostsProps) => {
   if (posts.length === 0) {
     return (
-      <div className="flex justify-center items-center pt-20">
-        <div className="flex flex-col justify-center">
-          <Camera strokeWidth="1px" className="mx-auto h-14 w-14" />
-          <h1 className="font-bold text-3xl text-center">Share Photos</h1>
-          <p>When you share photos, they will appear on your profile.</p>
-          <Button className="text-amber-600 p-0" variant="ghost">
-            Share your first photo
-          </Button>
-        </div>
-      </div>
+      <CldUploadWidget
+        onUpload={() => {}}
+        uploadPreset="fcbztrpi"
+        options={{
+          maxFiles: 1,
+        }}
+      >
+        {({ open }) => (
+          <div className="flex justify-center items-center pt-20">
+            <div className="flex flex-col justify-center gap-3">
+              <Camera
+                onClick={() => open?.()}
+                strokeWidth="1px"
+                className="mx-auto h-14 w-14 cursor-pointer text-[#646464]"
+              />
+              <h1 className="font-bold text-3xl text-center">Share Photos</h1>
+              <p className="text-sm">
+                When you share photos, they will appear on your profile.
+              </p>
+              <Button
+                onClick={() => open?.()}
+                className="text-amber-600 p-0"
+                variant="ghost"
+              >
+                Share your first photo
+              </Button>
+            </div>
+          </div>
+        )}
+      </CldUploadWidget>
     );
   }
 
