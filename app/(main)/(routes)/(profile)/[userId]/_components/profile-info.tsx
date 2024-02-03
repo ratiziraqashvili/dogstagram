@@ -5,10 +5,8 @@ import { useClerk } from "@clerk/nextjs";
 import { ChevronDown, MoreHorizontal, Settings } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { fetchFollowingData } from "@/lib/following-data";
+import { useState } from "react";
 import { useModal } from "@/hooks/use-modal-store";
-import { useFollowingStore } from "@/hooks/use-following-store";
 import Link from "next/link";
 
 interface ProfileInfoProps {
@@ -50,26 +48,6 @@ export const ProfileInfo = ({
       setIsLoading(false);
     }
   };
-
-  // useEffect(() => {
-  //   // Fetch following data
-  //   const fetchFollowing = async () => {
-  //     try {
-  //       const { followingIds } = await fetchFollowingData(userId);
-  //       // Getting followingIds to display on profile
-
-  //       setIsFollowing(followingIds.includes(userId));
-  //     } catch (error) {
-  //       console.error("Error fetching following data:", error);
-  //       // Set button to say "Follow" instead of unfollow when user already dont follows
-  //       setIsFollowing(false);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchFollowing();
-  // }, [userId]);
 
   const onFollowingModalOpen = () => {
     onOpen("following");
