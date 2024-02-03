@@ -15,8 +15,6 @@ export async function POST(req: Request) {
             isDog,
         } = body;
 
-        console.log(imageUrl)
-
         if (!user || !user.id) {
             return new NextResponse("Unauthorized", { status: 401 });
         }

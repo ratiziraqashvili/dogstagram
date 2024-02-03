@@ -17,20 +17,12 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     },
   });
 
-  if (!user) {
-    return (
-      <div className="flex justify-center items-center h-[40rem]">
-        <NotFound />
-      </div>
-    );
-  }
-
   const isUserBlocked = await db.blockedUser.findFirst({
     where: {
       blockedUserId: userId,
     },
   });
-
+  
   const posts = await db.post.findMany({
     where: {
       userId,
@@ -38,6 +30,14 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     orderBy: {
       createdAt: "desc",
     },
+    include: {
+      _count: {
+        select: {
+          likes: true,
+          comments: true,
+        }
+      }
+    }
   });
 
   const postCount = await db.post.count({
@@ -72,10 +72,17 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     },
   });
 
-  const followingIds = followers?.followers.map((user) => user.followingId)!;
   const followerIds = followers?.followers.map((user) => user.followerId)!;
-
+  
   const isFollowing = followerIds.includes(currUser!.id);
+  
+  if (!user) {
+    return (
+      <div className="flex justify-center items-center h-[40rem]">
+        <NotFound />
+      </div>
+    );
+  }
 
   if (isUserBlocked) {
     return (
@@ -84,11 +91,11 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
       </div>
     );
   }
-
+  
   return (
     <div className="md:pl-10 xl:pr-0">
       <ProfileNavbar username={user?.username} profileId={user?.clerkId} />
-      <div className="md:w-[73%] xl:pr-44 md:pt-7 p-4 md:mx-auto  md:justify-center flex gap-5 md:gap-24 md:border-b-[1px] md:pb-12 pb-5">
+      <div className="md:w-[73%] xl:pr-44 md:pt-7 p-4 md:mx-auto  md:justify-center flex gap-5 md:gap-24 md:border-b-[1px] md:pb-12 pb-5 max-w-4xl">
         <div className="md:pl-7">
           <ProfilePicture
             onClick

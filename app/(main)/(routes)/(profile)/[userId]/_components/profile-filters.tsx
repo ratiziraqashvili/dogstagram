@@ -10,7 +10,12 @@ import { Post } from "@prisma/client";
 
 interface ProfileFiltersProps {
   profileId: string;
-  posts: Post[];
+  posts: (Post & {
+    _count: {
+      likes: number;
+      comments: number;
+    }
+  })[];
 }
 
 export const ProfileFilters = ({ profileId, posts }: ProfileFiltersProps) => {
@@ -23,7 +28,7 @@ export const ProfileFilters = ({ profileId, posts }: ProfileFiltersProps) => {
 
   return (
     <div>
-      <div className="md:w-[73%] md:mx-auto md:justify-center md:flex gap-10 hidden">
+      <div className="md:w-[73%] max-w-4xl md:mx-auto md:justify-center md:flex gap-10 hidden">
         <div
           onClick={() => onFilterClick("posts")}
           className={cn(
@@ -103,7 +108,7 @@ export const ProfileFilters = ({ profileId, posts }: ProfileFiltersProps) => {
           </div>
         )}
       </div>
-      <div className="md:w-[73%] mt-2 mx-auto">
+      <div className="md:w-[73%] max-w-4xl mt-2 mx-auto">
         {filter === "posts" && <Posts posts={posts} />}
         {filter === "saved" && <SavedPosts />}
       </div>

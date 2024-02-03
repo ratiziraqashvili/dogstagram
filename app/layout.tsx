@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ClerkProvider, currentUser, redirectToSignIn } from "@clerk/nextjs";
-import { Nunito } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import { ModalProvider } from "@/components/providers/modal-provider";
 import { Toaster } from "@/components/ui/toaster";
-
-const font = Nunito({
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Dogstagram",

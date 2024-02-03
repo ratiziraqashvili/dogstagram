@@ -35,6 +35,7 @@ export const DisplayFollowingsModal = () => {
   //loader for only skeleton
   const [skeleton, setSkeleton] = useState(true);
   const { isOpen, onClose, type } = useModal();
+  
   const otherUserId = usePathname().split("/")[1];
   const router = useRouter();
 
