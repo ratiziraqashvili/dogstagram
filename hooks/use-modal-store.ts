@@ -5,13 +5,14 @@ export type ModalType = "following" | "settings" | "moreHorizontal" | "displayFo
 type ModalStore = {
     type: ModalType | null;
     isOpen: boolean;
-    onOpen: (type: ModalType) => void;
+    onOpen: (type: ModalType, data?: any) => void;
     onClose: () => void;
+    data?: any
 }
 
 export const useModal = create<ModalStore>((set) => ({
     type: null,
     isOpen: false,
-    onOpen: (type) => set({ isOpen: true, type }),
+    onOpen: (type, data) => set({ isOpen: true, type, data: data ?? null }),
     onClose: () => set({ type: null, isOpen: false, }),
 }))

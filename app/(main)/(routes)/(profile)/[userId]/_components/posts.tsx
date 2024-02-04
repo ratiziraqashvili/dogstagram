@@ -1,8 +1,13 @@
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { useModal } from "@/hooks/use-modal-store";
+import { usePostDataStore } from "@/hooks/use-post-data-store";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@clerk/nextjs";
 import { Post } from "@prisma/client";
 import { Camera, Heart, MessageCircle } from "lucide-react";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
+import { useParams } from "next/navigation";
 
 interface PostsProps {
   posts: (Post & {
@@ -14,10 +19,42 @@ interface PostsProps {
 }
 
 export const Posts = ({ posts }: PostsProps) => {
-  if (posts.length === 0) {
+  const { onOpen } = useModal();
+  const { toast } = useToast();
+  const { addUploadedData } = usePostDataStore();
+  const { userId } = useAuth();
+  const params = useParams();
+
+  const onCreatePostModalOpen = () => {
+    onOpen("createPost");
+  };
+
+  const onUpload = (result: any, widget: any) => {
+    widget.close();
+
+    // Get file type from result
+    const { resource_type } = result.info;
+
+    // Check if file is an image
+    if (resource_type !== "image") {
+      // Handle invalid file type
+      toast({
+        title: "Make sure that uploaded file is valid image.",
+        variant: "default",
+        duration: 3000,
+      });
+      return;
+    }
+
+    addUploadedData(result);
+
+    onCreatePostModalOpen();
+  };
+
+  if (posts.length === 0 && userId === params.userId) {
     return (
       <CldUploadWidget
-        onUpload={() => {}}
+        onUpload={onUpload}
         uploadPreset="fcbztrpi"
         options={{
           maxFiles: 1,
@@ -46,6 +83,20 @@ export const Posts = ({ posts }: PostsProps) => {
           </div>
         )}
       </CldUploadWidget>
+    );
+  }
+
+  if (posts.length === 0 && userId !== params.userId) {
+    return (
+      <div className="flex justify-center items-center pt-20">
+        <div className="flex flex-col justify-center gap-3">
+          <Camera
+            strokeWidth="1px"
+            className="mx-auto h-14 w-14 text-[#646464]"
+          />
+          <h1 className="font-bold text-3xl text-center">No Posts Yet</h1>
+        </div>
+      </div>
     );
   }
 
