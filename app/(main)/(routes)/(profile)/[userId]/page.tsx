@@ -36,9 +36,18 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
           likes: true,
           comments: true,
         }
+      },
+      user: {
+        select: {
+          imageUrl: true,
+          username: true,
+          firstName: true,
+        }
       }
     }
   });
+
+  console.log(posts)
 
   const postCount = await db.post.count({
     where: {

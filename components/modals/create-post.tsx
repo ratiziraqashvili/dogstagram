@@ -158,7 +158,7 @@ export const CreatePostModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="p-0 gap-0 sm:w-[30rem] w-[80%] h-[95%] lg:w-[65rem] overflow-y-auto">
+      <DialogContent className="p-0 gap-0 sm:w-[30rem] w-[80%] h-[95%] lg:w-[65rem] overflow-y-auto border-0">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-between items-center border-b-[1px]">
@@ -178,7 +178,7 @@ export const CreatePostModal = () => {
               </Button>
             </div>
             <div className="flex lg:flex-row flex-col">
-              <div className=" aspect-auto flex justify-center items-center bg-black relative mx-auto z-50">
+              <div className="aspect-auto flex justify-center items-center bg-black relative mx-auto z-50">
                 <CldImage
                   key={image}
                   src={image}

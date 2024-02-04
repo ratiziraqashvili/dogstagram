@@ -6,16 +6,11 @@ import { useState } from "react";
 import { Posts } from "./posts";
 import { SavedPosts } from "./saved-posts";
 import { useAuth } from "@clerk/nextjs";
-import { Post } from "@prisma/client";
+import { PostInfoType } from "@/types";
 
 interface ProfileFiltersProps {
   profileId: string;
-  posts: (Post & {
-    _count: {
-      likes: number;
-      comments: number;
-    }
-  })[];
+  posts: PostInfoType;
 }
 
 export const ProfileFilters = ({ profileId, posts }: ProfileFiltersProps) => {

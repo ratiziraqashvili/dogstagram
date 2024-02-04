@@ -11,6 +11,7 @@ import { BlockConfirmModal } from "../modals/block-confirm-modal";
 import { BlockIndicator } from "../modals/block-indicator-modal";
 import { ShareModal } from "../modals/share-modal";
 import { CreatePostModal } from "../modals/create-post";
+import { PostInfoModal } from "../modals/post-info";
 
 export const ModalProvider = () => {
     const [isMounted, setIsMounted] = useState(false);
@@ -35,6 +36,7 @@ export const ModalProvider = () => {
           <BlockIndicator />
           <ShareModal />
           <CreatePostModal />
+          <PostInfoModal />
         </>
     )
 }

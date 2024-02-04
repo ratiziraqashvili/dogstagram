@@ -3,6 +3,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useModal } from "@/hooks/use-modal-store";
 import { usePostDataStore } from "@/hooks/use-post-data-store";
 import { cn } from "@/lib/utils";
+import { PostInfoType } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { Post } from "@prisma/client";
 import { Camera, Heart, MessageCircle } from "lucide-react";
@@ -10,12 +11,7 @@ import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useParams } from "next/navigation";
 
 interface PostsProps {
-  posts: (Post & {
-    _count: {
-      likes: number;
-      comments: number;
-    };
-  })[];
+  posts: PostInfoType;
 }
 
 export const Posts = ({ posts }: PostsProps) => {
@@ -100,6 +96,10 @@ export const Posts = ({ posts }: PostsProps) => {
     );
   }
 
+  const onPostInfoModalOpen = (post: Post) => {
+    onOpen("postInfo", post)
+  }
+
   return (
     <div
       className={cn(
@@ -108,7 +108,7 @@ export const Posts = ({ posts }: PostsProps) => {
       )}
     >
       {posts.map((post) => (
-        <div className="group relative" key={post.id}>
+        <div onClick={() => onPostInfoModalOpen(post)} className="group relative" key={post.id}>
           <div className="">
             <CldImage
               src={post.imageUrl}
