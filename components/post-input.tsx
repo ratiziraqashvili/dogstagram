@@ -1,14 +1,19 @@
 import { Bookmark, Heart, MessageCircle, Send, Smile } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { EmojiPicker } from "./emoji-pickers";
 
 export const PostInput = () => {
   const [comment, setComment] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const onInputChange = (event) => {
+  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
+  };
+
+  const onInputFocus = () => {
+    inputRef.current?.focus();
   };
 
   return (
@@ -16,7 +21,10 @@ export const PostInput = () => {
       <div className="flex justify-between px-4 border-t-[1px] pt-3">
         <div className="flex gap-2">
           <Heart className="cursor-pointer hover:opacity-50" />
-          <MessageCircle className="cursor-pointer hover:opacity-50" />
+          <MessageCircle
+            onClick={onInputFocus}
+            className="cursor-pointer hover:opacity-50"
+          />
           <Send className="cursor-pointer hover:opacity-50" />
         </div>
         <div>
@@ -38,6 +46,7 @@ export const PostInput = () => {
           onChange={(value) => setComment(comment + value)}
         />
         <Input
+          ref={inputRef}
           value={comment}
           onChange={onInputChange}
           placeholder="Add a comment..."

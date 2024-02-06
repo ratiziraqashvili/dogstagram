@@ -7,9 +7,11 @@ import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { CommentSection } from "../comment-section";
 import { PostInput } from "../post-input";
+import { useSecondModal } from "@/hooks/use-second-modal-store";
 
 export const PostInfoModal = () => {
   const { isOpen, onClose, type, data } = useModal();
+  const { onOpen } = useSecondModal();
 
   const post: Post & {
     _count: {
@@ -24,13 +26,17 @@ export const PostInfoModal = () => {
 
   const isModalOpen = isOpen && type === "postInfo";
 
+  const onPostPropertiesModalOpen = () => {
+    onOpen("postProperties", post);
+  }
+
   const handleClose = () => {
     onClose();
   };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="lg:h-[90%] h-[63%] md:w-[80%] w-[60%] rounded-sm p-0 flex flex-col gap-0 md:flex-row border-0">
+      <DialogContent className="lg:h-[90%] h-[83%] md:w-[80%] w-[60%] rounded-sm p-0 flex flex-col gap-0 md:flex-row border-0 overflow-y-auto">
         <div className="flex md:hidden justify-between items-center py-5 px-3">
           <div className="flex items-center gap-2">
             <ProfilePicture
@@ -43,11 +49,11 @@ export const PostInfoModal = () => {
           </div>
           <div>
             <Button className="p-0 hover:text-black" variant="ghost">
-              <MoreHorizontal className="h-5 w-5" />
+              <MoreHorizontal onClick={onPostPropertiesModalOpen} className="h-5 w-5" />
             </Button>
           </div>
         </div>
-        <div className="aspect-auto z-50 bg-black flex items-center overflow-hidden">
+        <div className="aspect-auto z-50 bg-black flex items-center md:overflow-hidden">
           <CldImage
             src={post?.imageUrl}
             alt="Image"
@@ -70,7 +76,7 @@ export const PostInfoModal = () => {
             </div>
             <div>
               <Button className="hover:text-muted-foreground p-0" variant="ghost">
-                <MoreHorizontal className="h-5 w-5" />
+                <MoreHorizontal onClick={onPostPropertiesModalOpen} className="h-5 w-5" />
               </Button>
             </div>
           </div>

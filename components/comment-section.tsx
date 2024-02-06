@@ -15,7 +15,7 @@ interface CommentSectionProps {
 
 export const CommentSection = ({ post }: CommentSectionProps) => {
     return (
-        <div className="border-t-[1px]">
+        <div className="md:border-t-[1px]">
             comment
         </div>
     )
