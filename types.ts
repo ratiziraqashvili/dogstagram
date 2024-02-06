@@ -9,7 +9,6 @@ export type PostInfoType = (
         user: {
           imageUrl: string | null;
           username: string | null;
-          firstName: string | null;
         }
       }
 )[]

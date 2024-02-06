@@ -9,7 +9,7 @@ interface LimitedUser {
   username: string;
 }
 
-export const BlockIndicator = () => {
+export const BlockIndicatorModal = () => {
   const { isOpen, onClose, type } = useModal();
   const params = useParams();
   const [user, setUser] = useState<LimitedUser>({} as LimitedUser);

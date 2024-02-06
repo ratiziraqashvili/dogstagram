@@ -8,35 +8,35 @@ import { DisplayFollowersModal } from "../modals/display-followers-modal";
 import { DisplayFollowingsModal } from "../modals/display-followings-modal";
 import { AboutAccountModal } from "../modals/about-account-modal";
 import { BlockConfirmModal } from "../modals/block-confirm-modal";
-import { BlockIndicator } from "../modals/block-indicator-modal";
+import { BlockIndicatorModal } from "../modals/block-indicator-modal";
 import { ShareModal } from "../modals/share-modal";
-import { CreatePostModal } from "../modals/create-post";
-import { PostInfoModal } from "../modals/post-info";
+import { CreatePostModal } from "../modals/create-post-modal";
+import { PostInfoModal } from "../modals/post-info-modal";
 
 export const ModalProvider = () => {
-    const [isMounted, setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, [])
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-    if (!isMounted) {
-        return null;
-    }
+  if (!isMounted) {
+    return null;
+  }
 
-    return (
-        <>
-          <FollowingModal />
-          <SettingsModal />
-          <MoreHorizontalModal />
-          <DisplayFollowersModal />
-          <DisplayFollowingsModal />
-          <AboutAccountModal />
-          <BlockConfirmModal />
-          <BlockIndicator />
-          <ShareModal />
-          <CreatePostModal />
-          <PostInfoModal />
-        </>
-    )
-}
+  return (
+    <>
+      <FollowingModal />
+      <SettingsModal />
+      <MoreHorizontalModal />
+      <DisplayFollowersModal />
+      <DisplayFollowingsModal />
+      <AboutAccountModal />
+      <BlockConfirmModal />
+      <BlockIndicatorModal />
+      <ShareModal />
+      <CreatePostModal />
+      <PostInfoModal />
+    </>
+  );
+};
