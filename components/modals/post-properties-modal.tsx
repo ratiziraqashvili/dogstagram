@@ -3,9 +3,18 @@ import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
 import { useSecondModal } from "@/hooks/use-second-modal-store";
 import { useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
+import { useOrigin } from "@/hooks/use-origin";
+import { useToast } from "../ui/use-toast";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { useState } from "react";
+import qs from "query-string";
+import { useModal } from "@/hooks/use-modal-store";
 
 export const PostPropertiesModal = () => {
   const { isOpen, onClose, type, data, onOpen } = useSecondModal();
+  const { onClose: onCloseRootModal } = useModal();
+  const { toast } = useToast();
   const post: Post & {
     _count: {
       likes: number;
@@ -16,7 +25,10 @@ export const PostPropertiesModal = () => {
       username: string | null;
     };
   } = data;
+  const [isLoading, setIsLoading] = useState(false);
   const { userId } = useAuth();
+  const origin = useOrigin();
+  const router = useRouter();
 
   const isModalOpen = isOpen && type === "postProperties";
 
@@ -24,14 +36,58 @@ export const PostPropertiesModal = () => {
     onClose();
   };
 
+  const postUrl = `${origin}/post/${post?.id}`;
+
   const onAboutAccountModalOpen = () => {
     onOpen("aboutPost", post);
   };
 
   const isAuthor = post?.userId === userId;
 
+  const onCopy = () => {
+    navigator.clipboard.writeText(postUrl);
+    toast({
+      title: "Link copied to clipboard.",
+      variant: "default",
+      duration: 3000,
+    });
+
+    handleClose();
+  };
+
+  const onDelete = async (authorId: string) => {
+    setIsLoading(true);
+    try {
+      if (isAuthor) {
+        const url = qs.stringifyUrl({
+          url: `/api/posts/delete/${post.id}`,
+          query: {
+            authorId,
+          },
+        });
+
+        await axios.delete(url);
+
+        toast({
+          title: "Post deleted successfully.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
+
+      handleClose();
+      onCloseRootModal();
+      router.push(`/${userId}`);
+      router.refresh();
+    } catch (error) {
+      console.log("[POST_PROPERTIES_MODAL] error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const buttons = [
-    isAuthor ? { label: "Delete", onClick: () => {} } : null,
+    isAuthor ? { label: "Delete", onClick: () => onDelete(post.userId) } : null,
     isAuthor ? { label: "Edit", onClick: () => {} } : null,
     isAuthor
       ? {
@@ -49,9 +105,9 @@ export const PostPropertiesModal = () => {
           onClick: () => {},
         }
       : null,
-    { label: "Go to post", onClick: () => {} },
-    { label: "Copy link", onClick: () => {} },
-    { label: "About this account", onClick: onAboutAccountModalOpen },
+    { label: "Go to post", onClick: () => router.push(postUrl) },
+    { label: "Copy link", onClick: onCopy },
+    { label: "About this post", onClick: onAboutAccountModalOpen },
   ];
 
   return (
@@ -60,6 +116,7 @@ export const PostPropertiesModal = () => {
         <div className="flex flex-col h-full items-center">
           {buttons.filter(Boolean).map((button, i) => (
             <button
+              disabled={isLoading}
               key={i}
               onClick={button!.onClick}
               className="hover:bg-primary/10 w-full py-3.5 flex justify-center p-3 text-[0.890rem] transition disabled:pointer-events-none disabled:opacity-50 text-center border-b-[1px]"

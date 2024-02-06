@@ -1,13 +1,6 @@
-import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
-import { useParams } from "next/navigation";
-import { Post, User } from "@prisma/client";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { ProfilePicture } from "../profile-picture";
+import { Post } from "@prisma/client";
 import { CalendarDays, MapPin } from "lucide-react";
-import { Skeleton } from "../ui/skeleton";
-import { countryCodes } from "@/constants/country-codes";
 import { useSecondModal } from "@/hooks/use-second-modal-store";
 
 export const AboutPostModal = () => {
@@ -35,11 +28,11 @@ export const AboutPostModal = () => {
       <DialogContent className="w-[70%] sm:w-[25rem] py-3 px-0">
         <div className="flex flex-col">
           <div className="flex justify-center border-b-[1px] pb-[0.580rem]">
-            <h1 className="font-semibold">About this account</h1>
+            <h1 className="font-semibold">About this post</h1>
           </div>
           <div className="pt-3 pb-8">
             <div className="flex flex-col justify-center items-center">
-              <span className="font-semibold pt-2.5">{post?.caption}</span>
+              <span className="font-semibold pt-2.5">{post?.caption || "No caption"}</span>
               <p className="text-xs text-muted-foreground w-[80%] text-center pt-2">
                 To help keep our community authentic, we&apos;re showing
                 information about accounts on Dogstagram.

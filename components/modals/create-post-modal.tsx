@@ -130,7 +130,7 @@ export const CreatePostModal = () => {
         toast({
           description:
             "We appreciate your participation, but we kindly request that only photos featuring dogs be posted.",
-          duration: 4000,
+          duration: 3000,
         });
         return;
       }
@@ -139,7 +139,7 @@ export const CreatePostModal = () => {
 
       toast({
         description: "Posted successfully.",
-        duration: 4000,
+        duration: 3000,
       });
 
       handleClose();
@@ -149,7 +149,7 @@ export const CreatePostModal = () => {
       console.log(error);
       toast({
         description: "Something went wrong.",
-        duration: 4000,
+        duration: 3000,
       });
     } finally {
       setIsLoading(false);
