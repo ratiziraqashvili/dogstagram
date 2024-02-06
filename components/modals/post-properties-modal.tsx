@@ -86,6 +86,35 @@ export const PostPropertiesModal = () => {
     }
   };
 
+  const onCommentChange = async (authorId: string) => {
+    setIsLoading(true);
+    try {
+      if (isAuthor) {
+        const url = qs.stringifyUrl({
+          url: `/api/posts/update/comments/${post.id}`,
+          query: {
+            authorId,
+          },
+        });
+
+        await axios.patch(url);
+
+        toast({
+          title: post.hideComments
+            ? "Comments unhid successfully"
+            : "Comments hid successfully",
+          variant: "default",
+          duration: 3000,
+        });
+
+        handleClose();
+        router.refresh();
+      }
+    } catch (error) {
+      console.log("[POST_PROPERTIES_MODAL] error:", error);
+    }
+  };
+
   const buttons = [
     isAuthor ? { label: "Delete", onClick: () => onDelete(post.userId) } : null,
     isAuthor ? { label: "Edit", onClick: () => {} } : null,
@@ -102,7 +131,7 @@ export const PostPropertiesModal = () => {
           label: post.hideComments
             ? "Turn on commenting"
             : "Turn off commenting",
-          onClick: () => {},
+          onClick: () => onCommentChange(post.userId),
         }
       : null,
     { label: "Go to post", onClick: () => router.push(postUrl) },

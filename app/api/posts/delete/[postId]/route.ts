@@ -10,8 +10,6 @@ export async function DELETE(req: Request, { params }:  { params: { postId: stri
 
         const authorId = searchParams.get("authorId")
 
-        console.log("authorId:", authorId)
-
         if (!user || !user.id) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
@@ -41,9 +39,6 @@ export async function DELETE(req: Request, { params }:  { params: { postId: stri
             }
         })
         
-        console.log("deletedPost:", deletedPost);
-        
-
         return NextResponse.json(deletedPost);
 
     } catch (error) {
