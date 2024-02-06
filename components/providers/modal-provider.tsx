@@ -13,6 +13,7 @@ import { ShareModal } from "../modals/share-modal";
 import { CreatePostModal } from "../modals/create-post-modal";
 import { PostInfoModal } from "../modals/post-info-modal";
 import { PostPropertiesModal } from "../modals/post-properties-modal";
+import { AboutPostModal } from "../modals/about-post-modal";
 
 export const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -39,6 +40,7 @@ export const ModalProvider = () => {
       <CreatePostModal />
       <PostInfoModal />
       <PostPropertiesModal />
+      <AboutPostModal />
     </>
   );
 };

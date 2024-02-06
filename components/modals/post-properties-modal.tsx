@@ -5,7 +5,7 @@ import { useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 
 export const PostPropertiesModal = () => {
-  const { isOpen, onClose, type, data } = useSecondModal();
+  const { isOpen, onClose, type, data, onOpen } = useSecondModal();
   const post: Post & {
     _count: {
       likes: number;
@@ -22,6 +22,10 @@ export const PostPropertiesModal = () => {
 
   const handleClose = () => {
     onClose();
+  };
+
+  const onAboutAccountModalOpen = () => {
+    onOpen("aboutPost", post);
   };
 
   const isAuthor = post?.userId === userId;
@@ -47,7 +51,7 @@ export const PostPropertiesModal = () => {
       : null,
     { label: "Go to post", onClick: () => {} },
     { label: "Copy link", onClick: () => {} },
-    { label: "About this account", onClick: () => {} },
+    { label: "About this account", onClick: onAboutAccountModalOpen },
   ];
 
   return (
@@ -60,7 +64,14 @@ export const PostPropertiesModal = () => {
               onClick={button!.onClick}
               className="hover:bg-primary/10 w-full py-3.5 flex justify-center p-3 text-[0.890rem] transition disabled:pointer-events-none disabled:opacity-50 text-center border-b-[1px]"
             >
-              <span className={cn(button!.label === "Delete" && "font-bold text-red-600 opacity-85")}>{button!.label}</span>
+              <span
+                className={cn(
+                  button!.label === "Delete" &&
+                    "font-bold text-red-600 opacity-85"
+                )}
+              >
+                {button!.label}
+              </span>
             </button>
           ))}
         </div>
