@@ -1,8 +1,16 @@
 import { Bookmark, Heart, MessageCircle, Send, Smile } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { useState } from "react";
+import { EmojiPicker } from "./emoji-pickers";
 
 export const PostInput = () => {
+  const [comment, setComment] = useState("");
+
+  const onInputChange = (event) => {
+    setComment(event.target.value);
+  };
+
   return (
     <>
       <div className="flex justify-between px-4 border-t-[1px] pt-3">
@@ -17,13 +25,24 @@ export const PostInput = () => {
       </div>
       <div className="px-4">
         <p className="text-sm">
-          Be the first to <span className="font-semibold hover:opacity-50 cursor-pointer">like this</span>
+          Be the first to{" "}
+          <span className="font-semibold hover:opacity-50 cursor-pointer">
+            like this
+          </span>
         </p>
         <span className="text-muted-foreground text-xs">1 day ago</span>
       </div>
       <div className="flex items-center gap-2 border-t-[1px] px-4 py-2">
-        <Smile className="h-8 w-8 cursor-pointer" />
-        <Input placeholder="Add a comment..." className="border-none" />
+        <EmojiPicker
+          className="h-6 w-6"
+          onChange={(value) => setComment(comment + value)}
+        />
+        <Input
+          value={comment}
+          onChange={onInputChange}
+          placeholder="Add a comment..."
+          className="border-none"
+        />
         <Button className="p-0 text-amber-600" variant="ghost">
           Post
         </Button>

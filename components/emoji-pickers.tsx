@@ -7,13 +7,14 @@ import data from "@emoji-mart/data";
 
 interface EmojiPickerProps {
   onChange: (value: string) => void;
+  className: string;
 }
 
-export const EmojiPicker = ({ onChange }: EmojiPickerProps) => {
+export const EmojiPicker = ({ onChange, className }: EmojiPickerProps) => {
   return (
     <Popover>
       <PopoverTrigger>
-        <Smile className="text-muted-foreground h-6 w-6 cursor-pointer hover:opacity-95 transition ml-2 pb-1" />
+        <Smile className={className} />
       </PopoverTrigger>
       <PopoverContent
         side="right"

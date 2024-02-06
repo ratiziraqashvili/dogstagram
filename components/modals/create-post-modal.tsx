@@ -212,6 +212,7 @@ export const CreatePostModal = () => {
                           />
                         </FormControl>
                         <EmojiPicker
+                          className="text-muted-foreground h-6 w-6 cursor-pointer hover:opacity-95 transition ml-2 pb-1"
                           onChange={(emoji: string) =>
                             field.onChange(`${field.value} ${emoji}`)
                           }
