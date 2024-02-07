@@ -86,7 +86,7 @@ export const PostPropertiesModal = () => {
     }
   };
 
-  const onCommentChange = async (authorId: string) => {
+  const onCommentToggle = async (authorId: string, isPostHidden: boolean | null) => {
     setIsLoading(true);
     try {
       if (isAuthor) {
@@ -94,6 +94,7 @@ export const PostPropertiesModal = () => {
           url: `/api/posts/update/comments/${post.id}`,
           query: {
             authorId,
+            isPostHidden
           },
         });
 
@@ -131,7 +132,7 @@ export const PostPropertiesModal = () => {
           label: post.hideComments
             ? "Turn on commenting"
             : "Turn off commenting",
-          onClick: () => onCommentChange(post.userId),
+          onClick: () => onCommentToggle(post.userId, post.hideComments),
         }
       : null,
     { label: "Go to post", onClick: () => router.push(postUrl) },
