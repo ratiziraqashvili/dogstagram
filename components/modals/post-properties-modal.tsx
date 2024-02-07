@@ -113,15 +113,17 @@ export const PostPropertiesModal = () => {
       }
     } catch (error) {
       console.log("[POST_PROPERTIES_MODAL] error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const buttons = [
-    isAuthor ? { label: "Delete", onClick: () => onDelete(post.userId) } : null,
+    isAuthor ? { label: "Delete", onClick: () => onDelete(post?.userId) } : null,
     isAuthor ? { label: "Edit", onClick: () => {} } : null,
     isAuthor
       ? {
-          label: post.hideLikes
+          label: post?.hideLikes
             ? "Unhide like count to others"
             : "Hide like count to others",
           onClick: () => {},
@@ -129,10 +131,10 @@ export const PostPropertiesModal = () => {
       : null,
     isAuthor
       ? {
-          label: post.hideComments
+          label: post?.hideComments
             ? "Turn on commenting"
             : "Turn off commenting",
-          onClick: () => onCommentToggle(post.userId, post.hideComments),
+          onClick: () => onCommentToggle(post?.userId, post?.hideComments),
         }
       : null,
     { label: "Go to post", onClick: () => router.push(postUrl) },
