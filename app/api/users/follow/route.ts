@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         })
 
         if (isUserBlocked) {
-            return new NextResponse("You cannot follow this user as they have blocked you or you just blocked them.", { status: 403 })
+            return new NextResponse("You cannot follow this user as they have blocked you or you just blocked them", { status: 403 })
         }
 
         if (alreadyFollowing) {

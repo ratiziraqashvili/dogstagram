@@ -12,7 +12,6 @@ interface PostInputProps {
 
 export const PostInput = ({ post }: PostInputProps) => {
   const [comment, setComment] = useState("");
-  const [postState, setPostState] = useState(post);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,14 +25,6 @@ export const PostInput = ({ post }: PostInputProps) => {
   const onLike = async () => {
     try {
       await axios.post(`/api/like/${post?.id}`);
-
-      setPostState((prevState) => ({
-        ...prevState,
-        _count: {
-          ...prevState._count,
-          likes: prevState._count.likes + 1,
-        },
-      }));
     } catch (error) {
       console.log("client error in post-input", error);
     }
@@ -59,7 +50,7 @@ export const PostInput = ({ post }: PostInputProps) => {
       </div>
       <div className="px-4">
         <p className="text-sm">
-          {postState._count.likes === 0 ? (
+          {post._count.likes === 0 ? (
             <>
               <span>Be the first to </span>
               <span
@@ -70,7 +61,7 @@ export const PostInput = ({ post }: PostInputProps) => {
               </span>
             </>
           ) : (
-            postState._count.likes + "likes"
+            <span>{post._count.likes} likes</span>
           )}
         </p>
         <span className="text-muted-foreground text-xs">1 day ago</span>
