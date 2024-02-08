@@ -28,14 +28,16 @@ export async function PATCH(req: Request, { params }:  { params: { postId: strin
                 id: postId,
             },
             data: {
-                hideComments: false,
+                hideLikes: false,
             }
         })
+
+        console.log(updatedPost)
 
         return NextResponse.json(updatedPost)
 
     } catch (error) {
-        console.log("[API_POSTS_UPDATE_COMMENTS_[POSTID]]", error);
+        console.log("[API_POSTS_UPDATE_LIKES_[POSTID]]", error);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

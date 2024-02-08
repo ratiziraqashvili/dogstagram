@@ -121,7 +121,7 @@ export const Posts = ({ posts }: PostsProps) => {
               priority
             />
           </div>
-          <div className="absolute inset-0 z-10 flex items-center justify-center gap-10 opacity-0 group-hover:opacity-100 pointer-events-none">
+          <div className="absolute inset-0 z-10 flex items-center justify-center gap-6 opacity-0 group-hover:opacity-100 pointer-events-none">
             <div className="flex gap-2 items-center">
               <Heart className="text-white h-5 w-5" fill="white" />
               <span className="text-lg text-white font-semibold">

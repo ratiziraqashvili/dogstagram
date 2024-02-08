@@ -9,7 +9,7 @@ export const Sidebar = async () => {
   const user = await currentUser();
 
   return (
-    <div className="xl:w-[15.3rem] w-[4.6rem] border-r-[1px] h-full flex flex-col p-3 gap-7 fixed">
+    <div className="xl:w-[15.3rem] w-[4.6rem] border-r-[1px] h-full flex flex-col p-3 gap-3 fixed">
       <div className="pt-3 xl:block hidden">
         <Link href="/">
           <Image
@@ -21,16 +21,16 @@ export const Sidebar = async () => {
           />
         </Link>
       </div>
-      <Link href="/">
-        <div className="xl:hidden block mt-2 hover:bg-primary/10 transition rounded-md relative w-12 h-12">
+        <Link href="/">
+      <div className="xl:hidden block mt-2 hover:bg-primary/10 transition rounded-md relative w-12 h-12">
           <Image
             className="hover:scale-110 transition cursor-pointer"
             alt="Dogstagram"
             src="/main-logo.png"
             fill
           />
-        </div>
-      </Link>
+      </div>
+        </Link>
       <div className="flex flex-col gap-2 flex-1">
         <Routes />
         <Link href={`/${user?.id}`}>

@@ -2,27 +2,18 @@ import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { CldImage } from "next-cloudinary";
 import { ProfilePicture } from "../profile-picture";
-import { Post } from "@prisma/client";
 import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { CommentSection } from "../comment-section";
 import { PostInput } from "../post-input";
 import { useSecondModal } from "@/hooks/use-second-modal-store";
+import { SinglePost } from "@/types";
 
 export const PostInfoModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const { onOpen } = useSecondModal();
 
-  const post: Post & {
-    _count: {
-      likes: number;
-      comments: number;
-    };
-    user: {
-      imageUrl: string | null;
-      username: string | null;
-    };
-  } = data;
+  const post: SinglePost = data;
 
   const isModalOpen = isOpen && type === "postInfo";
 
@@ -85,7 +76,7 @@ export const PostInfoModal = () => {
             <CommentSection post={post} />
           </div>
           <div className="order-1 md:order-2 flex flex-col gap-4">
-            <PostInput />
+            <PostInput post={post} />
           </div>
         </div>
       </DialogContent>

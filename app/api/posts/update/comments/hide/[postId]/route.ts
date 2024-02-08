@@ -32,8 +32,6 @@ export async function PATCH(req: Request, { params }:  { params: { postId: strin
             }
         })
 
-        console.log(updatedPost)
-
         return NextResponse.json(updatedPost)
 
     } catch (error) {

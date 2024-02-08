@@ -3,9 +3,16 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useRef, useState } from "react";
 import { EmojiPicker } from "./emoji-pickers";
+import { SinglePost } from "@/types";
+import axios from "axios";
 
-export const PostInput = () => {
+interface PostInputProps {
+  post: SinglePost;
+}
+
+export const PostInput = ({ post }: PostInputProps) => {
   const [comment, setComment] = useState("");
+  const [postState, setPostState] = useState(post);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,11 +23,30 @@ export const PostInput = () => {
     inputRef.current?.focus();
   };
 
+  const onLike = async () => {
+    try {
+      await axios.post(`/api/like/${post?.id}`);
+
+      setPostState((prevState) => ({
+        ...prevState,
+        _count: {
+          ...prevState._count,
+          likes: prevState._count.likes + 1,
+        },
+      }));
+    } catch (error) {
+      console.log("client error in post-input", error);
+    }
+  };
+
   return (
     <>
       <div className="flex justify-between px-4 border-t-[1px] pt-3">
         <div className="flex gap-2">
-          <Heart className="cursor-pointer hover:opacity-50" />
+          <Heart
+            onClick={onLike}
+            className="cursor-pointer hover:opacity-50 "
+          />
           <MessageCircle
             onClick={onInputFocus}
             className="cursor-pointer hover:opacity-50"
@@ -33,10 +59,19 @@ export const PostInput = () => {
       </div>
       <div className="px-4">
         <p className="text-sm">
-          Be the first to{" "}
-          <span className="font-semibold hover:opacity-50 cursor-pointer">
-            like this
-          </span>
+          {postState._count.likes === 0 ? (
+            <>
+              <span>Be the first to </span>
+              <span
+                onClick={onLike}
+                className="font-semibold hover:opacity-50 cursor-pointer"
+              >
+                like this
+              </span>
+            </>
+          ) : (
+            postState._count.likes + "likes"
+          )}
         </p>
         <span className="text-muted-foreground text-xs">1 day ago</span>
       </div>

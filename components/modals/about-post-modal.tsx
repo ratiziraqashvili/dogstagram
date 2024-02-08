@@ -1,21 +1,12 @@
 import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
-import { Post } from "@prisma/client";
 import { CalendarDays, MapPin } from "lucide-react";
 import { useSecondModal } from "@/hooks/use-second-modal-store";
+import { SinglePost } from "@/types";
 
 export const AboutPostModal = () => {
   const { isOpen, onClose, type, data } = useSecondModal();
 
-  const post: Post & {
-    _count: {
-      likes: number;
-      comments: number;
-    };
-    user: {
-      imageUrl: string | null;
-      username: string | null;
-    };
-  } = data;
+  const post: SinglePost = data;
 
   const isModalOpen = isOpen && type === "aboutPost";
 

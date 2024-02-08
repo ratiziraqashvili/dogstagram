@@ -1,4 +1,3 @@
-import { Post } from "@prisma/client";
 import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
 import { useSecondModal } from "@/hooks/use-second-modal-store";
 import { useAuth } from "@clerk/nextjs";
@@ -10,21 +9,13 @@ import axios from "axios";
 import { useState } from "react";
 import qs from "query-string";
 import { useModal } from "@/hooks/use-modal-store";
+import { SinglePost } from "@/types";
 
 export const PostPropertiesModal = () => {
   const { isOpen, onClose, type, data, onOpen } = useSecondModal();
   const { onClose: onCloseRootModal } = useModal();
   const { toast } = useToast();
-  const post: Post & {
-    _count: {
-      likes: number;
-      comments: number;
-    };
-    user: {
-      imageUrl: string | null;
-      username: string | null;
-    };
-  } = data;
+  const post: SinglePost = data;
   const [isLoading, setIsLoading] = useState(false);
   const { userId } = useAuth();
   const origin = useOrigin();
@@ -146,17 +137,83 @@ export const PostPropertiesModal = () => {
     } finally {
       setIsLoading(false);
     }
-  }
+  };
+
+  const onLikeHide = async (authorId: string) => {
+    setIsLoading(true);
+    try {
+      if (isAuthor) {
+        const url = qs.stringifyUrl({
+          url: `/api/posts/update/likes/hide/${post.id}`,
+          query: {
+            authorId,
+          },
+        });
+
+        await axios.patch(url);
+
+        toast({
+          title: "Likes hid successfully",
+          variant: "default",
+          duration: 3000,
+        });
+
+        post.hideLikes = true;
+
+        handleClose();
+        router.refresh();
+      }
+    } catch (error) {
+      console.log("[POST_PROPERTIES_MODAL] error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onLikeUnhide = async (authorId: string) => {
+    setIsLoading(true);
+    try {
+      if (isAuthor) {
+        const url = qs.stringifyUrl({
+          url: `/api/posts/update/likes/unhide/${post.id}`,
+          query: {
+            authorId,
+          },
+        });
+
+        await axios.patch(url);
+
+        toast({
+          title: "Likes unhid successfully",
+          variant: "default",
+          duration: 3000,
+        });
+
+        post.hideLikes = false;
+
+        handleClose();
+        router.refresh();
+      }
+    } catch (error) {
+      console.log("[POST_PROPERTIES_MODAL] error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const buttons = [
-    isAuthor ? { label: "Delete", onClick: () => onDelete(post?.userId) } : null,
+    isAuthor
+      ? { label: "Delete", onClick: () => onDelete(post?.userId) }
+      : null,
     isAuthor ? { label: "Edit", onClick: () => {} } : null,
     isAuthor
       ? {
           label: post?.hideLikes
             ? "Unhide like count to others"
             : "Hide like count to others",
-          onClick: () => {},
+          onClick: post?.hideLikes
+            ? () => onLikeUnhide(post?.userId)
+            : () => onLikeHide(post?.userId),
         }
       : null,
     isAuthor
@@ -164,7 +221,9 @@ export const PostPropertiesModal = () => {
           label: post?.hideComments
             ? "Turn on commenting"
             : "Turn off commenting",
-          onClick: post?.hideComments ? () => onCommentUnhide(post?.userId) : () => onCommentHide(post?.userId),
+          onClick: post?.hideComments
+            ? () => onCommentUnhide(post?.userId)
+            : () => onCommentHide(post?.userId),
         }
       : null,
     { label: "Go to post", onClick: () => router.push(postUrl) },

@@ -12,3 +12,16 @@ export type PostInfoType = (
         }
       }
 )[]
+
+export type SinglePost = (
+  Post & {
+    _count: {
+      likes: number;
+      comments: number;
+    };
+    user: {
+      imageUrl: string | null;
+      username: string | null;
+    };
+  }
+)
