@@ -61,6 +61,7 @@ export const PostInfoModal = () => {
             height="664"
             crop="fill"
             className="object-cover md:min-w-24"
+            priority
           />
         </div>
         <div className="md:min-w-[10rem] w-full max-w-[39.2rem]  flex flex-col">

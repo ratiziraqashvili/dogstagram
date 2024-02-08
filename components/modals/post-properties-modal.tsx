@@ -86,27 +86,26 @@ export const PostPropertiesModal = () => {
     }
   };
 
-  const onCommentToggle = async (authorId: string, isPostHidden: boolean | null) => {
+  const onCommentUnhide = async (authorId: string) => {
     setIsLoading(true);
     try {
       if (isAuthor) {
         const url = qs.stringifyUrl({
-          url: `/api/posts/update/comments/${post.id}`,
+          url: `/api/posts/update/comments/unhide/${post.id}`,
           query: {
             authorId,
-            isPostHidden
           },
         });
 
         await axios.patch(url);
 
         toast({
-          title: post.hideComments
-            ? "Comments unhid successfully"
-            : "Comments hid successfully",
+          title: "Comments unhid successfully",
           variant: "default",
           duration: 3000,
         });
+
+        post.hideComments = false;
 
         handleClose();
         router.refresh();
@@ -117,6 +116,37 @@ export const PostPropertiesModal = () => {
       setIsLoading(false);
     }
   };
+
+  const onCommentHide = async (authorId: string) => {
+    setIsLoading(true);
+    try {
+      if (isAuthor) {
+        const url = qs.stringifyUrl({
+          url: `/api/posts/update/comments/hide/${post.id}`,
+          query: {
+            authorId,
+          },
+        });
+
+        await axios.patch(url);
+
+        toast({
+          title: "Comments hid successfully",
+          variant: "default",
+          duration: 3000,
+        });
+
+        post.hideComments = true;
+
+        handleClose();
+        router.refresh();
+      }
+    } catch (error) {
+      console.log("[POST_PROPERTIES_MODAL] error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const buttons = [
     isAuthor ? { label: "Delete", onClick: () => onDelete(post?.userId) } : null,
@@ -134,7 +164,7 @@ export const PostPropertiesModal = () => {
           label: post?.hideComments
             ? "Turn on commenting"
             : "Turn off commenting",
-          onClick: () => onCommentToggle(post?.userId, post?.hideComments),
+          onClick: post?.hideComments ? () => onCommentUnhide(post?.userId) : () => onCommentHide(post?.userId),
         }
       : null,
     { label: "Go to post", onClick: () => router.push(postUrl) },

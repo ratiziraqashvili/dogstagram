@@ -7,7 +7,7 @@ type ModalStore = {
     isOpen: boolean;
     onOpen: (type: ModalType, data?: any) => void;
     onClose: () => void;
-    data?: any
+    data?: any;
 }
 
 export const useSecondModal = create<ModalStore>((set) => ({

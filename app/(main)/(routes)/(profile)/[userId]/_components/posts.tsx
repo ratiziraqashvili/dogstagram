@@ -118,6 +118,7 @@ export const Posts = ({ posts }: PostsProps) => {
               height="300"
               className="cursor-pointer hover:brightness-75"
               sharpen={60}
+              priority
             />
           </div>
           <div className="absolute inset-0 z-10 flex items-center justify-center gap-10 opacity-0 group-hover:opacity-100 pointer-events-none">

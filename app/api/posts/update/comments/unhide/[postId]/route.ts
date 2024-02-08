@@ -9,7 +9,6 @@ export async function PATCH(req: Request, { params }:  { params: { postId: strin
         const { searchParams } = new URL(req.url);
 
         const authorId = searchParams.get("authorId");
-        const isPostHidden = searchParams.get("isPostHidden")
 
         if (!user || !user.id) {
             return new NextResponse("Unauthorized", { status: 401 })
@@ -29,9 +28,11 @@ export async function PATCH(req: Request, { params }:  { params: { postId: strin
                 id: postId,
             },
             data: {
-                hideComments: !isPostHidden,
+                hideComments: false,
             }
         })
+
+        console.log(updatedPost)
 
         return NextResponse.json(updatedPost)
 

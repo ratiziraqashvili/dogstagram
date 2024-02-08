@@ -21,16 +21,16 @@ export const Sidebar = async () => {
           />
         </Link>
       </div>
-      <div className="xl:hidden block mt-2 hover:bg-primary/10 transition rounded-md relative w-12 h-12">
-        <Link href="/">
+      <Link href="/">
+        <div className="xl:hidden block mt-2 hover:bg-primary/10 transition rounded-md relative w-12 h-12">
           <Image
             className="hover:scale-110 transition cursor-pointer"
             alt="Dogstagram"
             src="/main-logo.png"
             fill
           />
-        </Link>
-      </div>
+        </div>
+      </Link>
       <div className="flex flex-col gap-2 flex-1">
         <Routes />
         <Link href={`/${user?.id}`}>
