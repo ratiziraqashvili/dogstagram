@@ -1,10 +1,12 @@
-import { Bookmark, Heart, MessageCircle, Send, Smile } from "lucide-react";
+import { Bookmark, Heart, MessageCircle, Send } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EmojiPicker } from "./emoji-pickers";
 import { SinglePost } from "@/types";
 import axios from "axios";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface PostInputProps {
   post: SinglePost;
@@ -12,11 +14,27 @@ interface PostInputProps {
 
 export const PostInput = ({ post }: PostInputProps) => {
   const [comment, setComment] = useState("");
+  const [isLiked, setIsLiked] = useState<boolean | null>(null);
+  const [likeCount, setLikeCount] = useState(post._count.likes);
+  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
   };
+
+  useEffect(() => {
+    const fetchLikeStatus = async () => {
+      try {
+        const response = await axios.get(`/api/like/${post.id}`);
+        setIsLiked(response.data);
+      } catch (error) {
+        console.log("client error in post-input", error);
+      }
+    };
+
+    fetchLikeStatus();
+  }, [post.id]);
 
   const onInputFocus = () => {
     inputRef.current?.focus();
@@ -24,11 +42,23 @@ export const PostInput = ({ post }: PostInputProps) => {
 
   const onLike = async () => {
     try {
-      await axios.post(`/api/like/${post?.id}`);
+      if (isLiked === null) {
+        return;
+      } else {
+        setIsLiked(true);
+        setLikeCount((prevCount) => prevCount + 1);
+        await axios.post(`/api/like/${post?.id}`);
+      }
+
+      router.refresh();
     } catch (error) {
+      setIsLiked(false);
+      setLikeCount((prevCount) => prevCount - 1);
       console.log("client error in post-input", error);
     }
   };
+
+  console.log("isLiked:", isLiked);
 
   return (
     <>
@@ -36,7 +66,10 @@ export const PostInput = ({ post }: PostInputProps) => {
         <div className="flex gap-2">
           <Heart
             onClick={onLike}
-            className="cursor-pointer hover:opacity-50 "
+            className={cn(
+              "cursor-pointer hover:opacity-50",
+              isLiked ? "text-red-600 fill-red-600 filter" : "text-black"
+            )}
           />
           <MessageCircle
             onClick={onInputFocus}
@@ -50,7 +83,7 @@ export const PostInput = ({ post }: PostInputProps) => {
       </div>
       <div className="px-4">
         <p className="text-sm">
-          {post._count.likes === 0 ? (
+          {likeCount === 0 ? (
             <>
               <span>Be the first to </span>
               <span
@@ -61,7 +94,7 @@ export const PostInput = ({ post }: PostInputProps) => {
               </span>
             </>
           ) : (
-            <span>{post._count.likes} likes</span>
+            <span>{likeCount} likes</span>
           )}
         </p>
         <span className="text-muted-foreground text-xs">1 day ago</span>

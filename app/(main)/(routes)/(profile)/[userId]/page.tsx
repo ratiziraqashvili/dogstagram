@@ -22,7 +22,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
       blockedUserId: userId,
     },
   });
-  
+
   const posts = await db.post.findMany({
     where: {
       userId,
@@ -35,15 +35,15 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         select: {
           likes: true,
           comments: true,
-        }
+        },
       },
       user: {
         select: {
           imageUrl: true,
           username: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
 
   const postCount = await db.post.count({
@@ -79,9 +79,9 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
   });
 
   const followerIds = followers?.followers.map((user) => user.followerId)!;
-  
+
   const isFollowing = followerIds.includes(currUser!.id);
-  
+
   if (!user) {
     return (
       <div className="flex justify-center items-center h-[40rem]">
@@ -97,7 +97,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
       </div>
     );
   }
-  
+
   return (
     <div className="md:pl-10 xl:pr-0">
       <ProfileNavbar username={user?.username} profileId={user?.clerkId} />

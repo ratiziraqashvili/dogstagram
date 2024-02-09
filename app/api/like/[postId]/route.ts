@@ -40,3 +40,27 @@ export async function POST(req: Request, { params }: { params: { postId: string;
         return new NextResponse("Internal Error", { status: 500 })
     }
 }
+
+export async function GET(req: Request, { params }: { params: { postId: string; } }) {
+    try {
+        const user = await currentUser();
+        const postId = params.postId;
+
+        if (!postId) {
+            return new NextResponse("postId is required but its missing", { status: 400 });
+        }
+
+        const isLiked = await db.like.findFirst({
+            where: {
+                userId: user?.id,
+                postId,
+            }
+        })
+
+        return NextResponse.json(!!isLiked);
+
+    } catch (error) {
+        console.log("error in server [API_LIKE_[POSTID]]");
+        return new NextResponse("Internal Error", { status: 500})
+    }
+}
