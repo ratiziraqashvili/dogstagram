@@ -7,13 +7,15 @@ import { Posts } from "./posts";
 import { SavedPosts } from "./saved-posts";
 import { useAuth } from "@clerk/nextjs";
 import { PostInfoType } from "@/types";
+import { Like } from "@prisma/client";
 
 interface ProfileFiltersProps {
   profileId: string;
   posts: PostInfoType;
+  likes: Like[];
 }
 
-export const ProfileFilters = ({ profileId, posts }: ProfileFiltersProps) => {
+export const ProfileFilters = ({ profileId, posts, likes }: ProfileFiltersProps) => {
   const [filter, setFilter] = useState("posts");
   const { userId } = useAuth();
 
@@ -104,7 +106,7 @@ export const ProfileFilters = ({ profileId, posts }: ProfileFiltersProps) => {
         )}
       </div>
       <div className="md:w-[73%] max-w-4xl mt-2 mx-auto">
-        {filter === "posts" && <Posts posts={posts} />}
+        {filter === "posts" && <Posts likes={likes} posts={posts} />}
         {filter === "saved" && <SavedPosts />}
       </div>
     </div>

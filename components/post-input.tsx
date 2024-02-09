@@ -10,11 +10,12 @@ import { useRouter } from "next/navigation";
 
 interface PostInputProps {
   post: SinglePost;
+  isLiked: boolean | undefined;
 }
 
-export const PostInput = ({ post }: PostInputProps) => {
+export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
   const [comment, setComment] = useState("");
-  const [isLiked, setIsLiked] = useState<boolean | null>(null);
+  const [isLiked, setIsLiked] = useState<boolean | undefined>(liked);
   const [likeCount, setLikeCount] = useState(post._count.likes);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -23,32 +24,15 @@ export const PostInput = ({ post }: PostInputProps) => {
     setComment(event.target.value);
   };
 
-  useEffect(() => {
-    const fetchLikeStatus = async () => {
-      try {
-        const response = await axios.get(`/api/like/${post.id}`);
-        setIsLiked(response.data);
-      } catch (error) {
-        console.log("client error in post-input", error);
-      }
-    };
-
-    fetchLikeStatus();
-  }, [post.id]);
-
   const onInputFocus = () => {
     inputRef.current?.focus();
   };
 
   const onLike = async () => {
     try {
-      if (isLiked === null) {
-        return;
-      } else {
         setIsLiked(true);
         setLikeCount((prevCount) => prevCount + 1);
         await axios.post(`/api/like/${post?.id}`);
-      }
 
       router.refresh();
     } catch (error) {
@@ -58,7 +42,9 @@ export const PostInput = ({ post }: PostInputProps) => {
     }
   };
 
-  console.log("isLiked:", isLiked);
+  const unLike = async () => {
+    
+  }
 
   return (
     <>

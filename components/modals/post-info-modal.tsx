@@ -10,12 +10,15 @@ import { useSecondModal } from "@/hooks/use-second-modal-store";
 import { SinglePost } from "@/types";
 
 export const PostInfoModal = () => {
-  const { isOpen, onClose, type, data } = useModal();
+  const { isOpen, onClose, type, data, likes } = useModal();
   const { onOpen } = useSecondModal();
 
   const post: SinglePost = data;
 
   const isModalOpen = isOpen && type === "postInfo";
+  
+  const likePostIds = likes?.map(like => like.postId);
+  const isLiked = likePostIds?.includes(post.id);
 
   const onPostPropertiesModalOpen = () => {
     onOpen("postProperties", post);
@@ -76,7 +79,7 @@ export const PostInfoModal = () => {
             <CommentSection post={post} />
           </div>
           <div className="order-1 md:order-2 flex flex-col gap-4">
-            <PostInput post={post} />
+            <PostInput isLiked={isLiked} post={post} />
           </div>
         </div>
       </DialogContent>
