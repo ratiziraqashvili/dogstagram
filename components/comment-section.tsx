@@ -1,19 +1,12 @@
-import { Post } from "@prisma/client";
+import { SinglePost } from "@/types";
+import { Comment } from "@prisma/client";
 
 interface CommentSectionProps {
-    post: Post & {
-        _count: {
-          likes: number;
-          comments: number;
-        };
-        user: {
-          imageUrl: string | null;
-          username: string | null;
-        };
-      }
+    post: SinglePost;
+    comments: Comment[] | undefined;
 }
 
-export const CommentSection = ({ post }: CommentSectionProps) => {
+export const CommentSection = ({ post, comments }: CommentSectionProps) => {
     return (
         <div className="md:border-t-[1px]">
             comment

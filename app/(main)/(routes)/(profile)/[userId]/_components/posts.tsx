@@ -5,7 +5,7 @@ import { usePostDataStore } from "@/hooks/use-post-data-store";
 import { cn } from "@/lib/utils";
 import { PostInfoType } from "@/types";
 import { useAuth } from "@clerk/nextjs";
-import { Like, Post } from "@prisma/client";
+import { Comment, Like, Post } from "@prisma/client";
 import { Camera, Heart, MessageCircle } from "lucide-react";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useParams } from "next/navigation";
@@ -13,9 +13,10 @@ import { useParams } from "next/navigation";
 interface PostsProps {
   posts: PostInfoType;
   likes: Like[];
+  comments: Comment[];
 }
 
-export const Posts = ({ posts, likes }: PostsProps) => {
+export const Posts = ({ posts, likes, comments }: PostsProps) => {
   const { onOpen } = useModal();
   const { toast } = useToast();
   const { addUploadedData } = usePostDataStore();
@@ -97,9 +98,13 @@ export const Posts = ({ posts, likes }: PostsProps) => {
     );
   }
 
-  const onPostInfoModalOpen = (post: Post, likes: Like[]) => {
-    onOpen("postInfo", post, likes);
-  }
+  const onPostInfoModalOpen = (
+    post: Post,
+    likes: Like[],
+    commenst: Comment[]
+  ) => {
+    onOpen("postInfo", post, likes, comments);
+  };
 
   return (
     <div
@@ -109,7 +114,11 @@ export const Posts = ({ posts, likes }: PostsProps) => {
       )}
     >
       {posts.map((post) => (
-        <div onClick={() => onPostInfoModalOpen(post, likes)} className="group relative" key={post.id}>
+        <div
+          onClick={() => onPostInfoModalOpen(post, likes, comments)}
+          className="group relative"
+          key={post.id}
+        >
           <div className="">
             <CldImage
               src={post.imageUrl}

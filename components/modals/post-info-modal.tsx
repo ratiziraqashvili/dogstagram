@@ -10,7 +10,7 @@ import { useSecondModal } from "@/hooks/use-second-modal-store";
 import { SinglePost } from "@/types";
 
 export const PostInfoModal = () => {
-  const { isOpen, onClose, type, data, likes } = useModal();
+  const { isOpen, onClose, type, data, likes, comments } = useModal();
   const { onOpen } = useSecondModal();
 
   const post: SinglePost = data;
@@ -76,7 +76,7 @@ export const PostInfoModal = () => {
             </div>
           </div>
           <div className="flex-1 order-2 md:order-1">
-            <CommentSection post={post} />
+            <CommentSection comments={comments} post={post} />
           </div>
           <div className="order-1 md:order-2 flex flex-col gap-4">
             <PostInput isLiked={isLiked} post={post} />

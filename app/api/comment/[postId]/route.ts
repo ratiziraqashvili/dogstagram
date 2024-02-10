@@ -36,8 +36,6 @@ export async function POST(req: Request, { params }: { params: { postId: string 
             }
         })
 
-        console.log(comment)
-
         return NextResponse.json(comment);
 
     } catch (error) {

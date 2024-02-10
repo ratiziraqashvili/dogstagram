@@ -77,6 +77,7 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
       console.log("client error in onComment", error);
     } finally {
       setIsLoading(false);
+      setComment("");
     }
   };
 

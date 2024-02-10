@@ -49,8 +49,10 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
   const likes = await db.like.findMany({
     where: {
       userId: currUser?.id,
-    }
-  })
+    },
+  });
+
+  const comments = await db.comment.findMany();
 
   const postCount = await db.post.count({
     where: {
@@ -137,7 +139,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
           followingCountNumber={followingCount}
         />
       </div>
-      <ProfileFilters likes={likes} posts={posts} profileId={userId} />
+      <ProfileFilters comments={comments} likes={likes} posts={posts} profileId={userId} />
     </div>
   );
 };
