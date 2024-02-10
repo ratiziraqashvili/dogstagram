@@ -1,7 +1,7 @@
 import { Bookmark, Heart, MessageCircle, Send } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { EmojiPicker } from "./emoji-pickers";
 import { SinglePost } from "@/types";
 import axios from "axios";
@@ -16,6 +16,7 @@ interface PostInputProps {
 export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
   const [comment, setComment] = useState("");
   const [isLiked, setIsLiked] = useState<boolean | undefined>(liked);
+  const [isLoading, setIsLoading] = useState(false);
   const [likeCount, setLikeCount] = useState(post._count.likes);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,13 +47,28 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
     try {
       setIsLiked(false);
       setLikeCount((prevCount) => prevCount - 1);
-      await axios.delete(`/api/like/${post.id}`);
+      await axios.delete(`/api/like/${post?.id}`);
 
       router.refresh();
     } catch (error) {
       setIsLiked(true);
       setLikeCount((prevCount) => prevCount + 1);
       console.log("client error in unlike, post-input", error);
+    }
+  };
+
+  const onComment = async () => {
+    setIsLoading(true);
+    try {
+      if (!!comment) {
+        await axios.post(`/api/comment/${post?.id}`);
+      } else return;
+
+      router.refresh();
+    } catch (error) {
+      console.log("client error in onComment", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -101,13 +117,19 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
           onChange={(value) => setComment(comment + value)}
         />
         <Input
+          disabled={isLoading}
           ref={inputRef}
           value={comment}
           onChange={onInputChange}
           placeholder="Add a comment..."
           className="border-none"
         />
-        <Button className="p-0 text-amber-600" variant="ghost">
+        <Button
+          onClick={onComment}
+          disabled={comment === "" || isLoading}
+          className="p-0 text-amber-600"
+          variant="ghost"
+        >
           Post
         </Button>
       </div>
