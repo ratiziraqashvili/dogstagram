@@ -30,28 +30,38 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
 
   const onLike = async () => {
     try {
-        setIsLiked(true);
-        setLikeCount((prevCount) => prevCount + 1);
-        await axios.post(`/api/like/${post?.id}`);
+      setIsLiked(true);
+      setLikeCount((prevCount) => prevCount + 1);
+      await axios.post(`/api/like/${post?.id}`);
 
       router.refresh();
     } catch (error) {
       setIsLiked(false);
       setLikeCount((prevCount) => prevCount - 1);
-      console.log("client error in post-input", error);
+      console.log("client error in like, post-input", error);
     }
   };
 
-  const unLike = async () => {
-    
-  }
+  const onUnLike = async () => {
+    try {
+      setIsLiked(false);
+      setLikeCount((prevCount) => prevCount - 1);
+      await axios.delete(`/api/like/${post.id}`);
+
+      router.refresh();
+    } catch (error) {
+      setIsLiked(true);
+      setLikeCount((prevCount) => prevCount + 1);
+      console.log("client error in unlike, post-input", error);
+    }
+  };
 
   return (
     <>
       <div className="flex justify-between px-4 border-t-[1px] pt-3">
         <div className="flex gap-2">
           <Heart
-            onClick={onLike}
+            onClick={isLiked ? onUnLike : onLike}
             className={cn(
               "cursor-pointer hover:opacity-50",
               isLiked ? "text-red-600 fill-red-600 filter" : "text-black"

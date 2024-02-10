@@ -36,31 +36,48 @@ export async function POST(req: Request, { params }: { params: { postId: string;
         return NextResponse.json(like);
 
     } catch (error) {
-        console.log("error in server [API_LIKE_[POSTID]]", error);
-        return new NextResponse("Internal Error", { status: 500 })
+        console.log("error in server [API_LIKE_[POSTID]]_request_delete", error);
+        return new NextResponse("Internal Error", { status: 500 });
     }
 }
 
-export async function GET(req: Request, { params }: { params: { postId: string; } }) {
+export async function DELETE(req: Request, { params }: { params: { postId: string; } }) {
     try {
         const user = await currentUser();
         const postId = params.postId;
+
+        if (!user || !user.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
 
         if (!postId) {
             return new NextResponse("postId is required but its missing", { status: 400 });
         }
 
-        const isLiked = await db.like.findFirst({
+        const like = await db.like.findFirst({
             where: {
-                userId: user?.id,
-                postId,
+                userId: user.id,
+                postId
             }
         })
 
-        return NextResponse.json(!!isLiked);
+        if (!like) {
+            return new NextResponse("There are no like to delete", { status: 400 })
+        }
 
+        const deletedLike = await db.like.delete({
+            where: {
+                userId_postId: {
+                    userId: user.id,
+                    postId
+                }
+            }
+        })
+
+        return NextResponse.json(deletedLike);
+        
     } catch (error) {
-        console.log("error in server [API_LIKE_[POSTID]]");
-        return new NextResponse("Internal Error", { status: 500})
+        console.log("error in server [API_LIKE_[POSTID]]_request_delete", error);
+        return new NextResponse("Internal Error", { status: 500 });
     }
 }
