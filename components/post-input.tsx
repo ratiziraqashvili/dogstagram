@@ -19,6 +19,7 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
   const [isLiked, setIsLiked] = useState<boolean | undefined>(liked);
   const [isLoading, setIsLoading] = useState(false);
   const [likeCount, setLikeCount] = useState(post._count.likes);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -45,6 +46,7 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
   };
 
   const onUnLike = async () => {
+    
     try {
       setIsLiked(false);
       setLikeCount((prevCount) => prevCount - 1);
@@ -102,7 +104,7 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
           <Bookmark className="cursor-pointer hover:opacity-50" />
         </div>
       </div>
-      <div className="px-4">
+      <div className={cn("px-4", post.hideComments && "pb-3")}>
         <p className="text-sm">
           {likeCount === 0 ? (
             <>
@@ -120,28 +122,30 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
         </p>
         <span className="text-muted-foreground text-xs">1 day ago</span>
       </div>
-      <div className="flex items-center gap-2 border-t-[1px] px-4 py-2">
-        <EmojiPicker
-          className="h-6 w-6"
-          onChange={(value) => setComment(comment + value)}
-        />
-        <Input
-          disabled={isLoading}
-          ref={inputRef}
-          value={comment}
-          onChange={onInputChange}
-          placeholder="Add a comment..."
-          className="border-none"
-        />
-        <Button
-          onClick={onComment}
-          disabled={comment === "" || isLoading}
-          className="p-0 text-amber-600"
-          variant="ghost"
-        >
-          Post
-        </Button>
-      </div>
+      {!post.hideComments && (
+        <div className="flex items-center gap-2 border-t-[1px] px-4 py-2">
+          <EmojiPicker
+            className="h-6 w-6"
+            onChange={(value) => setComment(comment + value)}
+          />
+          <Input
+            disabled={isLoading}
+            ref={inputRef}
+            value={comment}
+            onChange={onInputChange}
+            placeholder="Add a comment..."
+            className="border-none"
+          />
+          <Button
+            onClick={onComment}
+            disabled={comment === "" || isLoading}
+            className="p-0 text-amber-600"
+            variant="ghost"
+          >
+            Post
+          </Button>
+        </div>
+      )}
     </>
   );
 };
