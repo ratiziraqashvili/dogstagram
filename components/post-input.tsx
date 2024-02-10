@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { EmojiPicker } from "./emoji-pickers";
 import { SinglePost } from "@/types";
 import axios from "axios";
+import qs from "query-string";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
@@ -61,7 +62,14 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
     setIsLoading(true);
     try {
       if (!!comment) {
-        await axios.post(`/api/comment/${post?.id}`);
+        const url = qs.stringifyUrl({
+          url: `/api/comment/${post?.id}`,
+          query: {
+            content: comment,
+          },
+        });
+
+        await axios.post(url);
       } else return;
 
       router.refresh();

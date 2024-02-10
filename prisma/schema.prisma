@@ -23,7 +23,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  posts Post[]
+  posts    Post[]
+  comments Comment[]
 }
 
 model BlockedUser {
@@ -71,11 +72,13 @@ model Comment {
   userId  String
   postId  String
   post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([postId])
+  @@index([userId])
 }
 
 model Follow {
