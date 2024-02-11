@@ -8,7 +8,11 @@ interface CommentSectionProps {
   formattedTime: string;
 }
 
-export const CommentSection = ({ post, comments, formattedTime }: CommentSectionProps) => {
+export const CommentSection = ({
+  post,
+  comments,
+  formattedTime,
+}: CommentSectionProps) => {
   const filteredComments = comments?.filter(
     (comment) => comment.postId === post.id
   );
@@ -40,9 +44,9 @@ export const CommentSection = ({ post, comments, formattedTime }: CommentSection
   if (filteredComments?.length! > 0 && !post.caption) {
     return (
       <div className="md:border-t-[1px]">
-        <Comments post={post} comments={filteredComments} />
+        <Comments comments={filteredComments} />
       </div>
-    )
+    );
   }
 
   if (post.caption) {
@@ -66,7 +70,7 @@ export const CommentSection = ({ post, comments, formattedTime }: CommentSection
             </div>
           </div>
         </div>
-        <Comments post={post} comments={filteredComments} />
+        <Comments comments={filteredComments} />
       </div>
     );
   }

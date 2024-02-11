@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type ModalType = "postProperties" | "aboutPost"
+export type ModalType = "postProperties" | "aboutPost" | "commentDelete"
 
 type ModalStore = {
     type: ModalType | null;

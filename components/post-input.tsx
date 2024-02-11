@@ -107,14 +107,20 @@ export const PostInput = ({
         });
 
         await axios.post(url);
+        router.refresh();
       } else return;
-
-      router.refresh();
     } catch (error) {
       console.error("client error in onComment", error);
     } finally {
       setIsLoading(false);
       setComment("");
+    }
+  };
+
+  const onEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onComment();
     }
   };
 
@@ -166,6 +172,7 @@ export const PostInput = ({
             onChange={(value) => setComment(comment + value)}
           />
           <Input
+            onKeyDown={(e) => onEnter(e)}
             disabled={isLoading}
             ref={inputRef}
             value={comment}

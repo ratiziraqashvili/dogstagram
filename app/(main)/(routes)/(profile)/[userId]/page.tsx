@@ -58,9 +58,12 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         select: {
           imageUrl: true,
           username: true,
-        }
+        },
       },
-    }
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   const postCount = await db.post.count({
@@ -148,7 +151,12 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
           followingCountNumber={followingCount}
         />
       </div>
-      <ProfileFilters comments={comments} likes={likes} posts={posts} profileId={userId} />
+      <ProfileFilters
+        comments={comments}
+        likes={likes}
+        posts={posts}
+        profileId={userId}
+      />
     </div>
   );
 };

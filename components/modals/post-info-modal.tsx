@@ -93,7 +93,7 @@ export const PostInfoModal = () => {
               </Button>
             </div>
           </div>
-          <div className="flex-1 order-2 md:order-1">
+          <div className="flex-1 order-2 md:order-1 overflow-y-auto">
             <CommentSection
               formattedTime={formattedTime}
               comments={comments}
