@@ -14,7 +14,7 @@ export async function DELETE(req: Request) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!commentId || authorId) {
+        if (!commentId || !authorId) {
             return new NextResponse("commentId and authorId are required but it is missing", { status: 400 });
         }
 

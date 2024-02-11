@@ -28,12 +28,13 @@ export const CommentDeleteModal = () => {
         const url = qs.stringifyUrl({
           url: "/api/comment/delete",
           query: {
-            commentId: comment.id,
+            commentId: comment.commentId,
             authorId: comment.authorId,
           },
         });
 
         await axios.delete(url);
+        handleClose();
         router.refresh();
       } else {
         return toast({

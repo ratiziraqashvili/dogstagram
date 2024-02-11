@@ -26,7 +26,7 @@ export const Comments = ({ comments }: CommentsProps) => {
         };
 
         return (
-          <div className="flex gap-3 p-3 items-center group">
+          <div key={comment.id} className="flex gap-3 p-3 items-center group">
             <div>
               <ProfilePicture
                 className="w-8 h-8 cursor-pointer"
