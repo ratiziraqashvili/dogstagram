@@ -3,9 +3,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { useModal } from "@/hooks/use-modal-store";
 import { usePostDataStore } from "@/hooks/use-post-data-store";
 import { cn } from "@/lib/utils";
-import { PostInfoType } from "@/types";
+import { CommentArray, PostInfoType } from "@/types";
 import { useAuth } from "@clerk/nextjs";
-import { Comment, Like, Post } from "@prisma/client";
+import { Like, Post } from "@prisma/client";
 import { Camera, Heart, MessageCircle } from "lucide-react";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useParams } from "next/navigation";
@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 interface PostsProps {
   posts: PostInfoType;
   likes: Like[];
-  comments: Comment[];
+  comments: CommentArray;
 }
 
 export const Posts = ({ posts, likes, comments }: PostsProps) => {
@@ -101,7 +101,7 @@ export const Posts = ({ posts, likes, comments }: PostsProps) => {
   const onPostInfoModalOpen = (
     post: Post,
     likes: Like[],
-    commenst: Comment[]
+    comments: CommentArray,
   ) => {
     onOpen("postInfo", post, likes, comments);
   };

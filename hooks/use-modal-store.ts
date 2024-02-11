@@ -1,4 +1,5 @@
-import { Comment, Like } from "@prisma/client";
+import { CommentArray } from "@/types";
+import { Like } from "@prisma/client";
 import { create } from "zustand";
 
 export type ModalType = "following" | "settings" | "moreHorizontal" | "displayFollowers" | "displayFollowings" | "aboutAccount" | "blockConfirm" | "blockIndicator" | "shareTo" | "createPost" | "postInfo"
@@ -6,11 +7,11 @@ export type ModalType = "following" | "settings" | "moreHorizontal" | "displayFo
 type ModalStore = {
     type: ModalType | null;
     isOpen: boolean;
-    onOpen: (type: ModalType, data?: any, likes?: Like[], comments?: Comment[]) => void;
+    onOpen: (type: ModalType, data?: any, likes?: Like[], comments?: CommentArray) => void;
     onClose: () => void;
     data?: any;
     likes?: Like[];
-    comments?: Comment[];
+    comments?: CommentArray;
 }
 
 export const useModal = create<ModalStore>((set) => ({

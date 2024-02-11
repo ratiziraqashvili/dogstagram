@@ -52,7 +52,16 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     },
   });
 
-  const comments = await db.comment.findMany();
+  const comments = await db.comment.findMany({
+    include: {
+      user: {
+        select: {
+          imageUrl: true,
+          username: true,
+        }
+      },
+    }
+  });
 
   const postCount = await db.post.count({
     where: {

@@ -13,6 +13,7 @@ import { useToast } from "./ui/use-toast";
 interface PostInputProps {
   post: SinglePost;
   isLiked: boolean | undefined;
+  formattedTime: string;
 }
 
 const debounce = (fn: Function, delay: number) => {
@@ -27,7 +28,11 @@ const debounce = (fn: Function, delay: number) => {
   };
 };
 
-export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
+export const PostInput = ({
+  post,
+  isLiked: liked,
+  formattedTime,
+}: PostInputProps) => {
   const [comment, setComment] = useState("");
   const [isLiked, setIsLiked] = useState<boolean | undefined>(liked);
   const [isLoading, setIsLoading] = useState(false);
@@ -152,7 +157,7 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
             <span>{likeCount} likes</span>
           )}
         </p>
-        <span className="text-muted-foreground text-xs">1 day ago</span>
+        <span className="text-muted-foreground text-xs">{formattedTime}</span>
       </div>
       {!post.hideComments && (
         <div className="flex items-center gap-2 border-t-[1px] px-4 py-2">
