@@ -17,9 +17,13 @@ export const Comments = ({ comments }: CommentsProps) => {
     <>
       {comments?.map((comment) => {
         const formattedTime = formatTimeDifference(comment.createdAt);
+        const data = {
+          commentId: comment.id,
+          authorId: comment.userId,
+        };
         const onCommentDeleteModalOpen = () => {
-            onOpen("commentDelete", comment.id)
-          }
+          onOpen("commentDelete", data);
+        };
 
         return (
           <div className="flex gap-3 p-3 items-center group">
@@ -42,7 +46,10 @@ export const Comments = ({ comments }: CommentsProps) => {
                 </span>
                 {userId === comment.userId && (
                   <button>
-                    <MoreHorizontal onClick={onCommentDeleteModalOpen} className="h-5 w-5 text-muted-foreground pt-1 opacity-0 group-hover:opacity-100" />
+                    <MoreHorizontal
+                      onClick={onCommentDeleteModalOpen}
+                      className="h-5 w-5 text-muted-foreground pt-1 opacity-0 group-hover:opacity-100"
+                    />
                   </button>
                 )}
               </div>

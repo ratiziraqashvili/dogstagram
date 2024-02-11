@@ -15,7 +15,7 @@ export async function POST(req: Request, { params }: { params: { postId: string 
         }
 
         if (!postId) {
-            return new NextResponse("postId is required but its missing", { status: 400 });
+            return new NextResponse("postId is required but it is missing", { status: 400 });
         }
 
         if (!content) return null;
