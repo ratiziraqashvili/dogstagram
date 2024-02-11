@@ -1,18 +1,31 @@
 import { Bookmark, Heart, MessageCircle, Send } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { EmojiPicker } from "./emoji-pickers";
 import { SinglePost } from "@/types";
 import axios from "axios";
 import qs from "query-string";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { useToast } from "./ui/use-toast";
 
 interface PostInputProps {
   post: SinglePost;
   isLiked: boolean | undefined;
 }
+
+const debounce = (fn: Function, delay: number) => {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: any[]) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+};
 
 export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
   const [comment, setComment] = useState("");
@@ -22,6 +35,7 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
@@ -31,23 +45,34 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
     inputRef.current?.focus();
   };
 
-  const onLike = async () => {
+  const onLike = useCallback(async () => {
     try {
+      setIsSubmitting(true);
       setIsLiked(true);
       setLikeCount((prevCount) => prevCount + 1);
       await axios.post(`/api/like/${post?.id}`);
 
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       setIsLiked(false);
       setLikeCount((prevCount) => prevCount - 1);
-      console.log("client error in like, post-input", error);
-    }
-  };
+      console.error("client error in like, post-input", error);
 
-  const onUnLike = async () => {
-    
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, []);
+
+  const onUnLike = useCallback(async () => {
     try {
+      setIsSubmitting(true);
       setIsLiked(false);
       setLikeCount((prevCount) => prevCount - 1);
       await axios.delete(`/api/like/${post?.id}`);
@@ -56,9 +81,14 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
     } catch (error) {
       setIsLiked(true);
       setLikeCount((prevCount) => prevCount + 1);
-      console.log("client error in unlike, post-input", error);
+      console.error("client error in unlike, post-input", error);
+    } finally {
+      setIsSubmitting(false);
     }
-  };
+  }, []);
+
+  const deboundedOnLike = useCallback(debounce(onLike, 300), []);
+  const deboundedOnUnLike = useCallback(debounce(onUnLike, 300), []);
 
   const onComment = async () => {
     setIsLoading(true);
@@ -76,7 +106,7 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
 
       router.refresh();
     } catch (error) {
-      console.log("client error in onComment", error);
+      console.error("client error in onComment", error);
     } finally {
       setIsLoading(false);
       setComment("");
@@ -88,7 +118,9 @@ export const PostInput = ({ post, isLiked: liked }: PostInputProps) => {
       <div className="flex justify-between px-4 border-t-[1px] pt-3">
         <div className="flex gap-2">
           <Heart
-            onClick={isLiked ? onUnLike : onLike}
+            onClick={
+              !isSubmitting && isLiked ? deboundedOnUnLike : deboundedOnLike
+            }
             className={cn(
               "cursor-pointer hover:opacity-50",
               isLiked ? "text-red-600 fill-red-600 filter" : "text-black"

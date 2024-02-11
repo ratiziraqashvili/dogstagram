@@ -28,7 +28,7 @@ export const BlockList = ({ blockedUser }: BlockListProps) => {
         variant: "default",
       });
     } catch (error) {
-      console.log("error in [BLOCK_LIST]", error);
+      console.error("error in [BLOCK_LIST]", error);
     } finally {
       setIsLoading(false);
     }

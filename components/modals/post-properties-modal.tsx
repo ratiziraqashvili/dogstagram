@@ -71,7 +71,7 @@ export const PostPropertiesModal = () => {
       router.push(`/${userId}`);
       router.refresh();
     } catch (error) {
-      console.log("[POST_PROPERTIES_MODAL] error:", error);
+      console.error("[POST_PROPERTIES_MODAL] error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -102,7 +102,7 @@ export const PostPropertiesModal = () => {
         router.refresh();
       }
     } catch (error) {
-      console.log("[POST_PROPERTIES_MODAL] error:", error);
+      console.error("[POST_PROPERTIES_MODAL] error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -133,7 +133,7 @@ export const PostPropertiesModal = () => {
         router.refresh();
       }
     } catch (error) {
-      console.log("[POST_PROPERTIES_MODAL] error:", error);
+      console.error("[POST_PROPERTIES_MODAL] error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -164,7 +164,7 @@ export const PostPropertiesModal = () => {
         router.refresh();
       }
     } catch (error) {
-      console.log("[POST_PROPERTIES_MODAL] error:", error);
+      console.error("[POST_PROPERTIES_MODAL] error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -195,7 +195,7 @@ export const PostPropertiesModal = () => {
         router.refresh();
       }
     } catch (error) {
-      console.log("[POST_PROPERTIES_MODAL] error:", error);
+      console.error("[POST_PROPERTIES_MODAL] error:", error);
     } finally {
       setIsLoading(false);
     }

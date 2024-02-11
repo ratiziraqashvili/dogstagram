@@ -146,7 +146,7 @@ export const CreatePostModal = () => {
       router.push(`/${user?.id}`);
       router.refresh();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast({
         description: "Something went wrong.",
         duration: 3000,
