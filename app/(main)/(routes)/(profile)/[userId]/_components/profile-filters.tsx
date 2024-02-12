@@ -119,7 +119,7 @@ export const ProfileFilters = ({
       </div>
       <div className="md:w-[73%] max-w-4xl mt-2 mx-auto">
         {filter === "posts" && (
-          <Posts comments={comments} likes={likes} posts={posts} />
+          <Posts comments={comments} likes={likes} posts={posts} savedPostsId={savedPostsId} />
         )}
         {filter === "saved" && (
           <SavedPosts

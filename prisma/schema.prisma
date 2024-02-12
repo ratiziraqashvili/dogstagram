@@ -102,7 +102,7 @@ model SavedPosts {
   user        User   @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
   post        Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  @@id([userId, postId])
+  @@id([userId, postId, savedUserId])
   @@index([postId])
   @@index([userId])
 }

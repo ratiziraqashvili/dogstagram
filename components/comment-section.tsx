@@ -1,6 +1,8 @@
 import { CommentArray, SinglePost } from "@/types";
 import { ProfilePicture } from "./profile-picture";
 import { Comments } from "./comments";
+import { useModal } from "@/hooks/use-modal-store";
+import Link from "next/link";
 
 interface CommentSectionProps {
   post: SinglePost;
@@ -13,9 +15,14 @@ export const CommentSection = ({
   comments,
   formattedTime,
 }: CommentSectionProps) => {
+  const { onClose } = useModal();
   const filteredComments = comments?.filter(
     (comment) => comment.postId === post.id
   );
+
+  const handleClose = () => {
+    onClose();
+  };
 
   if (post.hideComments) {
     return (
@@ -53,14 +60,21 @@ export const CommentSection = ({
     return (
       <div className="md:border-t-[1px]">
         <div className="flex gap-3 p-3 items-center">
-          <div>
-            <ProfilePicture className="w-8 h-8" imageUrl={post.user.imageUrl} />
-          </div>
+          <Link onClick={handleClose} href={`/${post.userId}`}>
+            <div>
+              <ProfilePicture
+                className="w-8 h-8"
+                imageUrl={post.user.imageUrl}
+              />
+            </div>
+          </Link>
           <div className="flex flex-col">
             <div className="flex items-center gap-1">
-              <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer">
-                {post.user.username}
-              </h1>
+              <Link onClick={handleClose} href={`/${post.userId}`}>
+                <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer">
+                  {post.user.username}
+                </h1>
+              </Link>
               <span className="text-sm">{post.caption}</span>
             </div>
             <div>

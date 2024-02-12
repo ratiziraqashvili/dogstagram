@@ -14,9 +14,12 @@ interface PostsProps {
   posts: PostInfoType;
   likes: Like[];
   comments: CommentArray;
+  savedPostsId: {
+    postId: string;
+  }[];
 }
 
-export const Posts = ({ posts, likes, comments }: PostsProps) => {
+export const Posts = ({ posts, likes, comments, savedPostsId }: PostsProps) => {
   const { onOpen } = useModal();
   const { toast } = useToast();
   const { addUploadedData } = usePostDataStore();
@@ -101,9 +104,12 @@ export const Posts = ({ posts, likes, comments }: PostsProps) => {
   const onPostInfoModalOpen = (
     post: Post,
     likes: Like[],
-    comments: CommentArray
+    comments: CommentArray,
+    savedPostsId: {
+      postId: string;
+    }[]
   ) => {
-    onOpen("postInfo", post, likes, comments);
+    onOpen("postInfo", post, likes, comments, savedPostsId);
   };
 
   return (
@@ -115,7 +121,9 @@ export const Posts = ({ posts, likes, comments }: PostsProps) => {
     >
       {posts.map((post) => (
         <div
-          onClick={() => onPostInfoModalOpen(post, likes, comments)}
+          onClick={() =>
+            onPostInfoModalOpen(post, likes, comments, savedPostsId)
+          }
           className="group relative"
           key={post.id}
         >

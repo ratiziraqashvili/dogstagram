@@ -129,15 +129,47 @@ export const PostInput = ({
     }
   };
 
-  const onFavourite = async () => {
+  const onFavorite = async () => {
     try {
       setIsSubmitting(true);
       setIsFavorited(true);
-      await axios.post("/api/posts/favourite", post);
+      await axios.post("/api/posts/favorite", post);
+      toast({
+        title: "Post favorited.",
+        variant: "default",
+        duration: 3000,
+      });
       router.refresh();
     } catch (error) {
       console.error("error in client [COMPONENTS_POST-INPUT]", error);
       setIsFavorited(false);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const onUnFavorite = async () => {
+    try {
+      setIsSubmitting(true);
+      setIsFavorited(false);
+
+      const url = qs.stringifyUrl({
+        url: "/api/posts/favorite",
+        query: {
+          postId: post.id,
+          authorId: post.userId,
+        },
+      });
+
+      await axios.delete(url);
+      toast({
+        title: "Post unfavorited.",
+        variant: "default",
+        duration: 3000,
+      });
+      router.refresh();
+    } catch (error) {
+      console.error("error in client [COMPONENTS_POST-INPUT]", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -164,7 +196,7 @@ export const PostInput = ({
         </div>
         <div>
           <Bookmark
-            onClick={onFavourite}
+            onClick={!isSubmitting && isFavorited ? onUnFavorite : onFavorite}
             className={cn(
               "cursor-pointer hover:opacity-50",
               isFavorited && "fill-black"

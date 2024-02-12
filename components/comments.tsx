@@ -4,6 +4,8 @@ import { formatTimeDifference } from "@/lib/timeUtils";
 import { MoreHorizontal } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import { useSecondModal } from "@/hooks/use-second-modal-store";
+import { useModal } from "@/hooks/use-modal-store";
+import Link from "next/link";
 
 interface CommentsProps {
   comments: CommentArray;
@@ -12,6 +14,11 @@ interface CommentsProps {
 export const Comments = ({ comments }: CommentsProps) => {
   const { userId } = useAuth();
   const { onOpen } = useSecondModal();
+  const { onClose } = useModal();
+
+  const handleClose = () => {
+    onClose();
+  };
 
   return (
     <>
@@ -28,16 +35,20 @@ export const Comments = ({ comments }: CommentsProps) => {
         return (
           <div key={comment.id} className="flex gap-3 p-3 items-center group">
             <div>
-              <ProfilePicture
-                className="w-8 h-8 cursor-pointer"
-                imageUrl={comment.user.imageUrl}
-              />
+              <Link onClick={handleClose} href={`/${comment.userId}`}>
+                <ProfilePicture
+                  className="w-8 h-8 cursor-pointer"
+                  imageUrl={comment.user.imageUrl}
+                />
+              </Link>
             </div>
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1">
-                <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer">
-                  {comment.user.username}
-                </h1>
+                <Link onClick={handleClose} href={`/${comment.userId}`}>
+                  <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer">
+                    {comment.user.username}
+                  </h1>
+                </Link>
                 <span className="text-sm">{comment.content}</span>
               </div>
               <div className="flex items-center gap-4">

@@ -52,9 +52,11 @@ export const PostInfoModal = () => {
                 imageUrl={post?.user.imageUrl}
               />
             </Link>
-            <span className="text-sm font-semibold cursor-pointer hover:text-muted-foreground">
-              {post?.user.username}
-            </span>
+            <Link onClick={handleClose} href={`/${post?.userId}`}>
+              <span className="text-sm font-semibold cursor-pointer hover:text-muted-foreground">
+                {post?.user.username}
+              </span>
+            </Link>
           </div>
           <div>
             <Button className="p-0 hover:text-black" variant="ghost">
@@ -85,7 +87,7 @@ export const PostInfoModal = () => {
                   imageUrl={post?.user.imageUrl}
                 />
               </Link>
-              <Link href={`/${post?.userId}`}>
+              <Link onClick={handleClose} href={`/${post?.userId}`}>
                 <span className="text-sm font-semibold cursor-pointer hover:text-muted-foreground">
                   {post?.user.username}
                 </span>
