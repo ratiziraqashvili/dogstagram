@@ -18,6 +18,6 @@ type ModalStore = {
 export const useModal = create<ModalStore>((set) => ({
     type: null,
     isOpen: false,
-    onOpen: (type, data, likes, comments) => set({ isOpen: true, type, data: data ?? null, likes: likes ?? undefined, comments: comments }),
+    onOpen: (type, data, likes, comments, savedPostsId) => set({ isOpen: true, type, data: data ?? null, likes: likes ?? undefined, comments: comments, savedPostsId: savedPostsId }),
     onClose: () => set({ type: null, isOpen: false, }),
 }))
