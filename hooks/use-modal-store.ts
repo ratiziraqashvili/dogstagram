@@ -7,11 +7,12 @@ export type ModalType = "following" | "settings" | "moreHorizontal" | "displayFo
 type ModalStore = {
     type: ModalType | null;
     isOpen: boolean;
-    onOpen: (type: ModalType, data?: any, likes?: Like[], comments?: CommentArray) => void;
+    onOpen: (type: ModalType, data?: any, likes?: Like[], comments?: CommentArray, savedPosts?: { postId: string }[]) => void;
     onClose: () => void;
     data?: any;
     likes?: Like[];
     comments?: CommentArray;
+    savedPostsId?: { postId: string }[]
 }
 
 export const useModal = create<ModalStore>((set) => ({

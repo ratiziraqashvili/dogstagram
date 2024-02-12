@@ -12,7 +12,15 @@ import { formatTimeDifference } from "@/lib/timeUtils";
 import Link from "next/link";
 
 export const PostInfoModal = () => {
-  const { isOpen, onClose, type, data, likes, comments } = useModal();
+  const {
+    isOpen,
+    onClose,
+    type,
+    data,
+    likes,
+    comments,
+    savedPostsId: id,
+  } = useModal();
   const { onOpen } = useSecondModal();
 
   const post: SinglePost = data;
@@ -22,6 +30,8 @@ export const PostInfoModal = () => {
 
   const likePostIds = likes?.map((like) => like.postId);
   const isLiked = likePostIds?.includes(post.id);
+  const savedPostsId = id?.map((savePostId) => savePostId.postId);
+  const isFavorited = savedPostsId?.includes(post.id);
 
   const onPostPropertiesModalOpen = () => {
     onOpen("postProperties", post);
@@ -36,7 +46,7 @@ export const PostInfoModal = () => {
       <DialogContent className="lg:h-[90%] h-[83%] md:w-[80%] w-[60%] rounded-sm p-0 flex flex-col gap-0 md:flex-row border-0 overflow-y-auto">
         <div className="flex md:hidden justify-between items-center py-5 px-3">
           <div className="flex items-center gap-2">
-            <Link href={`/${post?.userId}`}>
+            <Link onClick={handleClose} href={`/${post?.userId}`}>
               <ProfilePicture
                 className="w-8 h-8 cursor-pointer"
                 imageUrl={post?.user.imageUrl}
@@ -69,17 +79,17 @@ export const PostInfoModal = () => {
         <div className="md:min-w-[10rem] w-full max-w-[39.2rem]  flex flex-col">
           <div className="md:flex hidden items-center justify-between  gap-2 py-5 px-3">
             <div className="flex items-center gap-3">
-              <Link href={`/${post?.userId}`}>
+              <Link onClick={handleClose} href={`/${post?.userId}`}>
                 <ProfilePicture
                   className="h-8 w-8"
                   imageUrl={post?.user.imageUrl}
                 />
               </Link>
-            <Link href={`/${post?.userId}`}>
+              <Link href={`/${post?.userId}`}>
                 <span className="text-sm font-semibold cursor-pointer hover:text-muted-foreground">
                   {post?.user.username}
                 </span>
-            </Link>
+              </Link>
             </div>
             <div>
               <Button
@@ -105,6 +115,7 @@ export const PostInfoModal = () => {
               formattedTime={formattedTime}
               isLiked={isLiked}
               post={post}
+              isFavorited={isFavorited}
             />
           </div>
         </div>

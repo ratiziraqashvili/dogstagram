@@ -190,6 +190,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         posts={posts}
         profileId={userId}
         savedPosts={savedPosts}
+        savedPostsId={savedPostsId}
       />
     </div>
   );

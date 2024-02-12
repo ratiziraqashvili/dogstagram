@@ -14,6 +14,7 @@ interface PostInputProps {
   post: SinglePost;
   isLiked: boolean | undefined;
   formattedTime: string;
+  isFavorited: boolean | undefined;
 }
 
 const debounce = (fn: Function, delay: number) => {
@@ -32,9 +33,13 @@ export const PostInput = ({
   post,
   isLiked: liked,
   formattedTime,
+  isFavorited: favorited,
 }: PostInputProps) => {
   const [comment, setComment] = useState("");
   const [isLiked, setIsLiked] = useState<boolean | undefined>(liked);
+  const [isFavorited, setIsFavorited] = useState<boolean | undefined>(
+    favorited
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [likeCount, setLikeCount] = useState(post._count.likes);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -126,10 +131,15 @@ export const PostInput = ({
 
   const onFavourite = async () => {
     try {
+      setIsSubmitting(true);
+      setIsFavorited(true);
       await axios.post("/api/posts/favourite", post);
       router.refresh();
     } catch (error) {
       console.error("error in client [COMPONENTS_POST-INPUT]", error);
+      setIsFavorited(false);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -153,7 +163,13 @@ export const PostInput = ({
           <Send className="cursor-pointer hover:opacity-50" />
         </div>
         <div>
-          <Bookmark onClick={onFavourite} className="cursor-pointer hover:opacity-50" />
+          <Bookmark
+            onClick={onFavourite}
+            className={cn(
+              "cursor-pointer hover:opacity-50",
+              isFavorited && "fill-black"
+            )}
+          />
         </div>
       </div>
       <div className={cn("px-4", post.hideComments && "pb-3")}>
