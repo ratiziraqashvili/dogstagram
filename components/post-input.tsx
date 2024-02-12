@@ -88,10 +88,18 @@ export const PostInput = ({
       await axios.delete(`/api/like/${post?.id}`);
 
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       setIsLiked(true);
       setLikeCount((prevCount) => prevCount + 1);
       console.error("client error in unlike, post-input", error);
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -140,9 +148,17 @@ export const PostInput = ({
         duration: 3000,
       });
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error("error in client [COMPONENTS_POST-INPUT]", error);
       setIsFavorited(false);
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -168,8 +184,16 @@ export const PostInput = ({
         duration: 3000,
       });
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error("error in client [COMPONENTS_POST-INPUT]", error);
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -185,7 +209,7 @@ export const PostInput = ({
             }
             className={cn(
               "cursor-pointer hover:opacity-50",
-              isLiked ? "text-red-600 fill-red-600 filter" : "text-black"
+              isLiked ? "text-red-500 fill-red-500 filter" : "text-black"
             )}
           />
           <MessageCircle
@@ -206,7 +230,7 @@ export const PostInput = ({
       </div>
       <div className={cn("px-4", post.hideComments && "pb-3")}>
         <p className="text-sm">
-          {likeCount === 0 ? (
+          {likeCount === 0 && !post.hideLikes ? (
             <>
               <span>Be the first to </span>
               <span
@@ -217,7 +241,7 @@ export const PostInput = ({
               </span>
             </>
           ) : (
-            <span>{likeCount} likes</span>
+            !post.hideLikes && <span>{likeCount} likes</span>
           )}
         </p>
         <span className="text-muted-foreground text-xs">{formattedTime}</span>

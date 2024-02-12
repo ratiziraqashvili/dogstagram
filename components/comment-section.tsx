@@ -24,7 +24,7 @@ export const CommentSection = ({
     onClose();
   };
 
-  if (post.hideComments) {
+  if (post.hideComments && !post.caption) {
     return (
       <div className="flex justify-center items-center h-full md:border-t-[1px]">
         <div className="flex flex-col gap-1.5">
@@ -84,7 +84,7 @@ export const CommentSection = ({
             </div>
           </div>
         </div>
-        <Comments comments={filteredComments} />
+        {!post.hideComments && <Comments comments={filteredComments} />}
       </div>
     );
   }
