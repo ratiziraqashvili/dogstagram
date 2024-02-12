@@ -6,17 +6,18 @@ import { useState } from "react";
 import { Posts } from "./posts";
 import { SavedPosts } from "./saved-posts";
 import { useAuth } from "@clerk/nextjs";
-import { CommentArray, PostInfoType } from "@/types";
-import { Comment, Like } from "@prisma/client";
+import { CommentArray, PostInfoType, SinglePost } from "@/types";
+import { Like } from "@prisma/client";
 
 interface ProfileFiltersProps {
   profileId: string;
   posts: PostInfoType;
   likes: Like[];
+  savedPosts: PostInfoType;
   comments: CommentArray;
 }
 
-export const ProfileFilters = ({ profileId, posts, likes, comments }: ProfileFiltersProps) => {
+export const ProfileFilters = ({ profileId, posts, likes, comments, savedPosts }: ProfileFiltersProps) => {
   const [filter, setFilter] = useState("posts");
   const { userId } = useAuth();
 
@@ -108,7 +109,7 @@ export const ProfileFilters = ({ profileId, posts, likes, comments }: ProfileFil
       </div>
       <div className="md:w-[73%] max-w-4xl mt-2 mx-auto">
         {filter === "posts" && <Posts comments={comments} likes={likes} posts={posts} />}
-        {filter === "saved" && <SavedPosts />}
+        {filter === "saved" && <SavedPosts savedPosts={savedPosts} />}
       </div>
     </div>
   );

@@ -52,6 +52,39 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     },
   });
 
+  const savedPostsId = await db.savedPosts.findMany({
+    where: {
+      savedUserId: currUser?.id,
+    },
+    select: {
+      postId: true,
+    },
+  });
+
+  const postIds = savedPostsId.map((sp) => sp.postId);
+
+  const savedPosts = await db.post.findMany({
+    where: {
+      id: {
+        in: postIds,
+      },
+    },
+    include: {
+      _count: {
+        select: {
+          likes: true,
+          comments: true,
+        },
+      },
+      user: {
+        select: {
+          imageUrl: true,
+          username: true,
+        },
+      },
+    },
+  });
+
   const comments = await db.comment.findMany({
     include: {
       user: {
@@ -156,6 +189,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         likes={likes}
         posts={posts}
         profileId={userId}
+        savedPosts={savedPosts}
       />
     </div>
   );

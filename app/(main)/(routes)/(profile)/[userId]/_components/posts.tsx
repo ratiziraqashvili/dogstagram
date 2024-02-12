@@ -101,7 +101,7 @@ export const Posts = ({ posts, likes, comments }: PostsProps) => {
   const onPostInfoModalOpen = (
     post: Post,
     likes: Like[],
-    comments: CommentArray,
+    comments: CommentArray
   ) => {
     onOpen("postInfo", post, likes, comments);
   };
