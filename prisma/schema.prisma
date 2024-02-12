@@ -23,8 +23,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  posts    Post[]
-  comments Comment[]
+  posts      Post[]
+  comments   Comment[]
+  SavedPosts SavedPosts[]
 }
 
 model BlockedUser {
@@ -49,9 +50,10 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  likes    Like[]
-  comments Comment[]
-  user     User      @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  likes      Like[]
+  comments   Comment[]
+  user       User         @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  SavedPosts SavedPosts[]
 
   @@index([userId])
 }
@@ -91,4 +93,15 @@ model Follow {
   @@id([followerId, followingId])
   @@index([followingId])
   @@index([followerId])
+}
+
+model SavedPosts {
+  userId String
+  postId String
+  user   User   @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+  @@index([postId])
+  @@index([userId])
 }

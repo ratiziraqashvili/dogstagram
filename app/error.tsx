@@ -16,7 +16,7 @@ const Error = () => {
           <Link href="/">
             <span className="text-amber-500 cursor-pointer">
               {" "}
-              Go back to Instagram.
+              Go back to Dogstagram.
             </span>
           </Link>
         </p>
