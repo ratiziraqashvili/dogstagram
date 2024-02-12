@@ -13,8 +13,8 @@ export const SettingsModal = () => {
   };
 
   const buttons = [
-    { label: "Notifications", onClick: () => {} },
     //TODO: Redirect to notifications page
+    { label: "Notifications", onClick: () => {} },
     { label: "Log Out", onClick: () => signOut() },
   ];
 

@@ -69,6 +69,9 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         in: postIds,
       },
     },
+    orderBy: {
+      createdAt: "desc",
+    },
     include: {
       _count: {
         select: {

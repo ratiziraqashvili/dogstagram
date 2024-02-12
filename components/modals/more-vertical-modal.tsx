@@ -24,9 +24,7 @@ export const MoreHorizontalModal = () => {
   }
 
   const buttons = [
-    //TODO: Block account
     { label: "Block", onClick: onBlockConfirmModalOpen },
-    //TODO: Redirect to notifications page
     { label: "Share to...", onClick: onShareModalOpen },
     { label: "About this account", onClick: onAboutAccountModalOpen },
   ];

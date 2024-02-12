@@ -121,14 +121,12 @@ export const ProfileInfo = ({
             }
             className="hidden md:block"
           >
-            {/* TODO: open modal based on which icon user will click */}
             {user?.username === username ? <Settings /> : <MoreHorizontal />}
           </button>
         </div>
       </div>
       <div className="md:flex hidden gap-9 pt-1">
         <div className="tracking-[-0.5px] space-x-1">
-          {/* TODO: fetch amount of post user has created */}
           <span className="font-semibold">{postCount}</span>
           <span>posts</span>
         </div>
