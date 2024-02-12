@@ -96,10 +96,11 @@ model Follow {
 }
 
 model SavedPosts {
-  userId String
-  postId String
-  user   User   @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId      String
+  postId      String
+  savedUserId String
+  user        User   @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  post        Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@id([userId, postId])
   @@index([postId])

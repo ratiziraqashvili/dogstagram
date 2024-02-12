@@ -124,6 +124,15 @@ export const PostInput = ({
     }
   };
 
+  const onFavourite = async () => {
+    try {
+      await axios.post("/api/posts/favourite", post);
+      router.refresh();
+    } catch (error) {
+      console.error("error in client [COMPONENTS_POST-INPUT]", error);
+    }
+  };
+
   return (
     <>
       <div className="flex justify-between px-4 border-t-[1px] pt-3">
@@ -144,7 +153,7 @@ export const PostInput = ({
           <Send className="cursor-pointer hover:opacity-50" />
         </div>
         <div>
-          <Bookmark className="cursor-pointer hover:opacity-50" />
+          <Bookmark onClick={onFavourite} className="cursor-pointer hover:opacity-50" />
         </div>
       </div>
       <div className={cn("px-4", post.hideComments && "pb-3")}>
