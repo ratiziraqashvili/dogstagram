@@ -46,15 +46,17 @@ export const PostInfoModal = () => {
   };
 
   useEffect(() => {
-    const fetchLocations = async () => {
-      const res = await axios.get(
-        `https://restcountries.com/v3.1/name/${post?.location}?fields=flags`
-      );
+    if (post?.location) {
+      const fetchLocations = async () => {
+        const res = await axios.get(
+          `https://restcountries.com/v3.1/name/${post?.location}?fields=flags`
+        );
 
-      setFlag(res.data[0].flags.svg);
-    };
+        setFlag(res.data[0].flags.svg);
+      };
 
-    fetchLocations();
+      fetchLocations();
+    } else return;
   }, [post?.location]);
 
   return (

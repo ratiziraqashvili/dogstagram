@@ -22,15 +22,7 @@ export async function POST(req: Request, { params }: { params: { postId: string 
 
         if (!content) return null;
 
-        await db.notification.create({
-            data: {
-                sender: user.id,
-                recipient: recipient!,
-                postId: postId,
-                type: NotificationType.COMMENT,
-            }
-        });
-
+        
         const comment = await db.comment.create({
             data: {
                 userId: user.id,
@@ -46,7 +38,16 @@ export async function POST(req: Request, { params }: { params: { postId: string 
                 }
             }
         })
-
+        
+        await db.notification.create({
+            data: {
+                sender: user.id,
+                recipient: recipient!,
+                postId: postId,
+                type: NotificationType.COMMENT,
+            }
+        });
+        
         return NextResponse.json(comment);
 
     } catch (error) {

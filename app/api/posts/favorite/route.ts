@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
+import { NotificationType } from "@prisma/client";
 import { Ratelimit } from "@upstash/ratelimit";
 import { kv } from "@vercel/kv";
 import { NextRequest, NextResponse } from "next/server";
@@ -58,6 +59,15 @@ export async function POST(req: NextRequest) {
                 postId: id,
                 userId: authorId,
                 savedUserId: user.id,
+            }
+        })
+
+        await db.notification.create({
+            data: {
+                sender: user.id,
+                recipient: authorId,
+                postId: id,
+                type: NotificationType.FAVORITE,
             }
         })
 

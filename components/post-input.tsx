@@ -60,7 +60,15 @@ export const PostInput = ({
       setIsSubmitting(true);
       setIsLiked(true);
       setLikeCount((prevCount) => prevCount + 1);
-      await axios.post(`/api/like/${post?.id}`);
+
+      const url = qs.stringifyUrl({
+        url: `/api/like/${post?.id}`,
+        query: {
+          recipient: post.userId,
+        },
+      });
+
+      await axios.post(url);
 
       router.refresh();
     } catch (error: any) {
@@ -125,7 +133,7 @@ export const PostInput = ({
           url: `/api/comment/${post?.id}`,
           query: {
             content: comment,
-            recipient: post.userId
+            recipient: post.userId,
           },
         });
 

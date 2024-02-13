@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
+import { NotificationType } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -41,6 +42,14 @@ export async function POST(req: Request) {
             data: {
                 followerId: user.id,
                 followingId: otherUserId,
+            }
+        })
+
+        await db.notification.create({
+            data: {
+                sender: user.id,
+                recipient: otherUserId,
+                type: NotificationType.FOLLOW,
             }
         })
 

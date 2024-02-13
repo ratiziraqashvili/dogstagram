@@ -3,6 +3,7 @@ import { currentUser } from "@clerk/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { kv } from "@vercel/kv";
+import { NotificationType } from "@prisma/client";
 
 const ratelimit = new Ratelimit({
     redis: kv,
@@ -18,6 +19,8 @@ export async function POST(req: NextRequest, { params }: { params: { postId: str
         const user = await currentUser();
         const postId = params.postId;
         const ip = req.ip;
+        const { searchParams } = new URL(req.url);
+        const recipient = searchParams.get("recipient");
 
         const { limit, reset, remaining } = await ratelimit.limit(ip!);
 
@@ -55,6 +58,15 @@ export async function POST(req: NextRequest, { params }: { params: { postId: str
             data: {
                 userId: user.id,
                 postId,
+            }
+        })
+
+        await db.notification.create({
+            data: {
+                sender: user.id,
+                postId,
+                type: NotificationType.LIKE,
+                recipient: recipient!
             }
         })
 
