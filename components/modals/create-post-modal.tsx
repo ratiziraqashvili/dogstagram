@@ -34,6 +34,7 @@ import { useToast } from "../ui/use-toast";
 import { X } from "lucide-react";
 import { CldImage } from "next-cloudinary";
 import { SinglePost } from "@/types";
+import qs from "query-string"
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, {
@@ -125,7 +126,6 @@ export const CreatePostModal = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("values:", values);
     try {
       setIsLoading(true);
 
@@ -146,14 +146,21 @@ export const CreatePostModal = () => {
           duration: 3000,
         });
       } else {
-        await axios.patch("/api/posts/update", values);
+        const url = qs.stringifyUrl({
+          url: "/api/posts/update",
+          query: {
+            postId: post.id,
+            authorId: post.userId
+          }
+        })
+
+        await axios.patch(url, values);
 
         toast({
           description: "Updated successfully.",
           duration: 3000,
         });
       }
-
       handleClose();
       router.push(`/${user?.id}`);
       router.refresh();
