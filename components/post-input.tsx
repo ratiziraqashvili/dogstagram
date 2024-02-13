@@ -125,6 +125,7 @@ export const PostInput = ({
           url: `/api/comment/${post?.id}`,
           query: {
             content: comment,
+            recipient: post.userId
           },
         });
 

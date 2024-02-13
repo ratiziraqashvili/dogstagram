@@ -46,10 +46,11 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1">
                 <Link onClick={handleClose} href={`/${comment.userId}`}>
-                  <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer">
+                  <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer flex">
                     {authorId === comment.userId ? (
-                      <span>
-                        {comment.user.username} &bull;{" "}
+                      <span className="flex items-center gap-2">
+                        <span>{comment.user.username}</span>
+                        &bull;
                         <span className="text-amber-500 text-xs">Creator</span>
                       </span>
                     ) : (
@@ -57,7 +58,9 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
                     )}
                   </h1>
                 </Link>
-                <span className="text-sm text-wrap">{comment.content}</span>
+                <span className="text-sm text-nowrap overflow-hidden">
+                  {comment.content}
+                </span>
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-xs text-muted-foreground cursor-pointer">

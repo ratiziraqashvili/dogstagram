@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
+import { NotificationType } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request, { params }: { params: { postId: string } }) {
@@ -9,6 +10,7 @@ export async function POST(req: Request, { params }: { params: { postId: string 
         const { searchParams } = new URL(req.url);
 
         const content = searchParams.get("content");
+        const recipient = searchParams.get("recipient");
 
         if (!user || !user.id) {
             return new NextResponse("Unauthorized", { status: 401 });
@@ -19,6 +21,15 @@ export async function POST(req: Request, { params }: { params: { postId: string 
         }
 
         if (!content) return null;
+
+        await db.notification.create({
+            data: {
+                sender: user.id,
+                recipient: recipient!,
+                postId: postId,
+                type: NotificationType.COMMENT,
+            }
+        });
 
         const comment = await db.comment.create({
             data: {
