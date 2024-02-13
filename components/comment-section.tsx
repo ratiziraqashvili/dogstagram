@@ -51,7 +51,7 @@ export const CommentSection = ({
   if (filteredComments?.length! > 0 && !post.caption) {
     return (
       <div className="md:border-t-[1px]">
-        <Comments comments={filteredComments} />
+        <Comments authorId={post.userId} comments={filteredComments} />
       </div>
     );
   }
@@ -84,7 +84,7 @@ export const CommentSection = ({
             </div>
           </div>
         </div>
-        {!post.hideComments && <Comments comments={filteredComments} />}
+        {!post.hideComments && <Comments authorId={post.userId} comments={filteredComments} />}
       </div>
     );
   }

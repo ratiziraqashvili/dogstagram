@@ -30,6 +30,8 @@ export async function PATCH(req: Request) {
             return new NextResponse("Forbidden", { status: 403 })
         }
 
+        console.log(caption)
+
         const editedPost = await db.post.update({
             where: {
                 id: postId!,

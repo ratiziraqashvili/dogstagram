@@ -10,6 +10,9 @@ import { useSecondModal } from "@/hooks/use-second-modal-store";
 import { SinglePost } from "@/types";
 import { formatTimeDifference } from "@/lib/timeUtils";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Image from "next/image";
 
 export const PostInfoModal = () => {
   const {
@@ -22,6 +25,7 @@ export const PostInfoModal = () => {
     savedPostsId: id,
   } = useModal();
   const { onOpen } = useSecondModal();
+  const [flag, setFlag] = useState("");
 
   const post: SinglePost = data;
   const formattedTime = formatTimeDifference(post?.createdAt);
@@ -41,6 +45,18 @@ export const PostInfoModal = () => {
     onClose();
   };
 
+  useEffect(() => {
+    const fetchLocations = async () => {
+      const res = await axios.get(
+        `https://restcountries.com/v3.1/name/${post?.location}?fields=flags`
+      );
+
+      setFlag(res.data[0].flags.svg);
+    };
+
+    fetchLocations();
+  }, [post?.location]);
+
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent className="lg:h-[90%] h-[83%] md:w-[80%] w-[60%] rounded-sm p-0 flex flex-col gap-0 md:flex-row border-0 overflow-y-auto">
@@ -56,6 +72,17 @@ export const PostInfoModal = () => {
               <span className="text-sm font-semibold cursor-pointer hover:text-muted-foreground">
                 {post?.user.username}
               </span>
+              {post?.location && (
+                <span className="text-sm font-semibold flex gap-2">
+                  <Image
+                    alt="location flag"
+                    width={17}
+                    height={17}
+                    src={flag}
+                  />
+                  {post?.location}
+                </span>
+              )}
             </Link>
           </div>
           <div>
@@ -88,9 +115,22 @@ export const PostInfoModal = () => {
                 />
               </Link>
               <Link onClick={handleClose} href={`/${post?.userId}`}>
-                <span className="text-sm font-semibold cursor-pointer hover:text-muted-foreground">
-                  {post?.user.username}
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold cursor-pointer hover:text-muted-foreground">
+                    {post?.user.username}
+                  </span>
+                  {post?.location && (
+                    <span className="text-sm font-semibold flex gap-2">
+                      <Image
+                        alt="location flag"
+                        width={17}
+                        height={17}
+                        src={flag}
+                      />
+                      {post?.location}
+                    </span>
+                  )}
+                </div>
               </Link>
             </div>
             <div>

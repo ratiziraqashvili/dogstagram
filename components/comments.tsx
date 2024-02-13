@@ -9,9 +9,10 @@ import Link from "next/link";
 
 interface CommentsProps {
   comments: CommentArray;
+  authorId: string;
 }
 
-export const Comments = ({ comments }: CommentsProps) => {
+export const Comments = ({ comments, authorId }: CommentsProps) => {
   const { userId } = useAuth();
   const { onOpen } = useSecondModal();
   const { onClose } = useModal();
@@ -46,7 +47,14 @@ export const Comments = ({ comments }: CommentsProps) => {
               <div className="flex items-center gap-1">
                 <Link onClick={handleClose} href={`/${comment.userId}`}>
                   <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer">
-                    {comment.user.username}
+                    {authorId === comment.userId ? (
+                      <span>
+                        {comment.user.username} &bull;{" "}
+                        <span className="text-amber-500 text-sm">Creator</span>
+                      </span>
+                    ) : (
+                      comment.user.username
+                    )}
                   </h1>
                 </Link>
                 <span className="text-sm">{comment.content}</span>

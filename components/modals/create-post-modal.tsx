@@ -34,7 +34,7 @@ import { useToast } from "../ui/use-toast";
 import { X } from "lucide-react";
 import { CldImage } from "next-cloudinary";
 import { SinglePost } from "@/types";
-import qs from "query-string"
+import qs from "query-string";
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, {
@@ -42,8 +42,8 @@ const formSchema = z.object({
   }),
   caption: z
     .string()
-    .max(2200, {
-      message: "Caption should contain less that 2200 characters.",
+    .max(100, {
+      message: "Caption should contain less that 100 characters.",
     })
     .optional(),
   location: z.string().optional(),
@@ -150,9 +150,9 @@ export const CreatePostModal = () => {
           url: "/api/posts/update",
           query: {
             postId: post.id,
-            authorId: post.userId
-          }
-        })
+            authorId: post.userId,
+          },
+        });
 
         await axios.patch(url, values);
 
@@ -167,7 +167,7 @@ export const CreatePostModal = () => {
     } catch (error) {
       console.error(error);
       toast({
-        description: "Something went wrong.",
+        description: "Something went wrong, try again.",
         duration: 3000,
       });
     } finally {
@@ -236,7 +236,7 @@ export const CreatePostModal = () => {
                             field.onChange(`${field.value} ${emoji}`)
                           }
                         />
-                        <FormMessage />
+                        <FormMessage className="pl-3 pb-3" />
                       </FormItem>
                     )}
                   />

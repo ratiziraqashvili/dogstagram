@@ -33,6 +33,10 @@ export async function POST(req: Request) {
             return new NextResponse("Already following this user", { status: 400 })
         }
 
+        if (user.id === otherUserId) {
+            return new NextResponse("Forbidden", { status: 403 })
+        }
+
         const follow = await db.follow.create({
             data: {
                 followerId: user.id,

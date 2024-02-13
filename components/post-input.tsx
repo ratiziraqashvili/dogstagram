@@ -216,7 +216,6 @@ export const PostInput = ({
             onClick={onInputFocus}
             className="cursor-pointer hover:opacity-50"
           />
-          <Send className="cursor-pointer hover:opacity-50" />
         </div>
         <div>
           <Bookmark
