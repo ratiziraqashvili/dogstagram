@@ -39,14 +39,16 @@ export async function POST(req: Request, { params }: { params: { postId: string 
             }
         })
         
-        await db.notification.create({
-            data: {
-                sender: user.id,
-                recipient: recipient!,
-                postId: postId,
-                type: NotificationType.COMMENT,
-            }
-        });
+        if (user.id !== recipient) {
+            await db.notification.create({
+                data: {
+                    sender: user.id,
+                    recipient: recipient!,
+                    postId: postId,
+                    type: NotificationType.COMMENT,
+                }
+            });
+        }
         
         return NextResponse.json(comment);
 

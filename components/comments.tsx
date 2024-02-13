@@ -44,7 +44,7 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
               </Link>
             </div>
             <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-1">
+              <div className="flex gap-1">
                 <Link onClick={handleClose} href={`/${comment.userId}`}>
                   <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer flex">
                     {authorId === comment.userId ? (
@@ -58,9 +58,7 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
                     )}
                   </h1>
                 </Link>
-                <span className="text-sm text-nowrap overflow-hidden">
-                  {comment.content}
-                </span>
+                <span className="text-sm break-all">{comment.content}</span>
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-xs text-muted-foreground cursor-pointer">

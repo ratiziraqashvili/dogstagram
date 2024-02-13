@@ -120,6 +120,9 @@ model Notification {
   sender    String
   postId    String?
   type      NotificationType
+  
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 
   @@index([recipient])
 }

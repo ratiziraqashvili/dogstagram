@@ -61,14 +61,16 @@ export async function POST(req: NextRequest, { params }: { params: { postId: str
             }
         })
 
-        await db.notification.create({
-            data: {
-                sender: user.id,
-                postId,
-                type: NotificationType.LIKE,
-                recipient: recipient!
-            }
-        })
+        if (user.id !== recipient) {
+            await db.notification.create({
+                data: {
+                    sender: user.id,
+                    postId,
+                    type: NotificationType.LIKE,
+                    recipient: recipient!
+                }
+            })
+        }
 
         return NextResponse.json(like);
 

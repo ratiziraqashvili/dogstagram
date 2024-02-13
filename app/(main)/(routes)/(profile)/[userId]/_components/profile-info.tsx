@@ -26,26 +26,28 @@ export const ProfileInfo = ({
   postCount,
   followingCountNumber,
   followerCountNumber,
-  isFollowing,
+  isFollowing: following,
 }: ProfileInfoProps) => {
   const { user } = useClerk();
   const router = useRouter();
   const { onOpen } = useModal();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(following);
+  const [followerCount, setFollowerCount] = useState(followerCountNumber);
 
   const otherUserId = JSON.stringify(userId);
 
   const onFollow = async () => {
     // Making req to api route to follow user
-    setIsLoading(true);
     try {
+      setIsFollowing(true);
+      setFollowerCount((prevCount) => prevCount + 1);
       await axios.post("/api/users/follow", otherUserId);
 
       router.refresh();
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
+      setIsFollowing(false);
+      setFollowerCount((prevCount) => prevCount - 1);
     }
   };
 
@@ -78,7 +80,6 @@ export const ProfileInfo = ({
         <div className="flex gap-2">
           {user?.username !== username ? (
             <Button
-              disabled={isLoading}
               onClick={isFollowing ? onFollowingModalOpen : onFollow}
               className="h-[2rem]"
               variant={isFollowing ? "default" : "amber"}
@@ -134,7 +135,7 @@ export const ProfileInfo = ({
           onClick={onDisplayFollowersModalOpen}
           className="tracking-[-0.5px] space-x-1 flex items-center cursor-pointer active:text-muted-foreground"
         >
-          <span className="font-semibold">{followerCountNumber}</span>
+          <span className="font-semibold">{followerCount}</span>
 
           <span className="">followers</span>
         </div>

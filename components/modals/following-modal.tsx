@@ -12,13 +12,11 @@ import axios from "axios";
 import { User } from "@prisma/client";
 import { ProfilePicture } from "../profile-picture";
 import { Bookmark, ChevronRight, Star, X } from "lucide-react";
-import { useFollowingStore } from "@/hooks/use-following-store";
 
 export const FollowingModal = () => {
   const { isOpen, onClose, type } = useModal();
   const [isLoading, setIsLoading] = useState(false);
-  const { setIsFollowing, setFollowerCount, followerCount } =
-    useFollowingStore();
+ 
   const router = useRouter();
   const params = useParams();
   const userId = params.userId as string;
@@ -44,11 +42,10 @@ export const FollowingModal = () => {
   const onUnfollow = async () => {
     setIsLoading(true);
     try {
+      
       await axios.delete(`/api/users/unfollow/${userId}`);
 
-      setIsFollowing(false);
       router.refresh();
-      setFollowerCount(followerCount - 1);
       handleClose();
     } catch (error) {
       console.error(error);

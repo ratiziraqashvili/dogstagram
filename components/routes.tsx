@@ -1,11 +1,12 @@
 "use client";
 
 import { useModal } from "@/hooks/use-modal-store";
-import { Compass, Home, PlusIcon, Search } from "lucide-react";
+import { Compass, Heart, Home, PlusIcon, Search } from "lucide-react";
 import Link from "next/link";
 import { CldUploadWidget } from "next-cloudinary";
 import { usePostDataStore } from "@/hooks/use-post-data-store";
 import { useToast } from "./ui/use-toast";
+import { usePathname } from "next/navigation";
 
 export const Routes = () => {
   const { onOpen } = useModal();
@@ -53,6 +54,11 @@ export const Routes = () => {
       label: "Explore",
       href: "/explore",
       icon: Compass,
+    },
+    {
+      label: "Notifications",
+      href: "/notifications",
+      icon: Heart,
     },
     {
       label: "Create",

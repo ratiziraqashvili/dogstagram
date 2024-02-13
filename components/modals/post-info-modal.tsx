@@ -75,13 +75,10 @@ export const PostInfoModal = () => {
                 {post?.user.username}
               </span>
               {post?.location && (
-                <span className="text-sm font-semibold flex gap-2">
-                  <Image
-                    alt="location flag"
-                    width={17}
-                    height={17}
-                    src={flag}
-                  />
+                <span className="text-sm font-semibold flex items-center gap-2">
+                  <span className="relative w-5 h-3">
+                    <Image alt="location flag" fill src={flag ?? ""} />
+                  </span>
                   {post?.location}
                 </span>
               )}
@@ -122,13 +119,10 @@ export const PostInfoModal = () => {
                     {post?.user.username}
                   </span>
                   {post?.location && (
-                    <span className="text-sm font-semibold flex gap-2">
-                      <Image
-                        alt="location flag"
-                        width={17}
-                        height={17}
-                        src={flag}
-                      />
+                    <span className="text-sm font-semibold flex items-center gap-2">
+                      <span className="relative h-3 w-5">
+                        <Image alt="location flag" fill src={flag} />
+                      </span>
                       {post?.location}
                     </span>
                   )}

@@ -9,21 +9,17 @@ import {
 import { useModal } from "@/hooks/use-modal-store";
 import axios from "axios";
 import { X } from "lucide-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import SkeletonItem from "../skeleton-item";
 import { ProfilePicture } from "../profile-picture";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useAuth } from "@clerk/nextjs";
-import { useFollowingStore } from "@/hooks/use-following-store";
 
 export const DisplayFollowersModal = () => {
   //currentUser id
   const { userId } = useAuth();
-  //getting states from zustand
-  const { setIsFollowing, setFollowerCount, followerCount } =
-    useFollowingStore();
   //storing followers of profile in this state
   const [followers, setFollowers] = useState<
     {
@@ -94,8 +90,7 @@ export const DisplayFollowersModal = () => {
     try {
       await axios.delete(`/api/users/remove/${clerkId}`);
 
-      setIsFollowing(false);
-      setFollowerCount(followerCount - 1);
+
       setRemovedFollowers((prevRemoved) => [...prevRemoved, clerkId]);
       router.refresh();
     } catch (error) {

@@ -62,14 +62,16 @@ export async function POST(req: NextRequest) {
             }
         })
 
-        await db.notification.create({
-            data: {
-                sender: user.id,
-                recipient: authorId,
-                postId: id,
-                type: NotificationType.FAVORITE,
-            }
-        })
+        if (user.id !== authorId) {
+            await db.notification.create({
+                data: {
+                    sender: user.id,
+                    recipient: authorId,
+                    postId: id,
+                    type: NotificationType.FAVORITE,
+                }
+            })
+        }
 
         return NextResponse.json(post);
     } catch (error) {
