@@ -108,10 +108,19 @@ export const PostInput = ({
   const deboundedOnLike = useCallback(debounce(onLike, 300), []);
   const deboundedOnUnLike = useCallback(debounce(onUnLike, 300), []);
 
+  const MAX_COMMENT_LENGTH = 150;
+
   const onComment = async () => {
     setIsLoading(true);
     try {
       if (!!comment) {
+        if (comment.length > MAX_COMMENT_LENGTH) {
+          toast({
+            title: "Comment is too long! Limit is 150 letters.",
+          });
+          return;
+        }
+
         const url = qs.stringifyUrl({
           url: `/api/comment/${post?.id}`,
           query: {

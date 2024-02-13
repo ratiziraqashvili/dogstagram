@@ -106,3 +106,20 @@ model SavedPosts {
   @@index([postId])
   @@index([userId])
 }
+
+enum NotificationType {
+  COMMENT
+  FOLLOW
+  LIKE
+  FAVORITE
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  recipient String
+  sender    String
+  postId    String?
+  type      NotificationType
+
+  @@index([recipient])
+}

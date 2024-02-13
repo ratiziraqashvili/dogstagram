@@ -26,10 +26,20 @@ export const SavedPosts = ({
     post: Post,
     likes: Like[],
     comments: CommentArray,
-    savedPostsId: { postId: string }[],
+    savedPostsId: { postId: string }[]
   ) => {
     onOpen("postInfo", post, likes, comments, savedPostsId);
   };
+
+  if (savedPosts.length === 0) {
+    return (
+      <div className="flex justify-center items-center sm:h-[25rem] h-[17rem]">
+        <h1 className="text-xl font-bold text-center">
+          There are no saved posts to show.
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div

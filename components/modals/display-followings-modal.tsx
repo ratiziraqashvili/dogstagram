@@ -9,7 +9,7 @@ import {
 import { useModal } from "@/hooks/use-modal-store";
 import axios from "axios";
 import { X } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import SkeletonItem from "../skeleton-item";
 import { ProfilePicture } from "../profile-picture";
@@ -36,7 +36,8 @@ export const DisplayFollowingsModal = () => {
   const [skeleton, setSkeleton] = useState(true);
   const { isOpen, onClose, type } = useModal();
   
-  const otherUserId = usePathname().split("/")[1];
+  const params = useParams();
+  const otherUserId = params.userId;
   const router = useRouter();
 
   const isModalOpen = isOpen && type === "displayFollowings";

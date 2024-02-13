@@ -50,14 +50,14 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
                     {authorId === comment.userId ? (
                       <span>
                         {comment.user.username} &bull;{" "}
-                        <span className="text-amber-500 text-sm">Creator</span>
+                        <span className="text-amber-500 text-xs">Creator</span>
                       </span>
                     ) : (
                       comment.user.username
                     )}
                   </h1>
                 </Link>
-                <span className="text-sm">{comment.content}</span>
+                <span className="text-sm text-wrap">{comment.content}</span>
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-xs text-muted-foreground cursor-pointer">
