@@ -33,6 +33,7 @@ import {
 import { useToast } from "../ui/use-toast";
 import { X } from "lucide-react";
 import { CldImage } from "next-cloudinary";
+import { SinglePost } from "@/types";
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, {
@@ -55,15 +56,16 @@ interface UploadResultsTags {
 }
 
 export const CreatePostModal = () => {
-  const { isOpen, onClose, type } = useModal();
+  const { isOpen, onClose, type, data } = useModal();
   const { uploadedData } = usePostDataStore();
   const { user } = useUser();
   const [locations, setLocations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const post: SinglePost = data;
 
-  const image = uploadedData?.info?.secure_url;
+  const image = post?.imageUrl || uploadedData?.info?.secure_url;
   const uploadResultsTags: UploadResultsTags =
     uploadedData.info?.info?.detection?.object_detection?.data?.coco?.tags;
   const isDog = !!uploadResultsTags?.["dog"] ?? false;
@@ -72,11 +74,11 @@ export const CreatePostModal = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       imageUrl: image,
-      caption: "",
-      location: "",
-      hideLikes: false,
-      hideComments: false,
-      isDog,
+      caption: post?.caption ?? "",
+      location: post?.location ?? "",
+      hideLikes: post?.hideLikes ?? false,
+      hideComments: post?.hideComments ?? false,
+      isDog: post ? true : isDog,
     },
   });
 
@@ -112,10 +114,10 @@ export const CreatePostModal = () => {
   useEffect(() => {
     setValue("imageUrl", image);
     setValue("isDog", isDog);
-    setValue("caption", "");
-    setValue("location", "");
-    setValue("hideLikes", false);
-    setValue("hideComments", false);
+    setValue("caption", post?.caption ?? "");
+    setValue("location", post?.location ?? "");
+    setValue("hideLikes", post?.hideLikes ?? false);
+    setValue("hideComments", post?.hideComments ?? false);
   }, [image, isDog, setValue]);
 
   const handleClose = () => {
@@ -123,24 +125,34 @@ export const CreatePostModal = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log("values:", values);
     try {
       setIsLoading(true);
 
-      if (!values.isDog) {
+      if (!post) {
+        if (!values.isDog) {
+          toast({
+            description:
+              "We appreciate your participation, but we kindly request that only photos featuring dogs be posted.",
+            duration: 3000,
+          });
+          return;
+        }
+
+        await axios.post("/api/posts/create", values);
+
         toast({
-          description:
-            "We appreciate your participation, but we kindly request that only photos featuring dogs be posted.",
+          description: "Posted successfully.",
           duration: 3000,
         });
-        return;
+      } else {
+        await axios.patch("/api/posts/update", values);
+
+        toast({
+          description: "Updated successfully.",
+          duration: 3000,
+        });
       }
-
-      await axios.post("/api/posts/create", values);
-
-      toast({
-        description: "Posted successfully.",
-        duration: 3000,
-      });
 
       handleClose();
       router.push(`/${user?.id}`);
@@ -174,7 +186,7 @@ export const CreatePostModal = () => {
                 className="text-amber-600 p-3"
                 variant="ghost"
               >
-                Share
+                {post ? "Edit" : "Share"}
               </Button>
             </div>
             <div className="flex lg:flex-row flex-col">
@@ -232,7 +244,11 @@ export const CreatePostModal = () => {
                             onValueChange={field.onChange}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="All location" />
+                              <SelectValue
+                                placeholder={
+                                  post ? post.location : "All location"
+                                }
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {locations
@@ -241,18 +257,20 @@ export const CreatePostModal = () => {
                                   (a: { name: string }, b: { name: string }) =>
                                     a.name.localeCompare(b.name)
                                 )
-                                .map((loc: { flag: string; name: string }) => (
-                                  <SelectItem key={loc.name} value={loc.name}>
-                                    <Image
-                                      src={loc.flag}
-                                      alt="Flag"
-                                      width={20}
-                                      height={20}
-                                      className="inline mr-2"
-                                    />
-                                    <span>{loc.name}</span>
-                                  </SelectItem>
-                                ))}
+                                .map(
+                                  (loc: { flag: string; name: string }, i) => (
+                                    <SelectItem key={i} value={loc.name}>
+                                      <Image
+                                        src={loc.flag}
+                                        alt="Flag"
+                                        width={20}
+                                        height={20}
+                                        className="inline mr-2"
+                                      />
+                                      <span>{loc.name}</span>
+                                    </SelectItem>
+                                  )
+                                )}
                             </SelectContent>
                           </Select>
                         </FormControl>

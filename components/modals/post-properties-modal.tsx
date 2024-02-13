@@ -13,6 +13,7 @@ import { SinglePost } from "@/types";
 
 export const PostPropertiesModal = () => {
   const { isOpen, onClose, type, data, onOpen } = useSecondModal();
+  const { onOpen: editPostOpen } = useModal();
   const { onClose: onCloseRootModal } = useModal();
   const { toast } = useToast();
   const post: SinglePost = data;
@@ -201,11 +202,16 @@ export const PostPropertiesModal = () => {
     }
   };
 
+  const onCreatePostModalOpen = () => {
+    handleClose();
+    editPostOpen("createPost", post);
+  };
+
   const buttons = [
     isAuthor
       ? { label: "Delete", onClick: () => onDelete(post?.userId) }
       : null,
-    isAuthor ? { label: "Edit", onClick: () => {} } : null,
+    isAuthor ? { label: "Edit", onClick: onCreatePostModalOpen } : null,
     isAuthor
       ? {
           label: post?.hideLikes
