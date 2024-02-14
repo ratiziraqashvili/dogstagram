@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request, { params }: { params: { userId: string } }) {
    try {
     if (!params.userId) {
-        return new NextResponse("Unauthorized", { status: 401 });
+        return null;
     }
 
     const followingDetails = await db.follow.findMany({

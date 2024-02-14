@@ -5,9 +5,10 @@ import { useClerk } from "@clerk/nextjs";
 import { ChevronDown, MoreHorizontal, Settings } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useModal } from "@/hooks/use-modal-store";
 import Link from "next/link";
+import { useFollower } from "@/hooks/use-follower-store";
 
 interface ProfileInfoProps {
   username: string | undefined;
@@ -31,23 +32,27 @@ export const ProfileInfo = ({
   const { user } = useClerk();
   const router = useRouter();
   const { onOpen } = useModal();
-  const [isFollowing, setIsFollowing] = useState(following);
-  const [followerCount, setFollowerCount] = useState(followerCountNumber);
+  const { isFollowing, setIsFollowing, followerCount, setFollowerCount } = useFollower();
 
   const otherUserId = JSON.stringify(userId);
+
+  useEffect(() => {
+    setIsFollowing(following);
+    setFollowerCount(followerCountNumber)
+  }, [])
 
   const onFollow = async () => {
     // Making req to api route to follow user
     try {
       setIsFollowing(true);
-      setFollowerCount((prevCount) => prevCount + 1);
+      setFollowerCount(followerCount + 1);
       await axios.post("/api/users/follow", otherUserId);
 
       router.refresh();
     } catch (error) {
       console.error(error);
       setIsFollowing(false);
-      setFollowerCount((prevCount) => prevCount - 1);
+      setFollowerCount(followerCount - 1);
     }
   };
 

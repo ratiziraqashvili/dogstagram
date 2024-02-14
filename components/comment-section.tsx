@@ -60,7 +60,7 @@ export const CommentSection = ({
     return (
       <div className="md:border-t-[1px]">
         <div className="flex gap-3 p-3 items-center">
-          <Link onClick={handleClose} href={`/${post.userId}`}>
+          <Link onClick={handleClose} href={`/${post?.userId}`}>
             <div>
               <ProfilePicture
                 className="w-8 h-8"
@@ -70,7 +70,7 @@ export const CommentSection = ({
           </Link>
           <div className="flex flex-col">
             <div className="flex items-center gap-1">
-              <Link onClick={handleClose} href={`/${post.userId}`}>
+              <Link onClick={handleClose} href={`/${post?.userId}`}>
                 <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer">
                   {post.user.username}
                 </h1>

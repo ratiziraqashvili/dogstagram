@@ -12,11 +12,13 @@ import axios from "axios";
 import { User } from "@prisma/client";
 import { ProfilePicture } from "../profile-picture";
 import { Bookmark, ChevronRight, Star, X } from "lucide-react";
+import { useFollower } from "@/hooks/use-follower-store";
 
 export const FollowingModal = () => {
-  const { isOpen, onClose, type } = useModal();
+  const { isOpen, onClose, type, onOpen } = useModal();
   const [isLoading, setIsLoading] = useState(false);
- 
+  const { setIsFollowing, setFollowerCount, followerCount } = useFollower();
+
   const router = useRouter();
   const params = useParams();
   const userId = params.userId as string;
@@ -42,22 +44,29 @@ export const FollowingModal = () => {
   const onUnfollow = async () => {
     setIsLoading(true);
     try {
-      
+      setIsFollowing(false);
+      setFollowerCount(followerCount - 1);
+      handleClose();
       await axios.delete(`/api/users/unfollow/${userId}`);
 
       router.refresh();
-      handleClose();
     } catch (error) {
       console.error(error);
+      setIsFollowing(true);
+      setFollowerCount(followerCount + 1);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const onRestrictModalOpen = () => {
+    onOpen("restrict")
+  }
+
   const buttons = [
     { label: "Add to favorites", onClick: () => {}, icon: Star },
     { label: "Mute", onClick: () => {}, icon: Bookmark },
-    { label: "Restrict", onClick: () => {}, icon: ChevronRight },
+    { label: "Restrict", onClick: onRestrictModalOpen, icon: ChevronRight },
     { label: "Unfollow", onClick: onUnfollow },
   ];
 
