@@ -26,6 +26,7 @@ model User {
   posts      Post[]
   comments   Comment[]
   SavedPosts SavedPosts[]
+  Restrict   Restrict[]
 }
 
 model BlockedUser {
@@ -120,9 +121,19 @@ model Notification {
   sender    String
   postId    String?
   type      NotificationType
-  
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([recipient])
+}
+
+model Restrict {
+  userId           String
+  restrictedUserId String
+
+  user User @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+
+  @@id([userId, restrictedUserId])
+  @@index([userId])
 }
