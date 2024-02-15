@@ -9,12 +9,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         <Sidebar />
       </div>
       <div className="md:hidden w-full flex flex-col">
-          <MobileNavbar />
+        <MobileNavbar />
         <MobileBottomNavbar />
       </div>
-      <main className="">
-        {children}
-      </main>
+      <main className="">{children}</main>
     </div>
   );
 };

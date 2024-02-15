@@ -1,4 +1,4 @@
-import { Comment, Post } from "@prisma/client";
+import { Comment, Notification, Post } from "@prisma/client";
 
 export type PostInfoType = (
     Post & {
@@ -34,3 +34,16 @@ export type CommentArray = (
     }
   }
 )[] | undefined;
+
+export type NotificationArray = (
+  Notification & {
+    user: {
+      username: string;
+      imageUrl: string | null;
+    },
+    post: {
+      imageUrl: string,
+    } | null
+    postId: string | null,
+  }
+)[]

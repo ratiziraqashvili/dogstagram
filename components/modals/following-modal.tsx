@@ -60,12 +60,10 @@ export const FollowingModal = () => {
   };
 
   const onRestrictModalOpen = () => {
-    onOpen("restrict")
-  }
+    onOpen("restrict");
+  };
 
   const buttons = [
-    { label: "Add to favorites", onClick: () => {}, icon: Star },
-    { label: "Mute", onClick: () => {}, icon: Bookmark },
     { label: "Restrict", onClick: onRestrictModalOpen, icon: ChevronRight },
     { label: "Unfollow", onClick: onUnfollow },
   ];

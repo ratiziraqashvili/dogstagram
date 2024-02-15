@@ -13,6 +13,7 @@ export const MobileNavbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
   const isProfilePage = pathname.split("/")[1].startsWith("user_");
+  const isNotificationPage = pathname.startsWith("/notifications");
 
   const onClear = (e: React.SyntheticEvent) => {
     e.stopPropagation();
@@ -32,6 +33,10 @@ export const MobileNavbar = () => {
   };
 
   if (isProfilePage) {
+    return null;
+  }
+
+  if (isNotificationPage) {
     return null;
   }
 

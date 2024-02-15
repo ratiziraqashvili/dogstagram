@@ -23,10 +23,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  posts      Post[]
-  comments   Comment[]
-  SavedPosts SavedPosts[]
-  Restrict   Restrict[]
+  posts        Post[]
+  comments     Comment[]
+  SavedPosts   SavedPosts[]
+  Restrict     Restrict[]
+  Notification Notification[]
 }
 
 model BlockedUser {
@@ -51,10 +52,11 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  likes      Like[]
-  comments   Comment[]
-  user       User         @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
-  SavedPosts SavedPosts[]
+  likes        Like[]
+  comments     Comment[]
+  user         User           @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  SavedPosts   SavedPosts[]
+  Notification Notification[]
 
   @@index([userId])
 }
@@ -122,20 +124,25 @@ model Notification {
   postId    String?
   type      NotificationType
 
+  user User  @relation(fields: [sender], references: [clerkId], onDelete: Cascade)
+  post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([recipient])
+  @@index([sender])
+  @@index([postId])
 }
 
 model Restrict {
   userId           String
   restrictedUserId String
 
-  user      User     @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  expiry DateTime?
+  user      User      @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expiry    DateTime?
 
   @@id([userId, restrictedUserId])
   @@index([userId])

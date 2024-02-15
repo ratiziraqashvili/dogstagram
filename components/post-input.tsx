@@ -162,7 +162,7 @@ export const PostInput = ({
           query: {
             content: comment,
             recipient: post.userId,
-            restrictedUserId: restrictedUserId
+            restrictedUserId: restrictedUserId,
           },
         });
 
