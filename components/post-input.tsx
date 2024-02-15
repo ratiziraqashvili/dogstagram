@@ -9,12 +9,15 @@ import qs from "query-string";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useToast } from "./ui/use-toast";
+import { Restrict } from "@prisma/client";
+import { useAuth } from "@clerk/nextjs";
 
 interface PostInputProps {
   post: SinglePost;
   isLiked: boolean | undefined;
   formattedTime: string;
   isFavorited: boolean | undefined;
+  restrictedUsers: Restrict[] | undefined;
 }
 
 const debounce = (fn: Function, delay: number) => {
@@ -34,6 +37,7 @@ export const PostInput = ({
   isLiked: liked,
   formattedTime,
   isFavorited: favorited,
+  restrictedUsers,
 }: PostInputProps) => {
   const [comment, setComment] = useState("");
   const [isLiked, setIsLiked] = useState<boolean | undefined>(liked);
@@ -46,6 +50,7 @@ export const PostInput = ({
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { userId } = useAuth();
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
@@ -55,8 +60,20 @@ export const PostInput = ({
     inputRef.current?.focus();
   };
 
+  const restrictedUserId = restrictedUsers?.map(
+    (user) => user.restrictedUserId
+  );
+
   const onLike = useCallback(async () => {
     try {
+      if (restrictedUserId?.includes(userId!)) {
+        toast({
+          title: "You are restricted by user, therefore you can not like post.",
+          variant: "default",
+          duration: 3000,
+        });
+        return;
+      }
       setIsSubmitting(true);
       setIsLiked(true);
       setLikeCount((prevCount) => prevCount + 1);
@@ -65,6 +82,7 @@ export const PostInput = ({
         url: `/api/like/${post?.id}`,
         query: {
           recipient: post.userId,
+          restrictedUserId: restrictedUserId,
         },
       });
 
@@ -121,6 +139,16 @@ export const PostInput = ({
   const onComment = async () => {
     setIsLoading(true);
     try {
+      if (restrictedUserId?.includes(userId!)) {
+        toast({
+          title:
+            "You are restricted by user, therefore you can not comment on post.",
+          variant: "default",
+          duration: 3000,
+        });
+        return;
+      }
+
       if (!!comment) {
         if (comment.length > MAX_COMMENT_LENGTH) {
           toast({
@@ -134,6 +162,7 @@ export const PostInput = ({
           query: {
             content: comment,
             recipient: post.userId,
+            restrictedUserId: restrictedUserId
           },
         });
 

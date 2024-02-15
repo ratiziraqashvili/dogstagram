@@ -11,9 +11,14 @@ export async function POST(req: Request, { params }: { params: { postId: string 
 
         const content = searchParams.get("content");
         const recipient = searchParams.get("recipient");
+        const restrictedUserId = searchParams.get("restrictedUserId");
 
         if (!user || !user.id) {
             return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (restrictedUserId === user?.id) {
+            return new NextResponse("Forbidden", { status: 403 })
         }
 
         if (!postId) {

@@ -23,6 +23,7 @@ export const PostInfoModal = () => {
     likes,
     comments,
     savedPostsId: id,
+    restrictedUsers
   } = useModal();
   const { onOpen } = useSecondModal();
   const [flag, setFlag] = useState("");
@@ -150,6 +151,7 @@ export const PostInfoModal = () => {
           </div>
           <div className="order-1 md:order-2 flex flex-col gap-4">
             <PostInput
+              restrictedUsers={restrictedUsers}
               formattedTime={formattedTime}
               isLiked={isLiked}
               post={post}

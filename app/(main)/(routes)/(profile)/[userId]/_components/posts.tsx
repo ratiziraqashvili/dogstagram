@@ -5,7 +5,7 @@ import { usePostDataStore } from "@/hooks/use-post-data-store";
 import { cn } from "@/lib/utils";
 import { CommentArray, PostInfoType } from "@/types";
 import { useAuth } from "@clerk/nextjs";
-import { Like, Post } from "@prisma/client";
+import { Like, Post, Restrict } from "@prisma/client";
 import { Camera, Heart, MessageCircle } from "lucide-react";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useParams } from "next/navigation";
@@ -17,9 +17,10 @@ interface PostsProps {
   savedPostsId: {
     postId: string;
   }[];
+  restrictedUsers: Restrict[];
 }
 
-export const Posts = ({ posts, likes, comments, savedPostsId }: PostsProps) => {
+export const Posts = ({ posts, likes, comments, savedPostsId, restrictedUsers }: PostsProps) => {
   const { onOpen } = useModal();
   const { toast } = useToast();
   const { addUploadedData } = usePostDataStore();
@@ -107,9 +108,10 @@ export const Posts = ({ posts, likes, comments, savedPostsId }: PostsProps) => {
     comments: CommentArray,
     savedPostsId: {
       postId: string;
-    }[]
+    }[],
+    restrictedUsers: Restrict[]
   ) => {
-    onOpen("postInfo", post, likes, comments, savedPostsId);
+    onOpen("postInfo", post, likes, comments, savedPostsId, restrictedUsers);
   };
 
   return (
@@ -122,7 +124,7 @@ export const Posts = ({ posts, likes, comments, savedPostsId }: PostsProps) => {
       {posts.map((post) => (
         <div
           onClick={() =>
-            onPostInfoModalOpen(post, likes, comments, savedPostsId)
+            onPostInfoModalOpen(post, likes, comments, savedPostsId, restrictedUsers)
           }
           className="group relative"
           key={post.id}

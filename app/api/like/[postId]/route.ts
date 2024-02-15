@@ -21,6 +21,7 @@ export async function POST(req: NextRequest, { params }: { params: { postId: str
         const ip = req.ip;
         const { searchParams } = new URL(req.url);
         const recipient = searchParams.get("recipient");
+        const restrictedUserId = searchParams.get("restrictedUserId")
 
         const { limit, reset, remaining } = await ratelimit.limit(ip!);
 
@@ -33,6 +34,10 @@ export async function POST(req: NextRequest, { params }: { params: { postId: str
                     "X-RateLimit-Reset": reset.toString(),
                 }
             })
+        }
+
+        if (restrictedUserId === user?.id) {
+            return new NextResponse("Forbidden", { status: 403 })
         }
 
         if (!user || !user.id) {

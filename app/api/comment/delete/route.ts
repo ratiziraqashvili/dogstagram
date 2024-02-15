@@ -40,8 +40,6 @@ export async function DELETE(req: Request) {
             }
         })
 
-        console.log(deletedComment)
-
         return NextResponse.json(deletedComment)
 
     } catch (error) {

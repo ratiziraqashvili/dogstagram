@@ -7,7 +7,7 @@ import { Posts } from "./posts";
 import { SavedPosts } from "./saved-posts";
 import { useAuth } from "@clerk/nextjs";
 import { CommentArray, PostInfoType } from "@/types";
-import { Like } from "@prisma/client";
+import { Like, Restrict } from "@prisma/client";
 
 interface ProfileFiltersProps {
   profileId: string;
@@ -18,6 +18,7 @@ interface ProfileFiltersProps {
   savedPostsId: {
     postId: string;
   }[];
+  restrictedUsers: Restrict[];
 }
 
 export const ProfileFilters = ({
@@ -27,6 +28,7 @@ export const ProfileFilters = ({
   comments,
   savedPosts,
   savedPostsId,
+  restrictedUsers,
 }: ProfileFiltersProps) => {
   const [filter, setFilter] = useState("posts");
   const { userId } = useAuth();
@@ -124,6 +126,7 @@ export const ProfileFilters = ({
             likes={likes}
             posts={posts}
             savedPostsId={savedPostsId}
+            restrictedUsers={restrictedUsers}
           />
         )}
         {filter === "saved" && (

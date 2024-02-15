@@ -88,6 +88,12 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     },
   });
 
+  const restrictedUsers = await db.restrict.findMany({
+    where: {
+      userId
+    }
+  })
+
   const comments = await db.comment.findMany({
     include: {
       user: {
@@ -194,6 +200,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         profileId={userId}
         savedPosts={savedPosts}
         savedPostsId={savedPostsId}
+        restrictedUsers={restrictedUsers}
       />
     </div>
   );
