@@ -45,14 +45,22 @@ export const RestrictModal = () => {
 
       handleClose();
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error("error in client [COMPONENTS_MODALS_RESTRICT-MODAL]");
 
-      toast({
-        title: "Failed to restrict user.",
-        variant: "default",
-        duration: 3000,
-      });
+      if (error.response.status === 400) {
+        toast({
+          title: "User is already restricted for 24 hours.",
+          variant: "default",
+          duration: 3000,
+        });
+      } else {
+        toast({
+          title: "Failed to restrict user.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -72,14 +80,14 @@ export const RestrictModal = () => {
               <ShieldAlert className="w-11 h-11" />
               <span className="text-sm text-muted-foreground">
                 Limit unwanted interactions without having to block or unfollow
-                someone you know.
+                someone you know for only 24 hours.
               </span>
             </div>
             <div className="flex gap-4 items-center">
               <MessageCircle className="w-8 h-8" />
               <span className="text-sm text-muted-foreground">
                 You'll control if others can see their new comments on your
-                posts.
+                posts for only 24 hours.
               </span>
             </div>
           </div>

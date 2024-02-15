@@ -2,6 +2,8 @@ import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
+export const RESTRICT_DURATION_HOURS = 24;
+
 export async function POST(req: Request, { params }: { params: { userId: string } }) {
     try {
         const currUser = await currentUser();
@@ -30,12 +32,16 @@ export async function POST(req: Request, { params }: { params: { userId: string 
             return new NextResponse("This user is already restricted", { status: 400 })
         }
 
+        const expiry = new Date(Date.now() + RESTRICT_DURATION_HOURS * 60 * 60 * 1000);
+
         const restrict = await db.restrict.create({
             data: {
                 userId: currUser.id,
                 restrictedUserId: userId,
+                expiry
             }
         })
+
 
         return NextResponse.json(restrict);
 
