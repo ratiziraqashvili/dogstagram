@@ -1,7 +1,7 @@
 import { useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
 import { CommentArray, PostInfoType } from "@/types";
-import { Like, Post } from "@prisma/client";
+import { Like, Post, Restrict } from "@prisma/client";
 import { Heart, MessageCircle } from "lucide-react";
 import { CldImage } from "next-cloudinary";
 
@@ -12,6 +12,7 @@ interface SavedPostsProps {
   savedPostsId: {
     postId: string;
   }[];
+  restrictedUsers: Restrict[];
 }
 
 export const SavedPosts = ({
@@ -19,6 +20,7 @@ export const SavedPosts = ({
   likes,
   comments,
   savedPostsId,
+  restrictedUsers,
 }: SavedPostsProps) => {
   const { onOpen } = useModal();
 
@@ -26,9 +28,10 @@ export const SavedPosts = ({
     post: Post,
     likes: Like[],
     comments: CommentArray,
-    savedPostsId: { postId: string }[]
+    savedPostsId: { postId: string }[],
+    restrictedUsers: Restrict[]
   ) => {
-    onOpen("postInfo", post, likes, comments, savedPostsId);
+    onOpen("postInfo", post, likes, comments, savedPostsId, restrictedUsers);
   };
 
   if (savedPosts.length === 0) {
@@ -51,7 +54,13 @@ export const SavedPosts = ({
       {savedPosts.map((savedPost) => (
         <div
           onClick={() =>
-            onPostInfoModalOpen(savedPost, likes, comments, savedPostsId)
+            onPostInfoModalOpen(
+              savedPost,
+              likes,
+              comments,
+              savedPostsId,
+              restrictedUsers
+            )
           }
           className="group relative"
           key={savedPost.id}

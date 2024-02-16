@@ -61,7 +61,7 @@ export const MobileBottomNavbar = () => {
   ];
 
   return (
-    <div className="border-t-[1px] w-full flex justify-center fixed bottom-0 z-9999">
+    <div className="border-t-[1px] w-full flex justify-center fixed bottom-0 z-50 bg-white">
       <div className="flex justify-between items-center w-[100%] ">
         {routes.map((route, index) => (
           <div

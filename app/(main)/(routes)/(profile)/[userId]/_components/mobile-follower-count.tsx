@@ -1,5 +1,6 @@
 "use client";
 
+import { useFollower } from "@/hooks/use-follower-store";
 import { useModal } from "@/hooks/use-modal-store";
 
 interface MobileFollowerCountProps {
@@ -14,6 +15,7 @@ export const MobileFollowerCount = ({
   followingCountNumber,
 }: MobileFollowerCountProps) => {
   const { onOpen } = useModal();
+  const { followerCount } = useFollower();
 
   const onDisplayFollowersModalOpen = () => {
     onOpen("displayFollowers");
@@ -35,7 +37,7 @@ export const MobileFollowerCount = ({
             onClick={onDisplayFollowersModalOpen}
             className="font-semibold cursor-pointer"
           >
-            {followerCountNumber}
+            {followerCount}
           </span>
         </span>
         <span

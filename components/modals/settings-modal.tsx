@@ -1,10 +1,12 @@
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
 import { useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export const SettingsModal = () => {
   const { isOpen, onClose, type } = useModal();
   const { signOut } = useClerk();
+  const router = useRouter();
 
   const isModalOpen = isOpen && type === "settings";
 
@@ -12,9 +14,14 @@ export const SettingsModal = () => {
     onClose();
   };
 
+  const redirectToNotiPage = () => {
+    handleClose();
+    router.push("/notifications");
+  };
+
   const buttons = [
     //TODO: Redirect to notifications page
-    { label: "Notifications", onClick: () => {} },
+    { label: "Notifications", onClick: redirectToNotiPage },
     { label: "Log Out", onClick: () => signOut() },
   ];
 

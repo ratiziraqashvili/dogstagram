@@ -135,6 +135,7 @@ export const ProfileFilters = ({
             comments={comments}
             likes={likes}
             savedPostsId={savedPostsId}
+            restrictedUsers={restrictedUsers}
           />
         )}
       </div>

@@ -13,7 +13,7 @@ import { SinglePost } from "@/types";
 
 export const PostPropertiesModal = () => {
   const { isOpen, onClose, type, data, onOpen } = useSecondModal();
-  const { onOpen: editPostOpen } = useModal();
+  const { onOpen: editPostOpen, onClose: closeModal } = useModal();
   const { onClose: onCloseRootModal } = useModal();
   const { toast } = useToast();
   const post: SinglePost = data;
@@ -207,6 +207,12 @@ export const PostPropertiesModal = () => {
     editPostOpen("createPost", post);
   };
 
+  const redirectToPost = () => {
+    handleClose();
+    closeModal();
+    router.push(postUrl);
+  };
+
   const buttons = [
     isAuthor
       ? { label: "Delete", onClick: () => onDelete(post?.userId) }
@@ -232,7 +238,7 @@ export const PostPropertiesModal = () => {
             : () => onCommentHide(post?.userId),
         }
       : null,
-    { label: "Go to post", onClick: () => router.push(postUrl) },
+    { label: "Go to post", onClick: redirectToPost },
     { label: "Copy link", onClick: onCopy },
     { label: "About this post", onClick: onAboutAccountModalOpen },
   ];

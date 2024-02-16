@@ -66,7 +66,7 @@ const NotificationPage = async () => {
         {/* added empty div to push notification in center */}
         <div className="w-[2.9rem]" />
       </div>
-      <div className="flex flex-col max-w-xl md:max-w-lg md:pt-0 pt-9 mx-auto p-3">
+      <div className="flex flex-col max-w-xl md:max-w-lg md:pt-6 mx-auto p-3">
         <div className="md:block hidden pt-3">
           <h1 className="font-bold">Notifications</h1>
         </div>

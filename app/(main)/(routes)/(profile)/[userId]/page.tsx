@@ -100,7 +100,6 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         select: {
           imageUrl: true,
           username: true,
-          following: true
         },
       },
     },

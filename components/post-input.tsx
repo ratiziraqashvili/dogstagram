@@ -13,7 +13,7 @@ import { Restrict } from "@prisma/client";
 import { useAuth } from "@clerk/nextjs";
 
 interface PostInputProps {
-  post: SinglePost;
+  post: SinglePost | null;
   isLiked: boolean | undefined;
   formattedTime: string;
   isFavorited: boolean | undefined;
@@ -45,7 +45,7 @@ export const PostInput = ({
     favorited
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [likeCount, setLikeCount] = useState(post._count.likes);
+  const [likeCount, setLikeCount] = useState(post?._count.likes);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -76,12 +76,12 @@ export const PostInput = ({
       }
       setIsSubmitting(true);
       setIsLiked(true);
-      setLikeCount((prevCount) => prevCount + 1);
+      setLikeCount((prevCount) => prevCount! + 1);
 
       const url = qs.stringifyUrl({
         url: `/api/like/${post?.id}`,
         query: {
-          recipient: post.userId,
+          recipient: post?.userId,
           restrictedUserId: restrictedUserId,
         },
       });
@@ -91,7 +91,7 @@ export const PostInput = ({
       router.refresh();
     } catch (error: any) {
       setIsLiked(false);
-      setLikeCount((prevCount) => prevCount - 1);
+      setLikeCount((prevCount) => prevCount! - 1);
       console.error("client error in like, post-input", error);
 
       if (error.response.status === 429) {
@@ -110,13 +110,13 @@ export const PostInput = ({
     try {
       setIsSubmitting(true);
       setIsLiked(false);
-      setLikeCount((prevCount) => prevCount - 1);
+      setLikeCount((prevCount) => prevCount! - 1);
       await axios.delete(`/api/like/${post?.id}`);
 
       router.refresh();
     } catch (error: any) {
       setIsLiked(true);
-      setLikeCount((prevCount) => prevCount + 1);
+      setLikeCount((prevCount) => prevCount! + 1);
       console.error("client error in unlike, post-input", error);
 
       if (error.response.status === 429) {
@@ -161,7 +161,7 @@ export const PostInput = ({
           url: `/api/comment/${post?.id}`,
           query: {
             content: comment,
-            recipient: post.userId,
+            recipient: post?.userId,
             restrictedUserId: restrictedUserId,
           },
         });
@@ -219,8 +219,8 @@ export const PostInput = ({
       const url = qs.stringifyUrl({
         url: "/api/posts/favorite",
         query: {
-          postId: post.id,
-          authorId: post.userId,
+          postId: post?.id,
+          authorId: post?.userId,
         },
       });
 
@@ -274,9 +274,9 @@ export const PostInput = ({
           />
         </div>
       </div>
-      <div className={cn("px-4", post.hideComments && "pb-3")}>
+      <div className={cn("px-4", post?.hideComments && "pb-3")}>
         <p className="text-sm">
-          {likeCount === 0 && !post.hideLikes ? (
+          {likeCount === 0 && !post?.hideLikes ? (
             <>
               <span>Be the first to </span>
               <span
@@ -287,12 +287,12 @@ export const PostInput = ({
               </span>
             </>
           ) : (
-            !post.hideLikes && <span>{likeCount} likes</span>
+            !post?.hideLikes && <span>{likeCount} likes</span>
           )}
         </p>
         <span className="text-muted-foreground text-xs">{formattedTime}</span>
       </div>
-      {!post.hideComments && (
+      {!post?.hideComments && (
         <div className="flex items-center gap-2 border-t-[1px] px-4 py-2">
           <EmojiPicker
             className="h-6 w-6"

@@ -12,7 +12,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         <MobileNavbar />
         <MobileBottomNavbar />
       </div>
-      <main className="">{children}</main>
+      <main className="h-full w-full">{children}</main>
     </div>
   );
 };

@@ -13,7 +13,7 @@ interface NotificationProps {
 
 export const Notification = ({ notifications }: NotificationProps) => {
   return (
-    <div className="pt-3 flex flex-col gap-1">
+    <div className="md:pt-3 flex flex-col gap-3">
       {notifications.map((notification, i) => {
         const formattedTime = formatTimeDifference(notification.createdAt);
         const router = useRouter();
