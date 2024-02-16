@@ -5,7 +5,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import Link from "next/link";
 
 interface CommentSectionProps {
-  post: SinglePost;
+  post: SinglePost | null;
   comments: CommentArray;
   formattedTime: string;
 }
@@ -17,14 +17,14 @@ export const CommentSection = ({
 }: CommentSectionProps) => {
   const { onClose } = useModal();
   const filteredComments = comments?.filter(
-    (comment) => comment.postId === post.id
+    (comment) => comment.postId === post?.id
   );
 
   const handleClose = () => {
     onClose();
   };
 
-  if (post.hideComments && !post.caption) {
+  if (post?.hideComments && !post?.caption) {
     return (
       <div className="flex justify-center items-center h-full md:border-t-[1px]">
         <div className="flex flex-col gap-1.5">
@@ -37,7 +37,7 @@ export const CommentSection = ({
     );
   }
 
-  if (filteredComments?.length === 0 && !post.caption) {
+  if (filteredComments?.length === 0 && !post?.caption) {
     return (
       <div className="flex justify-center items-center h-full md:border-t-[1px]">
         <div className="flex flex-col gap-1.5">
@@ -48,15 +48,15 @@ export const CommentSection = ({
     );
   }
 
-  if (filteredComments?.length! > 0 && !post.caption) {
+  if (filteredComments?.length! > 0 && !post?.caption) {
     return (
       <div className="md:border-t-[1px]">
-        <Comments authorId={post.userId} comments={filteredComments} />
+        <Comments authorId={post?.userId!} comments={filteredComments} />
       </div>
     );
   }
 
-  if (post.caption) {
+  if (post?.caption) {
     return (
       <div className="md:border-t-[1px]">
         <div className="flex gap-3 p-3 items-center">
@@ -84,7 +84,9 @@ export const CommentSection = ({
             </div>
           </div>
         </div>
-        {!post.hideComments && <Comments authorId={post.userId} comments={filteredComments} />}
+        {!post.hideComments && (
+          <Comments authorId={post.userId} comments={filteredComments} />
+        )}
       </div>
     );
   }

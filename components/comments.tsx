@@ -54,7 +54,7 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
                         <span className="text-amber-500 text-xs">Creator</span>
                       </span>
                     ) : (
-                      comment.user.username
+                      <span>{comment.user.username}</span>
                     )}
                   </h1>
                 </Link>

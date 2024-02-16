@@ -14,6 +14,7 @@ export const MobileNavbar = () => {
   const pathname = usePathname();
   const isProfilePage = pathname.split("/")[1].startsWith("user_");
   const isNotificationPage = pathname.startsWith("/notifications");
+  const isPostPage = pathname.startsWith("/post")
 
   const onClear = (e: React.SyntheticEvent) => {
     e.stopPropagation();
@@ -32,11 +33,7 @@ export const MobileNavbar = () => {
     }
   };
 
-  if (isProfilePage) {
-    return null;
-  }
-
-  if (isNotificationPage) {
+  if (isProfilePage || isPostPage || isNotificationPage) {
     return null;
   }
 
