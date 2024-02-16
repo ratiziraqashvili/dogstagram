@@ -6,9 +6,12 @@ import Link from "next/link";
 import { CldUploadWidget } from "next-cloudinary";
 import { usePostDataStore } from "@/hooks/use-post-data-store";
 import { useToast } from "./ui/use-toast";
-import { usePathname } from "next/navigation";
 
-export const Routes = () => {
+interface RoutesProps {
+  unReadNotiCount: number;
+}
+
+export const Routes = ({ unReadNotiCount }: RoutesProps) => {
   const { onOpen } = useModal();
   const { addUploadedData } = usePostDataStore();
   const { toast } = useToast();
@@ -76,8 +79,15 @@ export const Routes = () => {
         >
           {route.href ? (
             <Link className="w-full" href={route.href}>
-              <div className="flex gap-4 items-center">
-                <route.icon className="w-6 h-6 group-hover:scale-105 transition" />
+              <div className="flex gap-4 items-center relative">
+                <div className="">
+                  <route.icon className="w-6 h-6 group-hover:scale-105 transition" />
+                </div>
+                {route.label === "Notifications" && unReadNotiCount > 0 && (
+                  <span className="absolute -top-2 left-3 text-white bg-red-500 rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                    {unReadNotiCount}
+                  </span>
+                )}
                 <span className="hidden xl:block text-md">{route.label}</span>
               </div>
             </Link>

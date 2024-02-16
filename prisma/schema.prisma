@@ -122,6 +122,7 @@ model Notification {
   recipient String
   sender    String
   postId    String?
+  isRead    Boolean          @default(false)
   type      NotificationType
 
   user User  @relation(fields: [sender], references: [clerkId], onDelete: Cascade)

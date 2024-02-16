@@ -36,7 +36,9 @@ export const Notification = ({ notifications }: NotificationProps) => {
                 <span className="font-semibold text-sm">
                   {notification.user.username}
                 </span>
-                <span className="text-sm">{generateNotificationMessage(notification.type)}</span>
+                <span className="text-sm">
+                  {generateNotificationMessage(notification.type)}
+                </span>
                 <span className="text-sm text-muted-foreground">
                   {formattedTime}
                 </span>

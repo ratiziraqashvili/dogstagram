@@ -4,9 +4,17 @@ import Link from "next/link";
 import { MoreDropDown } from "./more-dropdown";
 import { ProfilePicture } from "./profile-picture";
 import { currentUser } from "@clerk/nextjs";
+import { db } from "@/lib/db";
 
 export const Sidebar = async () => {
   const user = await currentUser();
+
+  const unReadNotiCount = await db.notification.count({
+    where: {
+      recipient: user?.id,
+      isRead: false,
+    },
+  });
 
   return (
     <div className="xl:w-[15.3rem] w-[4.6rem] border-r-[1px] h-full flex flex-col p-3 gap-3 fixed">
@@ -21,18 +29,18 @@ export const Sidebar = async () => {
           />
         </Link>
       </div>
-        <Link href="/">
-      <div className="xl:hidden block mt-2 hover:bg-primary/10 transition rounded-md relative w-12 h-12">
+      <Link href="/">
+        <div className="xl:hidden block mt-2 hover:bg-primary/10 transition rounded-md relative w-12 h-12">
           <Image
             className="hover:scale-110 transition cursor-pointer"
             alt="Dogstagram"
             src="/main-logo.png"
             fill
           />
-      </div>
-        </Link>
+        </div>
+      </Link>
       <div className="flex flex-col gap-2 flex-1">
-        <Routes />
+        <Routes unReadNotiCount={unReadNotiCount} />
         <Link href={`/${user?.id}`}>
           <div className="flex items-center justify-center xl:justify-normal gap-[1rem] p-3 w-full rounded-md transition hover:bg-primary/10 cursor-pointer duration-300 pl-[0.770rem] group">
             <ProfilePicture className="w-6 h-6 group-hover:scale-105 transition" />

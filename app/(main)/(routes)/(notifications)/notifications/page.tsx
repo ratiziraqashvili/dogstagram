@@ -23,9 +23,32 @@ const NotificationPage = async () => {
       },
       post: {
         select: {
-            imageUrl: true
-        }
-      }
+          imageUrl: true,
+        },
+      },
+    },
+  });
+
+  const unreadNotis = await db.notification.findMany({
+    where: {
+      recipient: user?.id,
+      isRead: false,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const unReadNotiIds = unreadNotis.map((noti) => noti.id);
+
+ await db.notification.updateMany({
+    where: {
+      id: {
+        in: unReadNotiIds,
+      },
+    },
+    data: {
+      isRead: true,
     },
   });
 
