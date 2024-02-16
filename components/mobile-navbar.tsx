@@ -4,17 +4,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { Input } from "./ui/input";
 import { Heart, Search, X } from "lucide-react";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
-export const MobileNavbar = () => {
+interface MobileNavbarProps {
+  unReadNotiCount: number;
+}
+
+export const MobileNavbar = ({ unReadNotiCount }: MobileNavbarProps) => {
   const [isSearching, setIsSearching] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
   const isProfilePage = pathname.split("/")[1].startsWith("user_");
   const isNotificationPage = pathname.startsWith("/notifications");
-  const isPostPage = pathname.startsWith("/post")
+  const isPostPage = pathname.startsWith("/post");
 
   const onClear = (e: React.SyntheticEvent) => {
     e.stopPropagation();
@@ -69,9 +73,16 @@ export const MobileNavbar = () => {
             />
           )}
         </div>
-        <Link href="/notifications">
-          <Heart className="w-6 h-6 cursor-pointer hover:scale-105 transition" />
-        </Link>
+        <div className="relative">
+          <Link href="/notifications">
+            <Heart className="w-6 h-6 cursor-pointer hover:scale-105 transition" />
+          </Link>
+          {unReadNotiCount > 0 && (
+            <span className="absolute -top-2 left-3 text-white bg-red-500 rounded-full w-5 h-5 flex items-center justify-center text-xs">
+              {unReadNotiCount}
+            </span>
+          )}
+        </div>
       </div>
     </nav>
   );

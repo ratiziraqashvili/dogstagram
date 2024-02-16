@@ -1,6 +1,5 @@
-import { MobileBottomNavbar } from "@/components/mobile-bottom-navbar";
-import { MobileNavbar } from "@/components/mobile-navbar";
 import { Sidebar } from "@/components/sidebar";
+import { NavContainer } from "./nav-container";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -9,8 +8,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         <Sidebar />
       </div>
       <div className="md:hidden w-full flex flex-col">
-        <MobileNavbar />
-        <MobileBottomNavbar />
+        <NavContainer />
       </div>
       <main className="h-full w-full">{children}</main>
     </div>
