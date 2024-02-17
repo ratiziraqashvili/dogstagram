@@ -12,14 +12,20 @@ import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import qs from "query-string";
 import axios from "axios";
+import { UserItem } from "./user-item";
 
-interface SearchSheetProps {}
+type SearchUser = {
+  clerkId: string;
+  firstName: string;
+  imageUrl: string;
+  username: string;
+}[];
 
-export const SearchSheet = ({}: SearchSheetProps) => {
+export const SearchSheet = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFetching, setIsFetching] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<SearchUser | never[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onClear = (e: React.SyntheticEvent) => {
@@ -27,6 +33,7 @@ export const SearchSheet = ({}: SearchSheetProps) => {
 
     inputRef.current!.value = "";
     setSearchTerm("");
+    setSearchResults([]);
     setIsSearching(false);
   };
 
@@ -56,7 +63,6 @@ export const SearchSheet = ({}: SearchSheetProps) => {
 
       const res = await axios.get(url);
       setSearchResults(res.data);
-      console.log(searchResults);
     } catch (error) {
       console.error("error in [COMPONENTS_SEARCH-SHEET]", error);
     } finally {
@@ -74,8 +80,9 @@ export const SearchSheet = ({}: SearchSheetProps) => {
   }, [searchTerm]);
 
   const clearFetch = () => {
+    setSearchTerm("");
     setSearchResults([]);
-  }
+  };
 
   return (
     <Sheet onOpenChange={clearFetch}>
@@ -124,13 +131,16 @@ export const SearchSheet = ({}: SearchSheetProps) => {
           <div className="pl-6 pr-3 py-3">
             <div className="flex items-center justify-between">
               <h1 className="font-semibold">Recent</h1>
-              <Button className="transition-none" variant="ghost">
+              <Button
+                className="transition-none text-amber-600"
+                variant="ghost"
+              >
                 Clear All
               </Button>
             </div>
           </div>
         )}
-        <div></div>
+        <UserItem isFetching={isFetching} searchResults={searchResults} />
       </SheetContent>
     </Sheet>
   );
