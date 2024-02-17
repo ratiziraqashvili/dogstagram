@@ -56,6 +56,7 @@ export const SearchSheet = ({}: SearchSheetProps) => {
 
       const res = await axios.get(url);
       setSearchResults(res.data);
+      console.log(searchResults);
     } catch (error) {
       console.error("error in [COMPONENTS_SEARCH-SHEET]", error);
     } finally {
@@ -72,8 +73,12 @@ export const SearchSheet = ({}: SearchSheetProps) => {
     return () => clearTimeout(delay);
   }, [searchTerm]);
 
+  const clearFetch = () => {
+    setSearchResults([]);
+  }
+
   return (
-    <Sheet>
+    <Sheet onOpenChange={clearFetch}>
       <SheetTrigger>
         <div className="flex gap-4 items-center relative h-full xl:w-[200px]">
           <div>
