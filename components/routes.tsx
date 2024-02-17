@@ -6,6 +6,7 @@ import Link from "next/link";
 import { CldUploadWidget } from "next-cloudinary";
 import { usePostDataStore } from "@/hooks/use-post-data-store";
 import { useToast } from "./ui/use-toast";
+import { SearchSheet } from "./search-sheet";
 
 interface RoutesProps {
   unReadNotiCount: number;
@@ -100,13 +101,23 @@ export const Routes = ({ unReadNotiCount }: RoutesProps) => {
               }}
             >
               {({ open }) => (
-                <div
-                  onClick={route.label === "Search" ? () => {} : () => open?.()}
-                  className="flex gap-4 items-center w-full"
-                >
-                  <route.icon className="w-6 h-6 group-hover:scale-105 transition" />
-                  <span className="hidden xl:block text-md">{route.label}</span>
-                </div>
+                <>
+                  {route.label === "Search" ? (
+                    <SearchSheet />
+                  ) : (
+                    <div
+                      onClick={
+                        route.label === "Search" ? () => {} : () => open?.()
+                      }
+                      className="flex gap-4 items-center w-full"
+                    >
+                      <route.icon className="w-6 h-6 group-hover:scale-105 transition" />
+                      <span className="hidden xl:block text-md">
+                        {route.label}
+                      </span>
+                    </div>
+                  )}
+                </>
               )}
             </CldUploadWidget>
           )}
