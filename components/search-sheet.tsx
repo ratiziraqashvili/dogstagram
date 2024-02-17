@@ -7,20 +7,26 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { Input } from "./ui/input";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
+import qs from "query-string";
+import axios from "axios";
 
 interface SearchSheetProps {}
 
 export const SearchSheet = ({}: SearchSheetProps) => {
   const [isSearching, setIsSearching] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isFetching, setIsFetching] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onClear = (e: React.SyntheticEvent) => {
     e.stopPropagation();
 
     inputRef.current!.value = "";
+    setSearchTerm("");
     setIsSearching(false);
   };
 
@@ -33,6 +39,38 @@ export const SearchSheet = ({}: SearchSheetProps) => {
       setIsSearching(false);
     }
   };
+
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const fetchUsers = async (searchTerm: string) => {
+    setIsFetching(true);
+    try {
+      const url = qs.stringifyUrl({
+        url: "/api/users",
+        query: {
+          username: searchTerm,
+        },
+      });
+
+      const res = await axios.get(url);
+      setSearchResults(res.data);
+    } catch (error) {
+      console.error("error in [COMPONENTS_SEARCH-SHEET]", error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      if (searchTerm) {
+        fetchUsers(searchTerm);
+      }
+    }, 300);
+    return () => clearTimeout(delay);
+  }, [searchTerm]);
 
   return (
     <Sheet>
@@ -52,6 +90,7 @@ export const SearchSheet = ({}: SearchSheetProps) => {
           <div className="pt-7 px-6">
             <div onClick={onClick} className="relative">
               <Input
+                onChange={onInputChange}
                 placeholder="Search"
                 onBlur={onBlur}
                 ref={inputRef}
@@ -76,12 +115,17 @@ export const SearchSheet = ({}: SearchSheetProps) => {
             </div>
           </div>
         </div>
-        <div className="pl-6 pr-3 py-3">
+        {!searchTerm && (
+          <div className="pl-6 pr-3 py-3">
             <div className="flex items-center justify-between">
-                <h1 className="font-semibold">Recent</h1>
-                <Button className="transition-none" variant="ghost">Clear All</Button>
+              <h1 className="font-semibold">Recent</h1>
+              <Button className="transition-none" variant="ghost">
+                Clear All
+              </Button>
             </div>
-        </div>
+          </div>
+        )}
+        <div></div>
       </SheetContent>
     </Sheet>
   );
