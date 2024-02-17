@@ -6,7 +6,7 @@ export async function GET(req: Request, { params }: { params: { userId: string }
         const { userId } = params;
 
         if (!userId) {
-            return new NextResponse("Unauthorized", { status: 401 });
+            return null;
         }
 
         const user = await db.user.findUnique({

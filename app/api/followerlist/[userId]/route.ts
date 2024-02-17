@@ -5,15 +5,10 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
     try {
         const user = await currentUser()
-        
-
-        if (!user?.id || !user) {
-            return new NextResponse("Unauthorized", { status: 401 })
-        }
 
         const followeringList = await db.user.findUnique({
             where: {
-                clerkId: user.id,
+                clerkId: user?.id,
             },
             select: {
                 following: {

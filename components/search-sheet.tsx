@@ -13,18 +13,21 @@ import { Button } from "./ui/button";
 import qs from "query-string";
 import axios from "axios";
 import { UserItem } from "./user-item";
-
-type SearchUser = {
-  clerkId: string;
-  firstName: string;
-  imageUrl: string;
-  username: string;
-}[];
+import { SearchUser } from "@/types";
+import { useAuth } from "@clerk/nextjs";
 
 export const SearchSheet = () => {
+  const { userId } = useAuth();
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFetching, setIsFetching] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<SearchUser>(() => {
+    if (typeof window !== "undefined") {
+      const savedSearches = localStorage.getItem(`recentSearches_${userId}`);
+      return savedSearches ? JSON.parse(savedSearches) : [];
+    }
+    return [];
+  });
   const [searchResults, setSearchResults] = useState<SearchUser | never[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -71,6 +74,7 @@ export const SearchSheet = () => {
   };
 
   useEffect(() => {
+    //debounce to avoid unnecessary db query
     const delay = setTimeout(() => {
       if (searchTerm) {
         fetchUsers(searchTerm);
@@ -83,6 +87,25 @@ export const SearchSheet = () => {
     setSearchTerm("");
     setSearchResults([]);
   };
+
+  const saveRecentSearchesToLocalStorage = (searches: SearchUser) => {
+    localStorage.setItem(`recentSearches_${userId}`, JSON.stringify(searches));
+  };
+
+  const addToRecentSearches = (searchResult: SearchUser[0]) => {
+    // add the username to recent searches
+    setRecentSearches((prevRecentSearches) => [
+      searchResult,
+      ...prevRecentSearches.slice(0, 9),
+    ]);
+  };
+
+  useEffect(() => {
+    // save recent searches to localStorage whenever it changes
+    saveRecentSearchesToLocalStorage(recentSearches);
+  }, [recentSearches]);
+
+  console.log(recentSearches);
 
   return (
     <Sheet onOpenChange={clearFetch}>
@@ -134,13 +157,18 @@ export const SearchSheet = () => {
               <Button
                 className="transition-none text-amber-600"
                 variant="ghost"
+                onClick={() => setRecentSearches([])}
               >
                 Clear All
               </Button>
             </div>
           </div>
         )}
-        <UserItem isFetching={isFetching} searchResults={searchResults} />
+        <UserItem
+          isFetching={isFetching}
+          searchResults={searchResults}
+          addToRecentSearches={addToRecentSearches}
+        />
       </SheetContent>
     </Sheet>
   );

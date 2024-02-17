@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import { ProfilePicture } from "./profile-picture";
 import SkeletonItem from "./skeleton-item";
 import { SheetClose } from "./ui/sheet";
+import { SearchUser } from "@/types";
 
 interface UserItemProps {
   searchResults: {
@@ -11,9 +12,14 @@ interface UserItemProps {
     username: string;
   }[];
   isFetching: boolean;
+  addToRecentSearches: (searchResult: SearchUser[0]) => void;
 }
 
-export const UserItem = ({ searchResults, isFetching }: UserItemProps) => {
+export const UserItem = ({
+  searchResults,
+  isFetching,
+  addToRecentSearches,
+}: UserItemProps) => {
   const router = useRouter();
 
   if (isFetching) {
@@ -41,22 +47,34 @@ export const UserItem = ({ searchResults, isFetching }: UserItemProps) => {
     );
   }
 
+  const onClick = (
+    id: string,
+    result: {
+      clerkId: string;
+      firstName: string;
+      imageUrl: string;
+      username: string;
+    }
+  ) => {
+    router.push(`/${id}`);
+    addToRecentSearches(result);
+  };
+
   return (
-    <div className="pt-3">
+    <div className="flex flex-col gap-2 pt-3">
       {searchResults.map((result) => (
-        <SheetClose asChild>
+        <SheetClose key={result.clerkId} asChild>
           <div
-            onClick={() => router.push(`/${result.clerkId}`)}
-            className="px-6 py-2 hover:bg-primary/5 transition cursor-pointer"
-            key={result.clerkId}
+            onClick={() => onClick(result.clerkId, result)}
+            className="px-6 py-1 hover:bg-primary/5 transition cursor-pointer"
           >
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-3 items-center">
               <ProfilePicture
                 imageUrl={result.imageUrl}
                 className="w-12 h-12"
               />
               <div className="flex flex-col">
-                <h1 className="text-sm">{result.username}</h1>
+                <h1 className="text-sm font-semibold">{result.username}</h1>
                 <span className="text-sm text-muted-foreground">
                   {result.firstName}
                 </span>

@@ -46,4 +46,11 @@ export type NotificationArray = (
     } | null
     postId: string | null,
   }
-)[]
+)[];
+
+export type SearchUser = {
+  clerkId: string;
+  firstName: string;
+  imageUrl: string;
+  username: string;
+}[];
