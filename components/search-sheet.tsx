@@ -51,21 +51,29 @@ export const SearchSheet = () => {
   };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    if (e.target.value) {
+      setSearchTerm(e.target.value);
+    } else {
+      inputRef.current!.value = "";
+      setSearchResults([]);
+      setSearchTerm("");
+    }
   };
 
   const fetchUsers = async (searchTerm: string) => {
     setIsFetching(true);
     try {
-      const url = qs.stringifyUrl({
-        url: "/api/users",
-        query: {
-          username: searchTerm,
-        },
-      });
+      if (searchTerm) {
+        const url = qs.stringifyUrl({
+          url: "/api/users",
+          query: {
+            username: searchTerm,
+          },
+        });
 
-      const res = await axios.get(url);
-      setSearchResults(res.data);
+        const res = await axios.get(url);
+        setSearchResults(res.data);
+      }
     } catch (error) {
       console.error("error in [COMPONENTS_SEARCH-SHEET]", error);
     } finally {
@@ -89,23 +97,26 @@ export const SearchSheet = () => {
   };
 
   const saveRecentSearchesToLocalStorage = (searches: SearchUser) => {
-    localStorage.setItem(`recentSearches_${userId}`, JSON.stringify(searches));
+    if (localStorage.getItem(`clickedUserProfile_${userId}`)) {
+      localStorage.setItem(
+        `recentSearches_${userId}`,
+        JSON.stringify(searches)
+      );
+      localStorage.removeItem(`clickedUserProfile_${userId}`); //remove flag after saving
+    }
   };
 
   const addToRecentSearches = (searchResult: SearchUser[0]) => {
+    localStorage.setItem(`clickedUserProfile_${userId}`, "true");
     // add the username to recent searches
     setRecentSearches((prevRecentSearches) => [
       searchResult,
       ...prevRecentSearches.slice(0, 9),
     ]);
+    saveRecentSearchesToLocalStorage(recentSearches);
   };
 
-  useEffect(() => {
-    // save recent searches to localStorage whenever it changes
-    saveRecentSearchesToLocalStorage(recentSearches);
-  }, [recentSearches]);
-
-  console.log(recentSearches);
+  console.log(searchResults);
 
   return (
     <Sheet onOpenChange={clearFetch}>
@@ -168,6 +179,7 @@ export const SearchSheet = () => {
           isFetching={isFetching}
           searchResults={searchResults}
           addToRecentSearches={addToRecentSearches}
+          recentSearches={recentSearches}
         />
       </SheetContent>
     </Sheet>

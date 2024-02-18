@@ -13,12 +13,14 @@ interface UserItemProps {
   }[];
   isFetching: boolean;
   addToRecentSearches: (searchResult: SearchUser[0]) => void;
+  recentSearches: SearchUser;
 }
 
 export const UserItem = ({
   searchResults,
   isFetching,
   addToRecentSearches,
+  recentSearches,
 }: UserItemProps) => {
   const router = useRouter();
 
@@ -39,7 +41,8 @@ export const UserItem = ({
     );
   }
 
-  if (searchResults.length === 0 && !isFetching) {
+  
+  if (searchResults.length === 0 && !recentSearches) {
     return (
       <div className="h-[60%] flex justify-center items-center">
         <h1 className="text-[#9f9f9f] text-sm">No results found.</h1>
@@ -47,16 +50,38 @@ export const UserItem = ({
     );
   }
 
-  const onClick = (
-    id: string,
-    result: {
-      clerkId: string;
-      firstName: string;
-      imageUrl: string;
-      username: string;
-    }
-  ) => {
-    router.push(`/${id}`);
+  if (recentSearches && searchResults.length === 0) {
+    return (
+      <div className="flex flex-col gap-2 pt-3">
+        {recentSearches.map((result) => (
+          <SheetClose key={result.clerkId} asChild>
+            <div className="px-6 py-1 hover:bg-primary/5 transition cursor-pointer">
+              <div className="flex gap-3 items-center">
+                <ProfilePicture
+                  imageUrl={result.imageUrl}
+                  className="w-12 h-12"
+                />
+                <div className="flex flex-col">
+                  <h1 className="text-sm font-semibold">{result.username}</h1>
+                  <span className="text-sm text-muted-foreground">
+                    {result.firstName}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </SheetClose>
+        ))}
+      </div>
+    );
+  }
+
+  const onClick = (result: {
+    clerkId: string;
+    firstName: string;
+    imageUrl: string;
+    username: string;
+  }) => {
+    router.push(`/${result.clerkId}`);
     addToRecentSearches(result);
   };
 
@@ -65,7 +90,7 @@ export const UserItem = ({
       {searchResults.map((result) => (
         <SheetClose key={result.clerkId} asChild>
           <div
-            onClick={() => onClick(result.clerkId, result)}
+            onClick={() => onClick(result)}
             className="px-6 py-1 hover:bg-primary/5 transition cursor-pointer"
           >
             <div className="flex gap-3 items-center">
