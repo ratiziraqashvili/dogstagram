@@ -41,15 +41,6 @@ export const UserItem = ({
     );
   }
 
-  
-  if (searchResults.length === 0 && !recentSearches) {
-    return (
-      <div className="h-[60%] flex justify-center items-center">
-        <h1 className="text-[#9f9f9f] text-sm">No results found.</h1>
-      </div>
-    );
-  }
-
   if (recentSearches && searchResults.length === 0) {
     return (
       <div className="flex flex-col gap-2 pt-3">

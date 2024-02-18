@@ -116,8 +116,6 @@ export const SearchSheet = () => {
     saveRecentSearchesToLocalStorage(recentSearches);
   };
 
-  console.log(searchResults);
-
   return (
     <Sheet onOpenChange={clearFetch}>
       <SheetTrigger>

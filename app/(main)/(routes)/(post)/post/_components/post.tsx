@@ -131,7 +131,7 @@ export const Post = ({
             </Button>
           </div>
         </div>
-        <div className="flex-1 order-2 md:order-1 overflow-y-auto">
+        <div className="flex-1 order-2 md:order-1 overflow-y-auto pb-12 md:pb-0">
           <CommentSection
             formattedTime={formattedTime}
             comments={comments}

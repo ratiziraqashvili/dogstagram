@@ -8,7 +8,8 @@ import { useAuth } from "@clerk/nextjs";
 import { Like, Post, Restrict } from "@prisma/client";
 import { Camera, Heart, MessageCircle } from "lucide-react";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useMediaQuery } from "react-responsive";
 
 interface PostsProps {
   posts: PostInfoType;
@@ -20,12 +21,21 @@ interface PostsProps {
   restrictedUsers: Restrict[];
 }
 
-export const Posts = ({ posts, likes, comments, savedPostsId, restrictedUsers }: PostsProps) => {
+export const Posts = ({
+  posts,
+  likes,
+  comments,
+  savedPostsId,
+  restrictedUsers,
+}: PostsProps) => {
   const { onOpen } = useModal();
   const { toast } = useToast();
   const { addUploadedData } = usePostDataStore();
   const { userId } = useAuth();
+  const router = useRouter();
   const params = useParams();
+
+  const isSmallScreen = useMediaQuery({ maxWidth: 420 });
 
   const onCreatePostModalOpen = () => {
     onOpen("createPost");
@@ -111,7 +121,11 @@ export const Posts = ({ posts, likes, comments, savedPostsId, restrictedUsers }:
     }[],
     restrictedUsers: Restrict[]
   ) => {
-    onOpen("postInfo", post, likes, comments, savedPostsId, restrictedUsers);
+    if (isSmallScreen) {
+      router.push(`/post/${post.id}`);
+    } else {
+      onOpen("postInfo", post, likes, comments, savedPostsId, restrictedUsers);
+    }
   };
 
   return (
@@ -124,7 +138,13 @@ export const Posts = ({ posts, likes, comments, savedPostsId, restrictedUsers }:
       {posts.map((post) => (
         <div
           onClick={() =>
-            onPostInfoModalOpen(post, likes, comments, savedPostsId, restrictedUsers)
+            onPostInfoModalOpen(
+              post,
+              likes,
+              comments,
+              savedPostsId,
+              restrictedUsers
+            )
           }
           className="group relative"
           key={post.id}
