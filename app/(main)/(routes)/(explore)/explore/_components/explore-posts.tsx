@@ -10,31 +10,39 @@ import { useMediaQuery } from "react-responsive";
 
 interface ExplorePostsProps {
   posts: PostInfoType;
+  likes: Like[];
+  comments: CommentArray;
+  savedPostsId: {
+    postId: string;
+  }[];
+  restrictedUsers: Restrict[];
 }
 
-export const ExplorePosts = ({ posts }: ExplorePostsProps) => {
+export const ExplorePosts = ({
+  posts,
+  comments,
+  likes,
+  restrictedUsers,
+  savedPostsId,
+}: ExplorePostsProps) => {
   const { onOpen } = useModal();
   const router = useRouter();
 
   const isSmallScreen = useMediaQuery({ maxWidth: 420 });
 
   const onPostInfoModalOpen = (
-    post: Post
-    // likes: Like[],
-    // comments: CommentArray,
-    // savedPostsId: {
-    //   postId: string;
-    // }[],
-    // restrictedUsers: Restrict[]
+    post: Post,
+    likes: Like[],
+    comments: CommentArray,
+    savedPostsId: {
+      postId: string;
+    }[],
+    restrictedUsers: Restrict[]
   ) => {
     if (isSmallScreen) {
       router.push(`/post/${post.id}`);
     } else {
-      onOpen(
-        "postInfo",
-        post
-        //   likes, comments, savedPostsId, restrictedUsers
-      );
+      onOpen("postInfo", post, likes, comments, savedPostsId, restrictedUsers);
     }
   };
 
@@ -44,14 +52,14 @@ export const ExplorePosts = ({ posts }: ExplorePostsProps) => {
         <div
           onClick={() =>
             onPostInfoModalOpen(
-              post
-              //   likes,
-              //   comments,
-              //   savedPostsId,
-              //   restrictedUsers
+              post,
+              likes,
+              comments,
+              savedPostsId,
+              restrictedUsers
             )
           }
-          className="group relative h-[12rem]"
+          className="group relative"
           key={post.id}
         >
           <div className="">
