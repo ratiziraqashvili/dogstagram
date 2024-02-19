@@ -62,7 +62,8 @@ export const BlockConfirmModal = () => {
       onBlockIndicatorModalOpen();
       toast({
         title: "Blocked",
-        variant: "default"
+        variant: "default",
+        duration: 3000,
       })
       router.refresh();
     } catch (error) {

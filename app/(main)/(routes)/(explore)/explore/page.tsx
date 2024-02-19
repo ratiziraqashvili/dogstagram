@@ -34,6 +34,13 @@ const ExplorePage = async () => {
   });
 
   const comments = await db.comment.findMany({
+    where: {
+      NOT: {
+        userId: {
+          in: blockedIds,
+        },
+      },
+    },
     include: {
       user: {
         select: {

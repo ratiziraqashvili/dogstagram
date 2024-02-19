@@ -25,6 +25,7 @@ export const ShareModal = () => {
     toast({
       title: "Link copied to clipboard.",
       variant: "default",
+      duration: 3000,
     });
 
     handleClose();

@@ -26,6 +26,7 @@ export const BlockList = ({ blockedUser }: BlockListProps) => {
       toast({
         title: "Unblocked",
         variant: "default",
+        duration: 3000
       });
     } catch (error) {
       console.error("error in [BLOCK_LIST]", error);

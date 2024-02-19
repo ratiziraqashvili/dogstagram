@@ -1,8 +1,10 @@
+import { getBlockedUserIds } from "@/lib/blocked-users";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server"
 
 export async function GET(req: Request) {
     try {
+        const blockedIds = await getBlockedUserIds();
         const { searchParams } = new URL(req.url);
         const username = searchParams.get("username");
 
@@ -17,13 +19,18 @@ export async function GET(req: Request) {
                 username: {
                     contains: lowercasedSearchTerm,
                 },
+                NOT: {
+                    clerkId: {
+                        in: blockedIds,
+                    }
+                }
             },
             select: {
                 username: true,
                 clerkId: true,
                 imageUrl: true,
                 firstName: true,
-            }
+            },
         })
 
         return NextResponse.json(users);

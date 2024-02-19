@@ -153,6 +153,8 @@ export const PostInput = ({
         if (comment.length > MAX_COMMENT_LENGTH) {
           toast({
             title: "Comment is too long! Limit is 150 letters.",
+            variant: "default",
+            duration: 3000
           });
           return;
         }

@@ -78,6 +78,11 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
       id: {
         in: postIds,
       },
+      NOT: {
+        userId: {
+          in: blockedIds,
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",
