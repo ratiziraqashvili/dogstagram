@@ -8,8 +8,8 @@ import NotFound from "@/app/not-found";
 import { currentUser } from "@clerk/nextjs";
 
 const ProfilePage = async ({ params }: { params: { userId: string } }) => {
-  const { userId } = params;
   const currUser = await currentUser();
+  const { userId } = params;
 
   const user = await db.user.findUnique({
     where: {

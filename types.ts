@@ -6,7 +6,7 @@ export type PostInfoType = (
           likes: number;
           comments: number;
         },
-        user: {
+        user?: {
           imageUrl: string | null;
           username: string | null;
         }
