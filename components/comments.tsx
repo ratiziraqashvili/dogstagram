@@ -33,6 +33,8 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
           onOpen("commentDelete", data);
         };
 
+        
+
         return (
           <div key={comment.id} className="flex gap-3 p-3 items-center group">
             <div>

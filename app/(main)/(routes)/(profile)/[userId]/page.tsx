@@ -6,10 +6,12 @@ import { ProfileNavbar } from "../_components/profile-navbar";
 import { ProfileFilters } from "./_components/profile-filters";
 import NotFound from "@/app/not-found";
 import { currentUser } from "@clerk/nextjs";
+import { getBlockedUserIds } from "@/lib/blocked-users";
 
 const ProfilePage = async ({ params }: { params: { userId: string } }) => {
   const currUser = await currentUser();
   const { userId } = params;
+  const blockedIds = await getBlockedUserIds();
 
   const user = await db.user.findUnique({
     where: {
@@ -20,6 +22,14 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
   const isUserBlocked = await db.blockedUser.findFirst({
     where: {
       blockedUserId: userId,
+      userId: currUser?.id,
+    },
+  });
+
+  const doesUserBlocked = await db.blockedUser.findFirst({
+    where: {
+      blockedUserId: currUser?.id,
+      userId: userId,
     },
   });
 
@@ -90,11 +100,18 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
 
   const restrictedUsers = await db.restrict.findMany({
     where: {
-      userId
-    }
-  })
+      userId,
+    },
+  });
 
   const comments = await db.comment.findMany({
+    where: {
+      NOT: {
+        userId: {
+          in: blockedIds,
+        },
+      },
+    },
     include: {
       user: {
         select: {
@@ -152,7 +169,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     );
   }
 
-  if (isUserBlocked) {
+  if (isUserBlocked || doesUserBlocked) {
     return (
       <div className="flex justify-center items-center h-[40rem]">
         <NotFound />

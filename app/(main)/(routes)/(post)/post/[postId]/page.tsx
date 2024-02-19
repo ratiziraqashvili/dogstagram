@@ -3,14 +3,23 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { Post } from "../_components/post";
 import { currentUser } from "@clerk/nextjs";
+import { getBlockedUserIds } from "@/lib/blocked-users";
+import NotFound from "@/app/not-found";
 
 const PostPage = async ({ params }: { params: { postId: string } }) => {
   const user = await currentUser();
   const { postId } = params;
 
+  const blockedIds = await getBlockedUserIds();
+
   const post = await db.post.findFirst({
     where: {
       id: postId,
+      NOT: {
+        userId: {
+          in: blockedIds,
+        },
+      },
     },
     include: {
       _count: {
@@ -28,9 +37,20 @@ const PostPage = async ({ params }: { params: { postId: string } }) => {
     },
   });
 
+  if (!post) {
+    return (
+      <NotFound />
+    )
+  }
+
   const comments = await db.comment.findMany({
     where: {
       postId,
+      NOT: {
+        userId: {
+          in: blockedIds,
+        },
+      },
     },
     include: {
       user: {
@@ -54,14 +74,14 @@ const PostPage = async ({ params }: { params: { postId: string } }) => {
   const isLiked = await db.like.findFirst({
     where: {
       userId: user?.id,
-      postId: post!.id,
+      postId: post?.id,
     },
   });
 
   const isFavorited = await db.savedPosts.findFirst({
     where: {
       savedUserId: user?.id,
-      postId: post!.id,
+      postId: post?.id,
     },
   });
 

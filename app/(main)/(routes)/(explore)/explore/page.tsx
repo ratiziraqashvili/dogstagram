@@ -2,15 +2,12 @@ import { db } from "@/lib/db";
 import { ExplorePosts } from "./_components/explore-posts";
 import { shuffleArray } from "@/lib/shuffleArray";
 import { currentUser } from "@clerk/nextjs";
+import { getBlockedUserIds } from "@/lib/blocked-users";
 
 const ExplorePage = async () => {
   const user = await currentUser();
 
-  const blockedUsers = await db.blockedUser.findMany({});
-
-  const blockedUsersIds = blockedUsers.map((user) => user.blockedUserId);
-
-  console.log(blockedUsers);
+  const blockedIds = await getBlockedUserIds();
 
   const posts = await db.post.findMany({
     include: {
@@ -30,7 +27,7 @@ const ExplorePage = async () => {
     where: {
       NOT: {
         userId: {
-          in: blockedUsersIds,
+          in: blockedIds,
         },
       },
     },
