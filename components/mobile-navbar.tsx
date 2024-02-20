@@ -21,7 +21,7 @@ export const MobileNavbar = ({ unReadNotiCount }: MobileNavbarProps) => {
   }
 
   return (
-    <nav className="border-b-[1px] h-[3.8rem] flex justify-between items-center w-full fixed">
+    <nav className="border-b-[1px] h-[3.8rem] flex justify-between items-center w-full fixed z-50 bg-white">
       <div className="cursor-pointer">
         <Link href="/">
           <Image src="/logo.png" alt="Dogstagram" width={130} height={130} />
