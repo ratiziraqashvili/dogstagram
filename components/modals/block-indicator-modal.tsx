@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
+import Link from "next/link";
 
 interface LimitedUser {
   username: string;
@@ -57,7 +58,11 @@ export const BlockIndicatorModal = () => {
             </span>
           </h1>
           <span className="text-sm text-muted-foreground">
-            You can unblock them anytime from their profile.
+            You can unblock them anytime from{" "}
+            <Link onClick={handleClose} href="/blocked-users" className="text-amber-500">
+              here
+            </Link>
+            .
           </span>
         </div>
         <DialogClose className="p-3 text-sm">Dismiss</DialogClose>
