@@ -1,6 +1,7 @@
 import { MainPosts } from "@/components/main-posts";
 import { ProfileIndicator } from "@/components/profile-indicator";
 import { db } from "@/lib/db";
+import { shuffleArray } from "@/lib/shuffleArray";
 import { currentUser } from "@clerk/nextjs";
 
 export default async function Home() {
@@ -47,12 +48,12 @@ export default async function Home() {
     },
   });
 
-  console.log(posts)
+  const shuffledPosts = shuffleArray(posts);
 
   return (
     <div className="">
       <div className="flex">
-        <MainPosts posts={posts} />
+        <MainPosts posts={shuffledPosts} />
         <ProfileIndicator />
       </div>
     </div>

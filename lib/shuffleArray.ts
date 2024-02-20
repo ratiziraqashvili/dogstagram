@@ -1,5 +1,4 @@
 import { PostInfoType } from "@/types";
-import { Post } from "@prisma/client";
 
 export const shuffleArray = (array: PostInfoType) => {
     for (let i = array.length - 1; i > 0; i--) {
