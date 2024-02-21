@@ -154,7 +154,7 @@ export const PostInput = ({
           toast({
             title: "Comment is too long! Limit is 150 letters.",
             variant: "default",
-            duration: 3000
+            duration: 3000,
           });
           return;
         }

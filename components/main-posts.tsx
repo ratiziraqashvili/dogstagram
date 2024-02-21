@@ -7,6 +7,7 @@ import { PostImage } from "./post-image";
 import { MainPostInput } from "./main-post-input";
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
+import { MoreHorizOpen } from "./more-horiz-open";
 
 interface MainPostsProps {
   posts: PostInfoType;
@@ -21,8 +22,28 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
     },
   });
 
+  const authorIds = posts.map((p) => p.userId);
+  const uniqueIds = Array.from(new Set(authorIds));
+
+  const restrictedUsers = await db.restrict.findMany({
+    where: {
+      userId: {
+        in: uniqueIds,
+      },
+    },
+  });
+
+  const savedPostsId = await db.savedPosts.findMany({
+    where: {
+      savedUserId: user?.id,
+    },
+    select: {
+      postId: true,
+    },
+  });
+
   return (
-    <div className="flex-1 mx-auto lg:max-w-[60%] md:max-w-[80%] max-w-full xl:ml-[20rem] md:mt-0 mt-[3.8rem] pb-20">
+    <div className="flex-1 mx-auto lg:max-w-[60%] md:max-w-[80%] max-w-full xl:ml-[20rem] md:mt-0 mt-[3.8rem] pb-20 sm:pb-0">
       {/* TODO: display available posts */}
       {posts.map((post) => {
         const formattedTime = formatTimeDifference(post.createdAt);
@@ -30,10 +51,11 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
         const likeIds = likes.map((like) => like.postId);
         const isLiked = likeIds.includes(post.id);
 
-        console.log(isLiked)
-
         return (
-          <div key={post.id} className="sm:max-w-[75%] xl:max-w-[65%] mx-auto flex flex-col lg:pt-2 border-b-[1px] sm:px-0 px-2">
+          <div
+            key={post.id}
+            className="sm:max-w-[75%] xl:max-w-[65%] mx-auto flex flex-col lg:pt-2 border-b-[1px] sm:px-0 px-2"
+          >
             <div className="flex justify-between items-center py-3">
               <Link
                 href={`/${post.userId}`}
@@ -55,14 +77,19 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
                 </div>
               </Link>
               <div>
-                <MoreHorizontal className="h-6 w-6 cursor-pointer" />
+                <MoreHorizOpen post={post} />
               </div>
             </div>
             <div className="z-0">
               <PostImage imageUrl={post.imageUrl} />
             </div>
             <div>
-              <MainPostInput post={post}  liked={isLiked} />
+              <MainPostInput
+                savedPostsId={savedPostsId}
+                restrictedUsers={restrictedUsers}
+                post={post}
+                liked={isLiked}
+              />
             </div>
           </div>
         );

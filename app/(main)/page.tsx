@@ -1,11 +1,13 @@
 import { MainPosts } from "@/components/main-posts";
 import { ProfileIndicator } from "@/components/profile-indicator";
+import { getBlockedUserIds } from "@/lib/blocked-users";
 import { db } from "@/lib/db";
 import { shuffleArray } from "@/lib/shuffleArray";
 import { currentUser } from "@clerk/nextjs";
 
 export default async function Home() {
   const user = await currentUser();
+  const blockedIds = await getBlockedUserIds();
 
   const currUserRelatives = await db.user.findFirst({
     where: {
@@ -30,6 +32,11 @@ export default async function Home() {
     where: {
       userId: {
         in: ids,
+      },
+      NOT: {
+        userId: {
+          in: blockedIds,
+        },
       },
     },
     include: {
