@@ -162,8 +162,6 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     },
   });
 
-  console.log(restrictedUsers);
-
   const followerIds = followers?.followers.map((user) => user.followerId)!;
 
   const isFollowing = followerIds.includes(currUser!.id);

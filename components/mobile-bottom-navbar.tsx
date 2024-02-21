@@ -52,7 +52,7 @@ export const MobileBottomNavbar = () => {
     },
     {
       icon: Plus,
-      href: null,
+      href: "#",
     },
     {
       icon: ProfilePicture,

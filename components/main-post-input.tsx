@@ -9,16 +9,15 @@ import axios from "axios";
 import qs from "query-string";
 import { useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
-import { Restrict } from "@prisma/client";
-import { useSecondModal } from "@/hooks/use-second-modal-store";
 
 interface MainPostInputProps {
   post: SinglePost;
   liked: boolean;
-  restrictedUsers: Restrict[] | undefined;
+  isRestricted: boolean;
   savedPostsId: {
     postId: string;
   }[];
+  restrictedUserId: string[];
 }
 
 const debounce = (fn: Function, delay: number) => {
@@ -36,8 +35,9 @@ const debounce = (fn: Function, delay: number) => {
 export const MainPostInput = ({
   liked,
   post,
-  restrictedUsers,
+  isRestricted,
   savedPostsId: id,
+  restrictedUserId,
 }: MainPostInputProps) => {
   const savedPostsId = id?.map((savePostId) => savePostId.postId);
   const favorited = savedPostsId?.includes(post.id);
@@ -63,13 +63,9 @@ export const MainPostInput = ({
     inputRef.current?.focus();
   };
 
-  const restrictedUserId = restrictedUsers?.map(
-    (user) => user.restrictedUserId
-  );
-
   const onLike = useCallback(async () => {
     try {
-      if (restrictedUserId?.includes(userId!)) {
+      if (isRestricted) {
         toast({
           title: "You are restricted by user, therefore you can not like post.",
           variant: "default",
@@ -85,7 +81,7 @@ export const MainPostInput = ({
         url: `/api/like/${post?.id}`,
         query: {
           recipient: post?.userId,
-          restrictedUserId: restrictedUserId,
+          restrictedUserId: isRestricted && restrictedUserId,
         },
       });
 
@@ -142,7 +138,7 @@ export const MainPostInput = ({
   const onComment = async () => {
     setIsLoading(true);
     try {
-      if (restrictedUserId?.includes(userId!)) {
+      if (isRestricted) {
         toast({
           title:
             "You are restricted by user, therefore you can not comment on post.",
@@ -167,7 +163,7 @@ export const MainPostInput = ({
           query: {
             content: comment,
             recipient: post?.userId,
-            restrictedUserId: restrictedUserId,
+            restrictedUserId: isRestricted && restrictedUserId,
           },
         });
 

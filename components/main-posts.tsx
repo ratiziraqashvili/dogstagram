@@ -22,14 +22,9 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
     },
   });
 
-  const authorIds = posts.map((p) => p.userId);
-  const uniqueIds = Array.from(new Set(authorIds));
-
   const restrictedUsers = await db.restrict.findMany({
     where: {
-      userId: {
-        in: uniqueIds,
-      },
+      restrictedUserId: user?.id,
     },
   });
 
@@ -50,6 +45,14 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
 
         const likeIds = likes.map((like) => like.postId);
         const isLiked = likeIds.includes(post.id);
+        const restrictAuthorId = restrictedUsers.map((user) => user.userId);
+        const restrictedUserId = restrictedUsers.map(
+          (user) => user.restrictedUserId
+        );
+
+        const isRestricted =
+          restrictAuthorId.includes(post.userId) &&
+          restrictedUserId.includes(user?.id!);
 
         return (
           <div
@@ -86,9 +89,10 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
             <div>
               <MainPostInput
                 savedPostsId={savedPostsId}
-                restrictedUsers={restrictedUsers}
+                isRestricted={isRestricted}
                 post={post}
                 liked={isLiked}
+                restrictedUserId={restrictedUserId}
               />
             </div>
           </div>

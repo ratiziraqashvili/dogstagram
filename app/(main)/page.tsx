@@ -58,7 +58,7 @@ export default async function Home() {
   const shuffledPosts = shuffleArray(posts);
 
   return (
-    <div className="">
+    <div>
       <div className="flex">
         <MainPosts posts={shuffledPosts} />
         <ProfileIndicator />
