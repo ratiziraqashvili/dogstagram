@@ -1,13 +1,13 @@
 import { PostInfoType } from "@/types";
 import { ProfilePicture } from "./profile-picture";
 import { formatTimeDifference } from "@/lib/timeUtils";
-import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { PostImage } from "./post-image";
 import { MainPostInput } from "./main-post-input";
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
 import { MoreHorizOpen } from "./more-horiz-open";
+import { getBlockedUserIds } from "@/lib/blocked-users";
 
 interface MainPostsProps {
   posts: PostInfoType;
@@ -15,6 +15,7 @@ interface MainPostsProps {
 
 export const MainPosts = async ({ posts }: MainPostsProps) => {
   const user = await currentUser();
+  const blockedIds = await getBlockedUserIds();
 
   const likes = await db.like.findMany({
     where: {
@@ -37,10 +38,31 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
     },
   });
 
+  const comments = await db.comment.findMany({
+    where: {
+      NOT: {
+        userId: {
+          in: blockedIds,
+        },
+      },
+    },
+    include: {
+      user: {
+        select: {
+          imageUrl: true,
+          username: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return (
     <div className="flex-1 mx-auto lg:max-w-[60%] md:max-w-[80%] max-w-full xl:ml-[20rem] md:mt-0 mt-[3.8rem] pb-20 sm:pb-0">
       {/* TODO: display available posts */}
-      {posts.map((post) => {
+      {posts.map( async (post) => {
         const formattedTime = formatTimeDifference(post.createdAt);
 
         const likeIds = likes.map((like) => like.postId);
@@ -53,6 +75,12 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
         const isRestricted =
           restrictAuthorId.includes(post.userId) &&
           restrictedUserId.includes(user?.id!);
+
+          const restricted = await db.restrict.findMany({
+            where: {
+              userId: post.userId,
+            },
+          });
 
         return (
           <div
@@ -88,11 +116,14 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
             </div>
             <div>
               <MainPostInput
+                comments={comments}
+                likes={likes}
                 savedPostsId={savedPostsId}
                 isRestricted={isRestricted}
                 post={post}
                 liked={isLiked}
                 restrictedUserId={restrictedUserId}
+                restrictedUsers={restricted}
               />
             </div>
           </div>

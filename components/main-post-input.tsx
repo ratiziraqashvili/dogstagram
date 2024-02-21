@@ -4,13 +4,20 @@ import { Bookmark, Heart, MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import { useToast } from "./ui/use-toast";
-import { SinglePost } from "@/types";
+import { CommentArray, SinglePost } from "@/types";
 import axios from "axios";
 import qs from "query-string";
 import { useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
+import { useModal } from "@/hooks/use-modal-store";
+import { useMediaQuery } from "react-responsive";
+import { Like, Post, Restrict } from "@prisma/client";
+import { EmojiPicker } from "./emoji-pickers";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 interface MainPostInputProps {
+  likes: Like[];
   post: SinglePost;
   liked: boolean;
   isRestricted: boolean;
@@ -18,6 +25,8 @@ interface MainPostInputProps {
     postId: string;
   }[];
   restrictedUserId: string[];
+  comments: CommentArray;
+  restrictedUsers: Restrict[];
 }
 
 const debounce = (fn: Function, delay: number) => {
@@ -38,6 +47,9 @@ export const MainPostInput = ({
   isRestricted,
   savedPostsId: id,
   restrictedUserId,
+  comments,
+  restrictedUsers,
+  likes,
 }: MainPostInputProps) => {
   const savedPostsId = id?.map((savePostId) => savePostId.postId);
   const favorited = savedPostsId?.includes(post.id);
@@ -48,12 +60,15 @@ export const MainPostInput = ({
   const [comment, setComment] = useState("");
   const [isLiked, setIsLiked] = useState<boolean | undefined>(liked);
   const [likeCount, setLikeCount] = useState(post._count.likes);
+  const [commentCount, setCommentCount] = useState(post._count.comments);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const { userId } = useAuth();
+  const { onOpen } = useModal();
+
+  const isSmallScreen = useMediaQuery({ maxWidth: 420 });
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
@@ -86,8 +101,6 @@ export const MainPostInput = ({
       });
 
       await axios.post(url);
-
-      router.refresh();
     } catch (error: any) {
       setIsLiked(false);
       setLikeCount((prevCount) => prevCount! - 1);
@@ -111,8 +124,6 @@ export const MainPostInput = ({
       setIsLiked(false);
       setLikeCount((prevCount) => prevCount! - 1);
       await axios.delete(`/api/like/${post?.id}`);
-
-      router.refresh();
     } catch (error: any) {
       setIsLiked(true);
       setLikeCount((prevCount) => prevCount! + 1);
@@ -158,6 +169,8 @@ export const MainPostInput = ({
           return;
         }
 
+        setCommentCount((prev) => prev++);
+
         const url = qs.stringifyUrl({
           url: `/api/comment/${post?.id}`,
           query: {
@@ -168,9 +181,9 @@ export const MainPostInput = ({
         });
 
         await axios.post(url);
-        router.refresh();
       } else return;
     } catch (error) {
+      setCommentCount((prev) => prev--);
       console.error("client error in onComment", error);
     } finally {
       setIsLoading(false);
@@ -179,7 +192,7 @@ export const MainPostInput = ({
   };
 
   const onEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && comment) {
       e.preventDefault();
       onComment();
     }
@@ -245,6 +258,22 @@ export const MainPostInput = ({
     }
   };
 
+  const onPostInfoModalOpen = (
+    post: Post,
+    likes: Like[],
+    comments: CommentArray,
+    savedPostsId: {
+      postId: string;
+    }[],
+    restrictedUsers: Restrict[]
+  ) => {
+    if (isSmallScreen) {
+      router.push(`/post/${post.id}`);
+    } else {
+      onOpen("postInfo", post, likes, comments, savedPostsId, restrictedUsers);
+    }
+  };
+
   return (
     <>
       <div className="flex justify-between py-3">
@@ -287,6 +316,49 @@ export const MainPostInput = ({
           )}
         </p>
       </div>
+      <div className="pt-2">
+        {post.caption && (
+          <p className="text-sm space-x-1">
+            <span className="font-semibold">{post.user.username}</span>
+            <span>{post.caption}</span>
+          </p>
+        )}
+      </div>
+      <div>
+        <span
+          onClick={() =>
+            onPostInfoModalOpen(post, likes, comments, id, restrictedUsers)
+          }
+          className="text-sm text-muted-foreground cursor-pointer"
+        >
+          View all {commentCount} comments
+        </span>
+      </div>
+      {!post?.hideComments && (
+        <div className="flex items-center gap-2 px-2 py-2">
+          <EmojiPicker
+            className="h-6 w-6"
+            onChange={(value) => setComment(comment + value)}
+          />
+          <Input
+            onKeyDown={(e) => onEnter(e)}
+            disabled={isLoading}
+            ref={inputRef}
+            value={comment}
+            onChange={onInputChange}
+            placeholder="Add a comment..."
+            className="border-none"
+          />
+          <Button
+            onClick={onComment}
+            disabled={comment === "" || isLoading}
+            className="p-0 text-amber-600"
+            variant="ghost"
+          >
+            Post
+          </Button>
+        </div>
+      )}
     </>
   );
 };

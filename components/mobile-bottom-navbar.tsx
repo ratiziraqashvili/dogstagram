@@ -68,7 +68,7 @@ export const MobileBottomNavbar = () => {
             key={index}
             className="p-3 hover:scale-110 transition w-full flex justify-center"
           >
-            {route.href ? (
+            {route.href && route.href !== "#" ? (
               <Link href={route.href}>
                 <route.icon />
               </Link>
@@ -81,7 +81,7 @@ export const MobileBottomNavbar = () => {
                 }}
               >
                 {/*@ts-ignore*/}
-                {({ open }) => <route.icon onClick={() => open?.()} />}
+                {({ open }) => <route.icon className="cursor-pointer" onClick={() => open?.()} />}
               </CldUploadWidget>
             )}
           </div>

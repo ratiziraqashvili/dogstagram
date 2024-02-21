@@ -52,6 +52,8 @@ export const PostInput = ({
   const { toast } = useToast();
   const { userId } = useAuth();
 
+  console.log(restrictedUsers);
+
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
   };
@@ -88,7 +90,6 @@ export const PostInput = ({
 
       await axios.post(url);
 
-      router.refresh();
     } catch (error: any) {
       setIsLiked(false);
       setLikeCount((prevCount) => prevCount! - 1);
@@ -113,7 +114,6 @@ export const PostInput = ({
       setLikeCount((prevCount) => prevCount! - 1);
       await axios.delete(`/api/like/${post?.id}`);
 
-      router.refresh();
     } catch (error: any) {
       setIsLiked(true);
       setLikeCount((prevCount) => prevCount! + 1);
@@ -169,7 +169,6 @@ export const PostInput = ({
         });
 
         await axios.post(url);
-        router.refresh();
       } else return;
     } catch (error) {
       console.error("client error in onComment", error);
@@ -180,7 +179,7 @@ export const PostInput = ({
   };
 
   const onEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && comment) {
       e.preventDefault();
       onComment();
     }
