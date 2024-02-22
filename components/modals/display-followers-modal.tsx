@@ -16,6 +16,7 @@ import { ProfilePicture } from "../profile-picture";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useAuth } from "@clerk/nextjs";
+import qs from "query-string";
 
 export const DisplayFollowersModal = () => {
   //currentUser id
@@ -47,6 +48,13 @@ export const DisplayFollowersModal = () => {
   const handleClose = () => {
     onClose();
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      setFollowers([]);
+      setSkeleton(true);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     // Fetch users who follow current profile
@@ -82,14 +90,13 @@ export const DisplayFollowersModal = () => {
     };
 
     fetchFollowers();
-  }, [otherUserId]);
+  }, [isModalOpen]);
 
   const onRemoveFollow = async (clerkId: string) => {
     //Making api req to remove/delete follow
     setIsLoading(true);
     try {
       await axios.delete(`/api/users/remove/${clerkId}`);
-
 
       setRemovedFollowers((prevRemoved) => [...prevRemoved, clerkId]);
       router.refresh();
@@ -130,9 +137,15 @@ export const DisplayFollowersModal = () => {
   const onFollow = async (clerkId: string) => {
     // Making req to api route to follow user
     setIsLoading(true);
-    const profileId = JSON.stringify(clerkId);
     try {
-      await axios.post("/api/users/follow", profileId);
+      const url = qs.stringifyUrl({
+        url: "/api/users/follow",
+        query: {
+          otherUserId: clerkId,
+        },
+      });
+
+      await axios.post(url);
 
       setFollowers((prevFollowers) => {
         const updated = prevFollowers.map((follower) => {

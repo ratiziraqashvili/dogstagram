@@ -6,7 +6,11 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     try {
         const user = await currentUser();
-        const otherUserId = JSON.parse(await req.text())
+        const { searchParams } = new URL(req.url);
+
+        const otherUserId = searchParams.get("otherUserId")
+
+        console.log("otherUserId:", otherUserId)
 
         if (!user || !user.id || !otherUserId) {
             return new NextResponse("Unauthorized", { status: 401 })

@@ -169,7 +169,7 @@ export const MainPostInput = ({
           return;
         }
 
-        setCommentCount((prev) => prev++);
+        setCommentCount((prev) => prev + 1);
 
         const url = qs.stringifyUrl({
           url: `/api/comment/${post?.id}`,
@@ -183,7 +183,7 @@ export const MainPostInput = ({
         await axios.post(url);
       } else return;
     } catch (error) {
-      setCommentCount((prev) => prev--);
+      setCommentCount((prev) => prev - 1);
       console.error("client error in onComment", error);
     } finally {
       setIsLoading(false);

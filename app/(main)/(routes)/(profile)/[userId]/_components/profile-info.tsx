@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useModal } from "@/hooks/use-modal-store";
 import Link from "next/link";
 import { useFollower } from "@/hooks/use-follower-store";
+import qs from "query-string"
 
 interface ProfileInfoProps {
   username: string | undefined;
@@ -34,8 +35,6 @@ export const ProfileInfo = ({
   const { onOpen } = useModal();
   const { isFollowing, setIsFollowing, followerCount, setFollowerCount } = useFollower();
 
-  const otherUserId = JSON.stringify(userId);
-
   useEffect(() => {
     setIsFollowing(following);
     setFollowerCount(followerCountNumber)
@@ -46,7 +45,15 @@ export const ProfileInfo = ({
     try {
       setIsFollowing(true);
       setFollowerCount(followerCount + 1);
-      await axios.post("/api/users/follow", otherUserId);
+
+      const url = qs.stringifyUrl({
+        url: "/api/users/follow",
+        query: {
+          otherUserId: userId
+        }
+      })
+      
+      await axios.post(url);
 
       router.refresh();
     } catch (error) {
