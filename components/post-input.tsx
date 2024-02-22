@@ -52,8 +52,6 @@ export const PostInput = ({
   const { toast } = useToast();
   const { userId } = useAuth();
 
-  console.log(restrictedUsers);
-
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
   };

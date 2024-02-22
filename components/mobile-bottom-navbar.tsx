@@ -22,19 +22,19 @@ export const MobileBottomNavbar = () => {
   const onUpload = (result: any, widget: any) => {
     widget.close();
 
-     // Get file type from result
-     const { resource_type } = result.info;
+    // Get file type from result
+    const { resource_type } = result.info;
 
-     // Check if file is an image
-     if (resource_type !== "image") {
-       // Handle invalid file type
-       toast({
-         title: "Make sure that uploaded file is valid image.",
-         variant: "default",
-         duration: 3000,
-       });
-       return;
-     }
+    // Check if file is an image
+    if (resource_type !== "image") {
+      // Handle invalid file type
+      toast({
+        title: "Make sure that uploaded file is valid image.",
+        variant: "default",
+        duration: 3000,
+      });
+      return;
+    }
 
     addUploadedData(result);
 
@@ -56,7 +56,7 @@ export const MobileBottomNavbar = () => {
     },
     {
       icon: ProfilePicture,
-      href: `/${user?.id}`,
+      href: `/${user?.id ?? ""}`,
     },
   ];
 
@@ -80,8 +80,13 @@ export const MobileBottomNavbar = () => {
                   maxFiles: 6,
                 }}
               >
-                {/*@ts-ignore*/}
-                {({ open }) => <route.icon className="cursor-pointer" onClick={() => open?.()} />}
+                {({ open }) => (
+                  <route.icon
+                  className="cursor-pointer"
+                    //@ts-ignore
+                    onClick={() => open?.()}
+                  />
+                )}
               </CldUploadWidget>
             )}
           </div>

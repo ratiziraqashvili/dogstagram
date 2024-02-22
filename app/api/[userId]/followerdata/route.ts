@@ -13,22 +13,31 @@ export async function GET(req: Request, { params }: { params: { userId: string }
             followingId: params.userId 
         },
         select: {
-            follower: {
-                select: {
-                    imageUrl: true,
-                    username: true,
-                    firstName: true,
-                    clerkId: true,
-                }
-            }
+           followerId: true
         }
     })
 
     if (!followerDetails) {
-        return new NextResponse("No follower")
+        return new NextResponse("No follower", { status: 200 })
     }
 
-    return NextResponse.json(followerDetails, { status: 200 });
+    const followerIds = followerDetails.map(f => f.followerId.replace(/"/g, ''))
+
+    const users = await db.user.findMany({
+        where: {
+           clerkId: {
+                in: followerIds
+            }
+        },
+        select: {
+            imageUrl: true,
+            username: true,
+            firstName: true,
+            clerkId: true,
+        }
+    })
+
+    return NextResponse.json(users, { status: 200 });
 
    } catch (error) {
     console.log("Error in Follower Data", error);

@@ -24,12 +24,10 @@ export const DisplayFollowersModal = () => {
   //storing followers of profile in this state
   const [followers, setFollowers] = useState<
     {
-      follower: {
-        username: string;
-        imageUrl: string;
-        firstName: string | null;
-        clerkId: string;
-      };
+      username: string;
+      imageUrl: string;
+      firstName: string | null;
+      clerkId: string;
       isFollowing: boolean;
     }[]
   >([]);
@@ -69,9 +67,9 @@ export const DisplayFollowersModal = () => {
         const followingIds = followingRes.data;
 
         const updatedFollowers = followersList.map(
-          (follower: { follower: { clerkId: string } }) => {
+          (follower: { clerkId: string }) => {
             const isFollowing = followingIds.includes(
-              follower.follower.clerkId
+              follower.clerkId
             );
 
             return {
@@ -109,13 +107,18 @@ export const DisplayFollowersModal = () => {
 
   const onUnfollow = async (clerkId: string) => {
     // making req to api route to unfollow user
-    setIsLoading(true);
     try {
+      setFollowers((prev) =>
+        prev.map((f) =>
+          f.clerkId === clerkId ? { ...f, isFollowing: false } : f
+        )
+      );
+
       await axios.delete(`/api/users/unfollow/${clerkId}`);
 
       setFollowers((prevFollowers) => {
         const updated = prevFollowers.map((follower) => {
-          if (follower.follower.clerkId === clerkId) {
+          if (follower.clerkId === clerkId) {
             return {
               ...follower,
               isFollowing: false,
@@ -128,16 +131,24 @@ export const DisplayFollowersModal = () => {
 
       router.refresh();
     } catch (error) {
+      setFollowers((prev) =>
+        prev.map((f) =>
+          f.clerkId === clerkId ? { ...f, isFollowing: true } : f
+        )
+      );
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const onFollow = async (clerkId: string) => {
     // Making req to api route to follow user
-    setIsLoading(true);
     try {
+      setFollowers((prev) =>
+        prev.map((f) =>
+          f.clerkId === clerkId ? { ...f, isFollowing: true } : f
+        )
+      );
+
       const url = qs.stringifyUrl({
         url: "/api/users/follow",
         query: {
@@ -149,7 +160,7 @@ export const DisplayFollowersModal = () => {
 
       setFollowers((prevFollowers) => {
         const updated = prevFollowers.map((follower) => {
-          if (follower.follower.clerkId === clerkId) {
+          if (follower.clerkId === clerkId) {
             return {
               ...follower,
               isFollowing: true,
@@ -162,9 +173,12 @@ export const DisplayFollowersModal = () => {
 
       router.refresh();
     } catch (error) {
+      setFollowers((prev) =>
+        prev.map((f) =>
+          f.clerkId === clerkId ? { ...f, isFollowing: false } : f
+        )
+      );
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -204,34 +218,24 @@ export const DisplayFollowersModal = () => {
             )}
             <div className="w-full">
               {followers
-                .filter((follower) =>
-                  follower.follower.username.includes(search)
-                )
+                .filter((follower) => follower?.username?.includes(search))
                 .map((follower) => (
                   <div
                     className="flex justify-between pb-4"
-                    key={follower.follower.username}
+                    key={follower.username}
                   >
                     <div className="flex items-center space-x-4">
-                      <Link
-                        onClick={handleClose}
-                        href={`/${follower.follower.clerkId}`}
-                      >
+                      <Link onClick={handleClose} href={`/${follower.clerkId}`}>
                         <ProfilePicture
                           className="h-11 w-11 cursor-pointer"
-                          imageUrl={follower.follower.imageUrl}
+                          imageUrl={follower.imageUrl}
                         />
                       </Link>
-                      <Link
-                        onClick={handleClose}
-                        href={`/${follower.follower.clerkId}`}
-                      >
+                      <Link onClick={handleClose} href={`/${follower.clerkId}`}>
                         <div className="cursor-pointer">
-                          <h2 className="font-semibold">
-                            {follower.follower.username}
-                          </h2>
+                          <h2 className="font-semibold">{follower.username}</h2>
                           <h2 className="text-muted-foreground">
-                            {follower.follower.firstName}
+                            {follower.firstName}
                           </h2>
                         </div>
                       </Link>
@@ -242,44 +246,30 @@ export const DisplayFollowersModal = () => {
                         <Button
                           disabled={
                             isLoading ||
-                            removedFollowers.includes(follower.follower.clerkId)
+                            removedFollowers.includes(follower.clerkId)
                           }
                           className="h-[2rem] w-[6rem]"
-                          onClick={() =>
-                            onRemoveFollow(follower.follower.clerkId)
-                          }
+                          onClick={() => onRemoveFollow(follower.clerkId)}
                           variant="default"
                         >
-                          {removedFollowers.includes(follower.follower.clerkId)
+                          {removedFollowers.includes(follower.clerkId)
                             ? "Removed"
                             : "Remove"}
                         </Button>
                       )}
                       {/* we are not showing buttons if user is currentUser because user can not follow ourself */}
-                      {userId !== follower.follower.clerkId &&
+                      {userId !== follower.clerkId &&
                         userId !== otherUserId && (
                           <Button
                             className="h-[2rem] w-[6rem]"
-                            variant={
-                              follower.isFollowing !== undefined &&
-                              follower.isFollowing
-                                ? "default"
-                                : "amber"
-                            }
-                            disabled={
-                              isLoading || follower.isFollowing === undefined
-                            }
+                            variant={follower.isFollowing ? "default" : "amber"}
                             onClick={() => {
                               follower.isFollowing
-                                ? onUnfollow(follower.follower.clerkId)
-                                : onFollow(follower.follower.clerkId);
+                                ? onUnfollow(follower.clerkId)
+                                : onFollow(follower.clerkId);
                             }}
                           >
-                            {follower.isFollowing === undefined
-                              ? "Loading"
-                              : follower.isFollowing
-                              ? "Unfollow"
-                              : "Follow"}
+                            {follower.isFollowing ? "Unfollow" : "Follow"}
                           </Button>
                         )}
                     </div>

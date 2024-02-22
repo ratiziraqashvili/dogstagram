@@ -16,7 +16,7 @@ import { ProfilePicture } from "../profile-picture";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useAuth } from "@clerk/nextjs";
-import qs from "query-string"
+import qs from "query-string";
 
 export const DisplayFollowingsModal = () => {
   //currentUser id
@@ -31,12 +31,11 @@ export const DisplayFollowingsModal = () => {
       isFollowing: boolean;
     }[]
   >([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
   //loader for only skeleton
   const [skeleton, setSkeleton] = useState(true);
   const { isOpen, onClose, type } = useModal();
-  
+
   const params = useParams();
   const otherUserId = params.userId;
   const router = useRouter();
@@ -67,7 +66,7 @@ export const DisplayFollowingsModal = () => {
         const followingIds = followingRes.data;
 
         const updatedFollowings = followingsList.map(
-          (following: { clerkId: string } ) => {
+          (following: { clerkId: string }) => {
             const isFollowing = followingIds.includes(following.clerkId);
 
             return {
@@ -90,8 +89,13 @@ export const DisplayFollowingsModal = () => {
 
   const onUnfollow = async (clerkId: string) => {
     // making req to api route to unfollow user
-    setIsLoading(true);
     try {
+      setFollowings((prev) =>
+        prev.map((f) =>
+          f.clerkId === clerkId ? { ...f, isFollowing: false } : f
+        )
+      );
+
       await axios.delete(`/api/users/unfollow/${clerkId}`);
 
       setFollowings((prevFollowings) => {
@@ -109,22 +113,30 @@ export const DisplayFollowingsModal = () => {
 
       router.refresh();
     } catch (error) {
+      setFollowings((prev) =>
+        prev.map((f) =>
+          f.clerkId === clerkId ? { ...f, isFollowing: true } : f
+        )
+      );
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const onFollow = async (clerkId: string) => {
     // Making req to api route to follow user
-    setIsLoading(true);
     try {
+      setFollowings((prev) =>
+        prev.map((f) =>
+          f.clerkId === clerkId ? { ...f, isFollowing: true } : f
+        )
+      );
+
       const url = qs.stringifyUrl({
         url: "/api/users/follow",
         query: {
-          otherUserId: clerkId
-        }
-      })
+          otherUserId: clerkId,
+        },
+      });
 
       await axios.post(url);
 
@@ -144,8 +156,11 @@ export const DisplayFollowingsModal = () => {
       router.refresh();
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
+      setFollowings((prev) =>
+        prev.map((f) =>
+          f.clerkId === clerkId ? { ...f, isFollowing: false } : f
+        )
+      );
     }
   };
 
@@ -218,29 +233,18 @@ export const DisplayFollowingsModal = () => {
                     <div className="flex items-center">
                       {/* we are not showing buttons if user is currentUser because user can not follow ourself */}
                       {userId !== following.clerkId && (
-                          <Button
-                            className="h-[2rem] w-[6rem]"
-                            variant={
-                              following.isFollowing
-                                ? "default"
-                                : "amber"
-                            }
-                            disabled={
-                              isLoading || following.isFollowing === undefined
-                            }
-                            onClick={() => {
-                              following.isFollowing
-                                ? onUnfollow(following.clerkId)
-                                : onFollow(following.clerkId);
-                            }}
-                          >
-                            {following.isFollowing === undefined
-                              ? "Loading"
-                              : following.isFollowing
-                              ? "Unfollow"
-                              : "Follow"}
-                          </Button>
-                        )}
+                        <Button
+                          className="h-[2rem] w-[6rem]"
+                          variant={following.isFollowing ? "default" : "amber"}
+                          onClick={() => {
+                            following.isFollowing
+                              ? onUnfollow(following.clerkId)
+                              : onFollow(following.clerkId);
+                          }}
+                        >
+                          {following.isFollowing ? "Unfollow" : "Follow"}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}
