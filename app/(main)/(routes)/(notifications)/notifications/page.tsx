@@ -55,7 +55,7 @@ const NotificationPage = async () => {
   if (notifications.length === 0) {
     return (
       <>
-        <div className="flex items-center justify-between md:hidden border-b-[1px] h-[2.8rem]">
+        <div className="flex items-center justify-between md:hidden border-b-[1px] h-[2.8rem] fixed w-full">
           <div className="pl-1">
             <Link href="/">
               <ChevronLeft />
@@ -84,7 +84,7 @@ const NotificationPage = async () => {
 
   return (
     <>
-      <div className="flex items-center justify-between md:hidden border-b-[1px] h-[2.8rem]">
+      <div className="flex items-center justify-between md:hidden border-b-[1px] h-[2.8rem] fixed w-full">
         <div className="pl-1">
           <Link href="/">
             <ChevronLeft />

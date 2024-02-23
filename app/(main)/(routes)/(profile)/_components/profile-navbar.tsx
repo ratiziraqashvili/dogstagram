@@ -20,7 +20,7 @@ export const ProfileNavbar = ({ username, profileId }: ProfileNavbar) => {
   }
 
   return (
-    <div className="flex items-center justify-between md:hidden border-b-[1px] h-[2.8rem]">
+    <div className="flex items-center justify-between md:hidden border-b-[1px] h-[2.8rem] w-full fixed">
       <div className="">
         <Button onClick={profileId === userId ? SettingsModalOpen : undefined} variant="ghost" className="hover:text-amber-0">
           {profileId === userId ? (

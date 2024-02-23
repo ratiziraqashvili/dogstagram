@@ -10,6 +10,7 @@ import { useModal } from "@/hooks/use-modal-store";
 import Link from "next/link";
 import { useFollower } from "@/hooks/use-follower-store";
 import qs from "query-string"
+import { useToast } from "@/components/ui/use-toast";
 
 interface ProfileInfoProps {
   username: string | undefined;
@@ -34,6 +35,7 @@ export const ProfileInfo = ({
   const router = useRouter();
   const { onOpen } = useModal();
   const { isFollowing, setIsFollowing, followerCount, setFollowerCount } = useFollower();
+  const { toast } = useToast();
 
   useEffect(() => {
     setIsFollowing(following);
@@ -56,10 +58,18 @@ export const ProfileInfo = ({
       await axios.post(url);
 
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       setIsFollowing(false);
       setFollowerCount(followerCount - 1);
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
     }
   };
 

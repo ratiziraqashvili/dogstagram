@@ -7,15 +7,16 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useModal } from "@/hooks/use-modal-store";
-import axios from "axios";
 import { X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import SkeletonItem from "../skeleton-item";
 import { ProfilePicture } from "../profile-picture";
-import Link from "next/link";
 import { Button } from "../ui/button";
 import { useAuth } from "@clerk/nextjs";
+import { useToast } from "../ui/use-toast";
+import axios from "axios";
+import Link from "next/link";
 import qs from "query-string";
 
 export const DisplayFollowersModal = () => {
@@ -40,6 +41,7 @@ export const DisplayFollowersModal = () => {
   const params = useParams();
   const otherUserId = params.userId;
   const router = useRouter();
+  const { toast } = useToast();
 
   const isModalOpen = isOpen && type === "displayFollowers";
 
@@ -68,9 +70,7 @@ export const DisplayFollowersModal = () => {
 
         const updatedFollowers = followersList.map(
           (follower: { clerkId: string }) => {
-            const isFollowing = followingIds.includes(
-              follower.clerkId
-            );
+            const isFollowing = followingIds.includes(follower.clerkId);
 
             return {
               ...follower,
@@ -130,12 +130,20 @@ export const DisplayFollowersModal = () => {
       });
 
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       setFollowers((prev) =>
         prev.map((f) =>
           f.clerkId === clerkId ? { ...f, isFollowing: true } : f
         )
       );
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
       console.error(error);
     }
   };
@@ -172,12 +180,20 @@ export const DisplayFollowersModal = () => {
       });
 
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       setFollowers((prev) =>
         prev.map((f) =>
           f.clerkId === clerkId ? { ...f, isFollowing: false } : f
         )
       );
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
       console.error(error);
     }
   };

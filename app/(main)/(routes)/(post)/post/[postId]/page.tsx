@@ -87,7 +87,7 @@ const PostPage = async ({ params }: { params: { postId: string } }) => {
 
   return (
     <>
-      <div className="flex items-center justify-between md:hidden border-b-[1px] h-[2.8rem]">
+      <div className="flex items-center justify-between md:hidden border-b-[1px] h-[2.8rem] ">
         <div className="pl-1">
           <Link href="/">
             <ChevronLeft />

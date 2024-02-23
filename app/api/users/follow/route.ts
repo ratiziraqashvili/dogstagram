@@ -1,16 +1,38 @@
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
 import { NotificationType } from "@prisma/client";
-import { NextResponse } from "next/server";
+import { Ratelimit } from "@upstash/ratelimit";
+import { kv } from "@vercel/kv";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+const ratelimit = new Ratelimit({
+    redis: kv,
+    limiter: Ratelimit.slidingWindow(5, "10s"),
+})
+
+export const config = {
+    runtime: "edge",
+}
+
+export async function POST(req: NextRequest) {
     try {
         const user = await currentUser();
         const { searchParams } = new URL(req.url);
+        const otherUserId = searchParams.get("otherUserId");
 
-        const otherUserId = searchParams.get("otherUserId")
+        const ip = req.ip;
+        const { limit, reset, remaining } = await ratelimit.limit(ip!);
 
-        console.log("otherUserId:", otherUserId)
+        if (remaining === 0) {
+            return new NextResponse(JSON.stringify({ error: "Rate limit exceeded" }), {
+                status: 429,
+                headers: {
+                    "X-RateLimit-Limit": limit.toString(),
+                    "X-RateLimit-Remaining": remaining.toString(),
+                    "X-RateLimit-Reset": reset.toString(),
+                }
+            })
+        }
 
         if (!user || !user.id || !otherUserId) {
             return new NextResponse("Unauthorized", { status: 401 })
