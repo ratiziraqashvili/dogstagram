@@ -83,7 +83,6 @@ export async function POST(req: Request, { params }: { params: { userId: string 
         })
 
         return NextResponse.json(block)
-
     } catch (error) {
         console.log("blocking user has failed", error)
         return new NextResponse("Internal error", { status: 500 })

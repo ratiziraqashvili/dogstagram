@@ -8,6 +8,7 @@ import { currentUser } from "@clerk/nextjs";
 export default async function Home() {
   const user = await currentUser();
   const blockedIds = await getBlockedUserIds();
+  const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
 
   const currUserRelatives = await db.user.findFirst({
     where: {
@@ -32,6 +33,9 @@ export default async function Home() {
     where: {
       userId: {
         in: ids,
+      },
+      createdAt: {
+        gte: twoWeeksAgo
       },
       NOT: {
         userId: {

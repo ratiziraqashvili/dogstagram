@@ -17,6 +17,7 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { useAuth } from "@clerk/nextjs";
 import qs from "query-string";
+import { useToast } from "../ui/use-toast";
 
 export const DisplayFollowingsModal = () => {
   //currentUser id
@@ -35,10 +36,12 @@ export const DisplayFollowingsModal = () => {
   //loader for only skeleton
   const [skeleton, setSkeleton] = useState(true);
   const { isOpen, onClose, type } = useModal();
+  const { toast } = useToast();
 
   const params = useParams();
   const otherUserId = params.userId;
   const router = useRouter();
+
 
   const isModalOpen = isOpen && type === "displayFollowings";
 
@@ -112,12 +115,21 @@ export const DisplayFollowingsModal = () => {
       });
 
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       setFollowings((prev) =>
         prev.map((f) =>
           f.clerkId === clerkId ? { ...f, isFollowing: true } : f
         )
       );
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
+
       console.error(error);
     }
   };

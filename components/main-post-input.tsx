@@ -182,9 +182,17 @@ export const MainPostInput = ({
 
         await axios.post(url);
       } else return;
-    } catch (error) {
+    } catch (error: any) {
       setCommentCount((prev) => prev - 1);
       console.error("client error in onComment", error);
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
     } finally {
       setIsLoading(false);
       setComment("");

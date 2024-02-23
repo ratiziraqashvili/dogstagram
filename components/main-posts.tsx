@@ -62,7 +62,7 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
   return (
     <div className="flex-1 mx-auto lg:max-w-[60%] md:max-w-[80%] max-w-full xl:ml-[20rem] md:mt-0 mt-[3.8rem] pb-20 sm:pb-0">
       {/* TODO: display available posts */}
-      {posts.map( async (post) => {
+      {posts.map(async (post) => {
         const formattedTime = formatTimeDifference(post.createdAt);
 
         const likeIds = likes.map((like) => like.postId);
@@ -76,11 +76,11 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
           restrictAuthorId.includes(post.userId) &&
           restrictedUserId.includes(user?.id!);
 
-          const restricted = await db.restrict.findMany({
-            where: {
-              userId: post.userId,
-            },
-          });
+        const restricted = await db.restrict.findMany({
+          where: {
+            userId: post.userId,
+          },
+        });
 
         return (
           <div
@@ -129,6 +129,9 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
           </div>
         );
       })}
+      <div className="sm:max-w-[75%] xl:max-w-[65%] mx-auto flex flex-col lg:pt-2 sm:px-0 px-2">
+        d
+      </div>
     </div>
   );
 };

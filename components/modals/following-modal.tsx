@@ -13,9 +13,11 @@ import { User } from "@prisma/client";
 import { ProfilePicture } from "../profile-picture";
 import { Bookmark, ChevronRight, Star, X } from "lucide-react";
 import { useFollower } from "@/hooks/use-follower-store";
+import { useToast } from "../ui/use-toast";
 
 export const FollowingModal = () => {
   const { isOpen, onClose, type, onOpen } = useModal();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const { setIsFollowing, setFollowerCount, followerCount } = useFollower();
 
@@ -50,10 +52,18 @@ export const FollowingModal = () => {
       await axios.delete(`/api/users/unfollow/${userId}`);
 
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       setIsFollowing(true);
       setFollowerCount(followerCount + 1);
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
     } finally {
       setIsLoading(false);
     }

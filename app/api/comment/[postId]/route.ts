@@ -1,17 +1,45 @@
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
 import { NotificationType } from "@prisma/client";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { Ratelimit } from "@upstash/ratelimit";
+import { kv } from "@vercel/kv";
 
-export async function POST(req: Request, { params }: { params: { postId: string } }) {
+const ratelimit = new Ratelimit({
+    redis: kv,
+    limiter: Ratelimit.slidingWindow(5, "10s"),
+})
+
+export const config = {
+    runtime: "edge",
+}
+
+const MAX_COMMENT_LENGTH = 150;
+
+export async function POST(req: NextRequest, { params }: { params: { postId: string } }) {
     try {
         const user = await currentUser();
         const postId = params.postId;
+        
         const { searchParams } = new URL(req.url);
-
         const content = searchParams.get("content");
         const recipient = searchParams.get("recipient");
         const restrictedUserId = searchParams.get("restrictedUserId");
+        
+        const ip = req.ip;
+        const { limit, reset, remaining } = await ratelimit.limit(ip!);
+        
+
+        if (remaining === 0) {
+            return new NextResponse(JSON.stringify({ error: "Rate limit exceeded" }), {
+                status: 429,
+                headers: {
+                    "X-RateLimit-Limit": limit.toString(),
+                    "X-RateLimit-Remaining": remaining.toString(),
+                    "X-RateLimit-Reset": reset.toString(),
+                }
+            })
+        }
 
         if (!user || !user.id) {
             return new NextResponse("Unauthorized", { status: 401 });
@@ -27,6 +55,9 @@ export async function POST(req: Request, { params }: { params: { postId: string 
 
         if (!content) return null;
 
+        if (content.length > MAX_COMMENT_LENGTH) {
+            return new NextResponse("comment is too large", { status: 400 })
+        }
         
         const comment = await db.comment.create({
             data: {
