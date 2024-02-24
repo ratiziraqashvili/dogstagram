@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
 import { MoreHorizOpen } from "./more-horiz-open";
 import { getBlockedUserIds } from "@/lib/blocked-users";
+import { CheckCircle2 } from "lucide-react";
 
 interface MainPostsProps {
   posts: PostInfoType;
@@ -99,7 +100,7 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
                   />
                 </div>
                 <div className="flex items-center gap-1">
-                  <h1 className="text-sm font-semibold ">
+                  <h1 className="text-sm font-semibold active:text-muted-foreground">
                     {post.user?.username}
                   </h1>
                   <span className="text-xs text-muted-foreground">
@@ -129,8 +130,16 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
           </div>
         );
       })}
-      <div className="sm:max-w-[75%] xl:max-w-[65%] mx-auto flex flex-col lg:pt-2 sm:px-0 px-2">
-        d
+      <div className="sm:max-w-[75%] xl:max-w-[65%] mx-auto flex flex-col justify-center sm:px-0 py-16">
+        <div className="flex flex-col justify-center items-center">
+          <CheckCircle2 strokeWidth="0.5px" className="w-28 h-28" />
+          <div>
+            <h1 className="text-lg text-center">You're all caught up</h1>
+            <p className="text-sm text-muted-foreground text-center">
+              You've seen all new posts from the past 14 days.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

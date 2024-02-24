@@ -42,7 +42,6 @@ export const DisplayFollowingsModal = () => {
   const otherUserId = params.userId;
   const router = useRouter();
 
-
   const isModalOpen = isOpen && type === "displayFollowings";
 
   const handleClose = () => {

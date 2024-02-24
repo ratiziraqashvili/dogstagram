@@ -9,7 +9,31 @@ const ExplorePage = async () => {
 
   const blockedIds = await getBlockedUserIds();
 
+  const userLocation = await db.user.findFirst({
+    where: {
+      clerkId: user?.id,
+    },
+    select: {
+      location: true,
+    },
+  });
+
   const posts = await db.post.findMany({
+    where: {
+      NOT: {
+        userId: {
+          in: blockedIds,
+        },
+      },
+      OR: [
+        {
+          user: {
+            location: userLocation?.location,
+          },
+        },
+        {},
+      ],
+    },
     include: {
       _count: {
         select: {
@@ -21,13 +45,6 @@ const ExplorePage = async () => {
         select: {
           imageUrl: true,
           username: true,
-        },
-      },
-    },
-    where: {
-      NOT: {
-        userId: {
-          in: blockedIds,
         },
       },
     },
