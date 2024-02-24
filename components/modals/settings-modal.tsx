@@ -20,7 +20,6 @@ export const SettingsModal = () => {
   };
 
   const buttons = [
-    //TODO: Redirect to notifications page
     { label: "Notifications", onClick: redirectToNotiPage },
     { label: "Log Out", onClick: () => signOut() },
   ];

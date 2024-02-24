@@ -62,7 +62,6 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
 
   return (
     <div className="flex-1 mx-auto lg:max-w-[60%] md:max-w-[80%] max-w-full xl:ml-[20rem] md:mt-0 mt-[3.8rem] pb-20 sm:pb-0">
-      {/* TODO: display available posts */}
       {posts.map(async (post) => {
         const formattedTime = formatTimeDifference(post.createdAt);
 

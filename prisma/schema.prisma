@@ -28,6 +28,7 @@ model User {
   SavedPosts   SavedPosts[]
   Restrict     Restrict[]
   Notification Notification[]
+  Reply        Reply[]
 }
 
 model BlockedUser {
@@ -81,8 +82,27 @@ model Comment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Reply     Reply[]
 
   @@index([postId])
+  @@index([userId])
+}
+
+model Reply {
+  id String @id @default(uuid())
+
+  replyToCommentId String
+  comment          Comment @relation(fields: [replyToCommentId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [clerkId])
+
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([replyToCommentId])
   @@index([userId])
 }
 
