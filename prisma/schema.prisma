@@ -94,6 +94,8 @@ model Reply {
   replyToCommentId String
   comment          Comment @relation(fields: [replyToCommentId], references: [id], onDelete: Cascade)
 
+  repliedToUsername String
+
   userId String
   user   User   @relation(fields: [userId], references: [clerkId])
 
