@@ -1,13 +1,16 @@
 import { ProfilePicture } from "./profile-picture";
 import { CommentArray } from "@/types";
 import { formatTimeDifference } from "@/lib/timeUtils";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, SendHorizonal } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import { useSecondModal } from "@/hooks/use-second-modal-store";
 import { useModal } from "@/hooks/use-modal-store";
-import Link from "next/link";
 import { useRef, useState } from "react";
 import { Input } from "./ui/input";
+import { useToast } from "./ui/use-toast";
+import Link from "next/link";
+import qs from "query-string";
+import axios from "axios";
 
 interface CommentsProps {
   comments: CommentArray;
@@ -18,11 +21,12 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
   const [isReplying, setIsReplying] = useState(false);
   const [replyingToId, setReplyingToId] = useState("");
   const [commentValue, setCommentValue] = useState("");
-  const [username, setUsername] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { userId } = useAuth();
   const { onOpen } = useSecondModal();
   const { onClose } = useModal();
+  const { toast } = useToast();
 
   const handleClose = () => {
     onClose();
@@ -32,12 +36,56 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
     inputRef.current?.focus();
     setReplyingToId(id);
     setIsReplying((prev) => !prev);
-    setUsername("@" + username + " ");
+    setCommentValue("@" + username + " ");
   };
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value.replace(username, "");
-    setCommentValue(newValue);
+    setCommentValue(event.target.value);
+  };
+
+  const MAX_REPLY_LENGTH = 150;
+
+  const onReplySubmit = async (username: string, commentId: string) => {
+    let newValue = commentValue;
+    // check if the comment value starts with "@username"
+    if (newValue.startsWith("@" + username)) {
+      // remove the username from the comment value
+      newValue = newValue.slice(username.length + 1).trim();
+    }
+    // here, newValue contains the comment value without the username part
+    setIsSubmitting(true);
+    try {
+      if (!!commentValue) {
+        if (newValue.length > MAX_REPLY_LENGTH) {
+          toast({
+            title: "Comment should not be more than 150 characters.",
+            variant: "default",
+            duration: 3000,
+          });
+          return;
+        }
+
+        const url = qs.stringifyUrl({
+          url: "/api/comment/reply",
+          query: {
+            commentId,
+            username,
+          },
+        });
+
+        await axios.post(url);
+      } else return;
+    } catch (error: any) {
+      console.error("error in client [COMPONENTS_COMMENTS]", error);
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
+    }
   };
 
   return (
@@ -108,9 +156,15 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
                 <div className="relative w-[60%] ml-16">
                   <Input
                     ref={inputRef}
-                    className="text-sm"
+                    className="text-sm pr-10"
                     onChange={(e) => onInputChange(e)}
-                    value={username + commentValue}
+                    value={commentValue}
+                  />
+                  <SendHorizonal
+                    onClick={() =>
+                      onReplySubmit(comment.user.username!, comment.id)
+                    }
+                    className="absolute right-2 top-[0.625rem] cursor-pointer size-5 text-amber-700 hover:text-amber-800 transition"
                   />
                 </div>
               </>
