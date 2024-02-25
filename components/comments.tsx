@@ -15,9 +15,10 @@ import axios from "axios";
 interface CommentsProps {
   comments: CommentArray;
   authorId: string;
+  postId: string | undefined;
 }
 
-export const Comments = ({ comments, authorId }: CommentsProps) => {
+export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
   const [isReplying, setIsReplying] = useState(false);
   const [replyingToId, setReplyingToId] = useState("");
   const [commentValue, setCommentValue] = useState("");
@@ -45,7 +46,11 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
 
   const MAX_REPLY_LENGTH = 150;
 
-  const onReplySubmit = async (username: string, commentId: string) => {
+  const onReplySubmit = async (
+    username: string,
+    commentId: string,
+    authorId: string
+  ) => {
     let newValue = commentValue;
     // check if the comment value starts with "@username"
     if (newValue.startsWith("@" + username)) {
@@ -68,8 +73,11 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
         const url = qs.stringifyUrl({
           url: "/api/comment/reply",
           query: {
-            commentId,
+            content: newValue,
+            recipient: authorId,
+            postId,
             username,
+            commentId,
           },
         });
 
@@ -85,6 +93,11 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
           duration: 3000,
         });
       }
+    } finally {
+      setIsSubmitting(false);
+      setReplyingToId("");
+      setIsReplying(false);
+      setCommentValue("");
     }
   };
 
@@ -155,6 +168,7 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
               <>
                 <div className="relative w-[60%] ml-16">
                   <Input
+                    disabled={isSubmitting}
                     ref={inputRef}
                     className="text-sm pr-10"
                     onChange={(e) => onInputChange(e)}
@@ -162,9 +176,13 @@ export const Comments = ({ comments, authorId }: CommentsProps) => {
                   />
                   <SendHorizonal
                     onClick={() =>
-                      onReplySubmit(comment.user.username!, comment.id)
+                      onReplySubmit(
+                        comment.user.username!,
+                        comment.id,
+                        comment.userId
+                      )
                     }
-                    className="absolute right-2 top-[0.625rem] cursor-pointer size-5 text-amber-700 hover:text-amber-800 transition"
+                    className="absolute right-2 top-[0.625rem] cursor-pointer size-5 text-muted-foreground hover:opacity-80 transition"
                   />
                 </div>
               </>

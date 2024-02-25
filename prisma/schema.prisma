@@ -134,6 +134,7 @@ model SavedPosts {
 
 enum NotificationType {
   COMMENT
+  REPLY
   FOLLOW
   LIKE
   FAVORITE
