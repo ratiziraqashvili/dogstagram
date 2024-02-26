@@ -59,6 +59,8 @@ export async function POST(req: NextRequest) {
                 replyAuthorUsername: username,
                 replyToCommentId: commentId,
                 content,
+                postId: postId!,
+                replyAuthorId: recipient!,
             },
             include: {
                 user: {

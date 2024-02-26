@@ -58,6 +58,7 @@ model Post {
   user         User           @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
   SavedPosts   SavedPosts[]
   Notification Notification[]
+  Reply        Reply[]
 
   @@index([userId])
 }
@@ -89,23 +90,24 @@ model Comment {
 }
 
 model Reply {
-  id String @id @default(uuid())
-
-  replyToCommentId String
-  comment          Comment @relation(fields: [replyToCommentId], references: [id], onDelete: Cascade)
-
+  id                  String @id @default(uuid())
+  postId              String
+  replyToCommentId    String
   replyAuthorUsername String
+  replyAuthorId       String
+  userId              String
+  content             String
 
-  userId String
-  user   User   @relation(fields: [userId], references: [clerkId])
-
-  content String
+  comment Comment @relation(fields: [replyToCommentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [clerkId])
+  post    Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([replyToCommentId])
   @@index([userId])
+  @@index([postId])
 }
 
 model Follow {

@@ -65,11 +65,29 @@ const ExplorePage = async () => {
           username: true,
         },
       },
+      Reply: {
+        select: {
+          content: true,
+          replyAuthorUsername: true,
+          replyAuthorId: true,
+          user: {
+            select: {
+              imageUrl: true,
+              username: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",
     },
   });
+
+  console.log(comments.map((comment) => comment.Reply));
 
   const likes = await db.like.findMany({
     where: {

@@ -11,6 +11,8 @@ import { useToast } from "./ui/use-toast";
 import Link from "next/link";
 import qs from "query-string";
 import axios from "axios";
+import { EmojiPicker } from "./emoji-pickers";
+import { cn } from "@/lib/utils";
 
 interface CommentsProps {
   comments: CommentArray;
@@ -170,19 +172,32 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                   <Input
                     disabled={isSubmitting}
                     ref={inputRef}
-                    className="text-sm pr-10"
+                    className="text-sm pr-14"
                     onChange={(e) => onInputChange(e)}
                     value={commentValue}
                   />
+                  <EmojiPicker
+                    className={cn(
+                      "absolute right-8 top-[0.625rem] cursor-pointer size-5 text-muted-foreground hover:opacity-80 transition",
+                      isSubmitting && "cursor-not-allowed opacity-50 hover:opacity-50"
+                    )}
+                    onChange={(value) => setCommentValue(commentValue + value)}
+                  />
                   <SendHorizonal
-                    onClick={() =>
-                      onReplySubmit(
-                        comment.user.username!,
-                        comment.id,
-                        comment.userId
-                      )
+                    onClick={
+                      !isSubmitting
+                        ? () =>
+                            onReplySubmit(
+                              comment.user.username!,
+                              comment.id,
+                              comment.userId
+                            )
+                        : () => {}
                     }
-                    className="absolute right-2 top-[0.625rem] cursor-pointer size-5 text-muted-foreground hover:opacity-80 transition"
+                    className={cn(
+                      "absolute right-2 top-[0.625rem] cursor-pointer size-5 text-muted-foreground hover:opacity-80 transition",
+                      isSubmitting && "cursor-not-allowed opacity-50 hover:opacity-50"
+                    )}
                   />
                 </div>
               </>
