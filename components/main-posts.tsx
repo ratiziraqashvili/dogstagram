@@ -54,6 +54,22 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
           username: true,
         },
       },
+      reply: {
+        select: {
+          content: true,
+          replyAuthorUsername: true,
+          replyAuthorId: true,
+          user: {
+            select: {
+              imageUrl: true,
+              username: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",

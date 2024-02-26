@@ -45,6 +45,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         select: {
           likes: true,
           comments: true,
+          reply: true,
         },
       },
       user: {
@@ -92,6 +93,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         select: {
           likes: true,
           comments: true,
+          reply: true,
         },
       },
       user: {
@@ -122,6 +124,22 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         select: {
           imageUrl: true,
           username: true,
+        },
+      },
+      reply: {
+        select: {
+          content: true,
+          replyAuthorUsername: true,
+          replyAuthorId: true,
+          user: {
+            select: {
+              imageUrl: true,
+              username: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       },
     },

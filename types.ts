@@ -5,6 +5,7 @@ export type PostInfoType = (
         _count: {
           likes: number;
           comments: number;
+          reply: number;
         },
         user: {
           imageUrl: string | null;
@@ -31,7 +32,16 @@ export type CommentArray = (
     user: {
       username: string | null;
       imageUrl: string | null;
-    }
+    };
+    reply: {
+      content: string;
+      user: {
+          username: string;
+          imageUrl: string | null;
+      };
+      replyAuthorUsername: string;
+      replyAuthorId: string;
+  }[];
   }
 )[] | undefined;
 

@@ -65,7 +65,7 @@ const ExplorePage = async () => {
           username: true,
         },
       },
-      Reply: {
+      reply: {
         select: {
           content: true,
           replyAuthorUsername: true,
@@ -86,8 +86,6 @@ const ExplorePage = async () => {
       createdAt: "desc",
     },
   });
-
-  console.log(comments.map((comment) => comment.Reply));
 
   const likes = await db.like.findMany({
     where: {

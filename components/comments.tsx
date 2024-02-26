@@ -117,7 +117,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
 
         return (
           <>
-            <div key={comment.id} className="flex gap-3 p-3 items-center group">
+            <div key={comment.id} className="flex gap-3 p-3  group">
               <div>
                 <Link onClick={handleClose} href={`/${comment.userId}`}>
                   <ProfilePicture
@@ -145,23 +145,32 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                   </Link>
                   <span className="text-sm break-all">{comment.content}</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-muted-foreground cursor-pointer">
-                    {formattedTime}
-                  </span>
-                  <span
-                    onClick={() => onReply(comment.id, comment.user.username!)}
-                    className="text-xs text-muted-foreground cursor-pointer font-semibold"
-                  >
-                    Reply
-                  </span>
-                  {userId === comment.userId && (
-                    <button>
-                      <MoreHorizontal
-                        onClick={onCommentDeleteModalOpen}
-                        className="h-5 w-5 text-muted-foreground pt-1 opacity-0 group-hover:opacity-100"
-                      />
-                    </button>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground cursor-pointer">
+                      {formattedTime}
+                    </span>
+                    <span
+                      onClick={() =>
+                        onReply(comment.id, comment.user.username!)
+                      }
+                      className="text-xs text-muted-foreground cursor-pointer font-semibold"
+                    >
+                      Reply
+                    </span>
+                    {userId === comment.userId && (
+                      <button>
+                        <MoreHorizontal
+                          onClick={onCommentDeleteModalOpen}
+                          className="h-5 w-5 text-muted-foreground pt-1 opacity-0 group-hover:opacity-100"
+                        />
+                      </button>
+                    )}
+                  </div>
+                  {comment.reply.length > 0 && (
+                    <span className="text-xs text-muted-foreground font-semibold cursor-pointer">
+                      View replies ({comment.reply.length})
+                    </span>
                   )}
                 </div>
               </div>
@@ -179,7 +188,8 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                   <EmojiPicker
                     className={cn(
                       "absolute right-8 top-[0.625rem] cursor-pointer size-5 text-muted-foreground hover:opacity-80 transition",
-                      isSubmitting && "cursor-not-allowed opacity-50 hover:opacity-50"
+                      isSubmitting &&
+                        "cursor-not-allowed opacity-50 hover:opacity-50"
                     )}
                     onChange={(value) => setCommentValue(commentValue + value)}
                   />
@@ -196,7 +206,8 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                     }
                     className={cn(
                       "absolute right-2 top-[0.625rem] cursor-pointer size-5 text-muted-foreground hover:opacity-80 transition",
-                      isSubmitting && "cursor-not-allowed opacity-50 hover:opacity-50"
+                      isSubmitting &&
+                        "cursor-not-allowed opacity-50 hover:opacity-50"
                     )}
                   />
                 </div>

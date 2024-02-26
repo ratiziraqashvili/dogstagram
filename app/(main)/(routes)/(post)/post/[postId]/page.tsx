@@ -38,9 +38,7 @@ const PostPage = async ({ params }: { params: { postId: string } }) => {
   });
 
   if (!post) {
-    return (
-      <NotFound />
-    )
+    return <NotFound />;
   }
 
   const comments = await db.comment.findMany({
@@ -57,6 +55,22 @@ const PostPage = async ({ params }: { params: { postId: string } }) => {
         select: {
           imageUrl: true,
           username: true,
+        },
+      },
+      reply: {
+        select: {
+          content: true,
+          replyAuthorUsername: true,
+          replyAuthorId: true,
+          user: {
+            select: {
+              imageUrl: true,
+              username: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       },
     },

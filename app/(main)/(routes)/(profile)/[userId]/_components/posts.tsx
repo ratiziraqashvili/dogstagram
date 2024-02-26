@@ -174,7 +174,7 @@ export const Posts = ({
               <div className="flex gap-2 items-center">
                 <MessageCircle className="text-white h-5 w-5" fill="white" />
                 <span className="text-lg text-white font-semibold">
-                  {post._count.comments}
+                  {post._count.comments + post._count.reply}
                 </span>
               </div>
             )}
