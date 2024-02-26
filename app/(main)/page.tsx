@@ -48,6 +48,7 @@ export default async function Home() {
         select: {
           likes: true,
           comments: true,
+          reply: true,
         },
       },
       user: {

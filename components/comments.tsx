@@ -13,6 +13,7 @@ import qs from "query-string";
 import axios from "axios";
 import { EmojiPicker } from "./emoji-pickers";
 import { cn } from "@/lib/utils";
+import { Replies } from "./replies";
 
 interface CommentsProps {
   comments: CommentArray;
@@ -25,6 +26,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
   const [replyingToId, setReplyingToId] = useState("");
   const [commentValue, setCommentValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [replyVisible, setReplyVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { userId } = useAuth();
   const { onOpen } = useSecondModal();
@@ -117,7 +119,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
 
         return (
           <>
-            <div key={comment.id} className="flex gap-3 p-3  group">
+            <div key={comment.id} className="flex gap-3 p-3 group">
               <div>
                 <Link onClick={handleClose} href={`/${comment.userId}`}>
                   <ProfilePicture
@@ -168,9 +170,12 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                     )}
                   </div>
                   {comment.reply.length > 0 && (
-                    <span className="text-xs text-muted-foreground font-semibold cursor-pointer">
-                      View replies ({comment.reply.length})
-                    </span>
+                    <Replies
+                      reply={comment.reply}
+                      isReplyVisible={replyVisible}
+                      onClick={() => setReplyVisible((prev) => !prev)}
+                      replyCount={comment.reply.length}
+                    />
                   )}
                 </div>
               </div>
