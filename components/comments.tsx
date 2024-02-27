@@ -119,7 +119,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
 
         return (
           <>
-            <div key={comment.id} className="flex gap-3 p-3 group">
+            <div key={comment.id} className="flex gap-3 p-3 group/comment">
               <div>
                 <Link onClick={handleClose} href={`/${comment.userId}`}>
                   <ProfilePicture
@@ -164,7 +164,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                       <button>
                         <MoreHorizontal
                           onClick={onCommentDeleteModalOpen}
-                          className="h-5 w-5 text-muted-foreground pt-1 opacity-0 group-hover:opacity-100"
+                          className="h-5 w-5 text-muted-foreground pt-1 opacity-0 group-hover/comment:opacity-100 group-hover/reply:opacity-0"
                         />
                       </button>
                     )}

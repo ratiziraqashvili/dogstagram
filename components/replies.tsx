@@ -67,7 +67,7 @@ export const Replies = ({
             };
 
             return (
-              <div className="flex gap-3" key={i}>
+              <div className="flex gap-3 group/reply" key={i}>
                 <div>
                   <Link onClick={handleClose} href={`/${r.userId}`}>
                     <ProfilePicture
@@ -103,8 +103,8 @@ export const Replies = ({
                       {userId === r.userId && (
                         <button>
                           <MoreHorizontal
-                            onClick={() => {}}
-                            className="h-5 w-5 text-muted-foreground pt-1 opacity-0 group-hover:opacity-100"
+                            onClick={onCommentDeleteModalOpen}
+                            className="h-5 w-5 text-muted-foreground pt-1 opacity-0 group-hover/reply:opacity-100"
                           />
                         </button>
                       )}
