@@ -62,6 +62,9 @@ const PostPage = async ({ params }: { params: { postId: string } }) => {
           content: true,
           replyAuthorUsername: true,
           replyAuthorId: true,
+          userId: true,
+          createdAt: true,
+          id: true,
           user: {
             select: {
               imageUrl: true,

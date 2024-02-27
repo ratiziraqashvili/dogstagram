@@ -41,6 +41,9 @@ export type CommentArray = (
       };
       replyAuthorUsername: string;
       replyAuthorId: string;
+      userId: string;
+      createdAt: Date;
+      id: string;
   }[];
   }
 )[] | undefined;

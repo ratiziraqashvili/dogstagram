@@ -131,6 +131,9 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
           content: true,
           replyAuthorUsername: true,
           replyAuthorId: true,
+          userId: true,
+          createdAt: true,
+          id: true,
           user: {
             select: {
               imageUrl: true,

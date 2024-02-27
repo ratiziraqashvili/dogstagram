@@ -39,6 +39,7 @@ const ExplorePage = async () => {
         select: {
           likes: true,
           comments: true,
+          reply: true,
         },
       },
       user: {
@@ -70,6 +71,9 @@ const ExplorePage = async () => {
           content: true,
           replyAuthorUsername: true,
           replyAuthorId: true,
+          userId: true,
+          createdAt: true,
+          id: true,
           user: {
             select: {
               imageUrl: true,
