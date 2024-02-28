@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import axios from "axios";
 import { useModal } from "@/hooks/use-modal-store";
 import { usePostDataStore } from "@/hooks/use-post-data-store";
 import { useUser } from "@clerk/nextjs";
@@ -20,9 +18,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Textarea } from "../ui/textarea";
-import { Switch } from "../ui/switch";
-import { EmojiPicker } from "../emoji-pickers";
 import {
   Select,
   SelectContent,
@@ -30,10 +25,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { Textarea } from "../ui/textarea";
+import { Switch } from "../ui/switch";
+import { EmojiPicker } from "../emoji-pickers";
 import { useToast } from "../ui/use-toast";
 import { X } from "lucide-react";
 import { CldImage } from "next-cloudinary";
 import { SinglePost } from "@/types";
+import axios from "axios";
+import Image from "next/image";
 import qs from "query-string";
 
 const formSchema = z.object({
@@ -49,6 +49,7 @@ const formSchema = z.object({
   location: z.string().optional(),
   hideLikes: z.boolean().optional(),
   hideComments: z.boolean().optional(),
+  story: z.boolean().optional(),
   isDog: z.boolean(),
 });
 
@@ -62,6 +63,7 @@ export const CreatePostModal = () => {
   const { user } = useUser();
   const [locations, setLocations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isStory, setIsStory] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
   const post: SinglePost = data;
@@ -79,6 +81,7 @@ export const CreatePostModal = () => {
       location: post?.location ?? "",
       hideLikes: post?.hideLikes ?? false,
       hideComments: post?.hideComments ?? false,
+      story: false,
       isDog: post ? true : isDog,
     },
   });
@@ -126,10 +129,44 @@ export const CreatePostModal = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
     try {
       setIsLoading(true);
 
-      if (!post) {
+      if (!values.story) {
+        if (!post) {
+          if (!values.isDog) {
+            toast({
+              description:
+                "We appreciate your participation, but we kindly request that only photos featuring dogs be posted.",
+              duration: 3000,
+            });
+            return;
+          }
+
+          await axios.post("/api/posts/create", values);
+
+          toast({
+            description: "Posted successfully.",
+            duration: 3000,
+          });
+        } else {
+          const url = qs.stringifyUrl({
+            url: "/api/posts/update",
+            query: {
+              postId: post.id,
+              authorId: post.userId,
+            },
+          });
+
+          await axios.patch(url, values);
+
+          toast({
+            description: "Updated successfully.",
+            duration: 3000,
+          });
+        }
+      } else {
         if (!values.isDog) {
           toast({
             description:
@@ -139,25 +176,10 @@ export const CreatePostModal = () => {
           return;
         }
 
-        await axios.post("/api/posts/create", values);
+        await axios.post("/api/story", values);
 
         toast({
           description: "Posted successfully.",
-          duration: 3000,
-        });
-      } else {
-        const url = qs.stringifyUrl({
-          url: "/api/posts/update",
-          query: {
-            postId: post.id,
-            authorId: post.userId,
-          },
-        });
-
-        await axios.patch(url, values);
-
-        toast({
-          description: "Updated successfully.",
           duration: 3000,
         });
       }
@@ -173,6 +195,13 @@ export const CreatePostModal = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resetForm = () => {
+    setValue("caption", "");
+    setValue("location", "");
+    setValue("hideLikes", false);
+    setValue("hideComments", false);
   };
 
   return (
@@ -224,7 +253,7 @@ export const CreatePostModal = () => {
                       <FormItem>
                         <FormControl className="relative">
                           <Textarea
-                            disabled={isLoading}
+                            disabled={isStory || isLoading}
                             rows={6}
                             placeholder="Write a caption..."
                             {...field}
@@ -247,7 +276,7 @@ export const CreatePostModal = () => {
                       <FormItem>
                         <FormControl>
                           <Select
-                            disabled={isLoading}
+                            disabled={isStory || isLoading}
                             onValueChange={field.onChange}
                           >
                             <SelectTrigger>
@@ -296,7 +325,7 @@ export const CreatePostModal = () => {
                             </FormLabel>
                             <FormControl>
                               <Switch
-                                disabled={isLoading}
+                                disabled={isStory || isLoading}
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
                               />
@@ -323,7 +352,7 @@ export const CreatePostModal = () => {
                             </FormLabel>
                             <FormControl>
                               <Switch
-                                disabled={isLoading}
+                                disabled={isStory || isLoading}
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
                               />
@@ -332,6 +361,33 @@ export const CreatePostModal = () => {
                           <FormDescription className="text-xs text-muted-foreground p-3 py-0">
                             You can change this later by going to the ··· menu
                             at the top of your post.
+                          </FormDescription>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="story"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-center justify-between px-3 pt-3 gap-2">
+                            <FormLabel className="font-normal">Story</FormLabel>
+                            <FormControl>
+                              <Switch
+                                disabled={isLoading}
+                                checked={field.value}
+                                onCheckedChange={(checked) => {
+                                  setIsStory(checked);
+                                  if (checked) {
+                                    resetForm();
+                                  }
+                                  field.onChange(checked);
+                                }}
+                              />
+                            </FormControl>
+                          </div>
+                          <FormDescription className="text-xs text-muted-foreground p-3 py-0">
+                            You can post this as a story.
                           </FormDescription>
                         </FormItem>
                       )}

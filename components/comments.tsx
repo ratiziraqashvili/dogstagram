@@ -26,7 +26,6 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
   const [replyingToId, setReplyingToId] = useState("");
   const [commentValue, setCommentValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [replyVisible, setReplyVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { userId } = useAuth();
   const { onOpen } = useSecondModal();
@@ -113,7 +112,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
     const data = {
       commentId,
       authorId,
-      type: "comment"
+      type: "comment",
     };
     onOpen("commentDelete", data);
   };
@@ -121,6 +120,8 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
   return (
     <>
       {comments?.map((comment) => {
+        const [replyVisible, setReplyVisible] = useState(false);
+
         return (
           <div key={comment.id}>
             <div className="flex gap-3 p-3">
