@@ -1,7 +1,5 @@
 import { NotificationType } from "@prisma/client";
 
-//TODO: add noti for replies
-
 export const generateNotificationMessage = (type: NotificationType) => {
     switch (type) {
         case NotificationType.COMMENT:
@@ -11,6 +9,8 @@ export const generateNotificationMessage = (type: NotificationType) => {
         case NotificationType.FAVORITE:
             return "favorited your post.";
         case NotificationType.LIKE:
-            return "liked your post."       
+            return "liked your post." 
+        case NotificationType.REPLY:
+            return "replied to your comment."          
     }
 }
