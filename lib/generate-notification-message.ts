@@ -1,5 +1,7 @@
 import { NotificationType } from "@prisma/client";
 
+//TODO: add noti for replies
+
 export const generateNotificationMessage = (type: NotificationType) => {
     switch (type) {
         case NotificationType.COMMENT:

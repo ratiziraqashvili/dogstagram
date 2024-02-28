@@ -12,12 +12,15 @@ export async function POST(req: Request) {
             location,
             hideLikes,
             hideComments,
+            story,
             isDog,
         } = body;
 
         if (!user || !user.id) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
+
+        if (story) return null;
 
         if (!imageUrl) {
             return new NextResponse("Missing required parameter", { status: 400 })

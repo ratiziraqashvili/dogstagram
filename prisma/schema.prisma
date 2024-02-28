@@ -29,6 +29,7 @@ model User {
   Restrict     Restrict[]
   Notification Notification[]
   Reply        Reply[]
+  Story        Story[]
 }
 
 model BlockedUser {
@@ -59,6 +60,17 @@ model Post {
   SavedPosts   SavedPosts[]
   Notification Notification[]
   reply        Reply[]
+
+  @@index([userId])
+}
+
+model Story {
+  id        String   @id @default(uuid())
+  userId    String
+  imageUrl  String   @db.Text
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
 
   @@index([userId])
 }
