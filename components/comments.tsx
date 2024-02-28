@@ -119,7 +119,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
 
         return (
           <>
-            <div key={comment.id} className="flex gap-3 p-3 group/comment">
+            <div key={comment.id} className="flex gap-3 p-3">
               <div>
                 <Link onClick={handleClose} href={`/${comment.userId}`}>
                   <ProfilePicture
@@ -129,7 +129,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                 </Link>
               </div>
               <div className="flex flex-col gap-1">
-                <div className="flex gap-1">
+                <div className="flex gap-1 group/comment">
                   <Link onClick={handleClose} href={`/${comment.userId}`}>
                     <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer flex">
                       {authorId === comment.userId ? (
@@ -148,7 +148,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                   <span className="text-sm break-all">{comment.content}</span>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 group/comment">
                     <span className="text-xs text-muted-foreground cursor-pointer">
                       {formattedTime}
                     </span>

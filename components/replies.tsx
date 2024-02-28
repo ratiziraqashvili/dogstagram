@@ -93,7 +93,12 @@ export const Replies = ({
                       )}
                     </h1>
                   </Link> */}
-                    <span className="text-sm break-all">{r.content}</span>
+                    <span className="text-sm break-all">
+                      <Link onClick={handleClose} href={`/${r.replyAuthorId}`} className="cursor-pointer text-[#22486a]">
+                        @{r.replyAuthorUsername}
+                      </Link>
+                      {" " + r.content}
+                    </span>
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
