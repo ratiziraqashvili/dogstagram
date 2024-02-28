@@ -105,18 +105,21 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
     }
   };
 
+  const getFormattedtime = (createdAt: Date) => {
+    return formatTimeDifference(createdAt);
+  };
+
+  const onCommentDeleteModalOpen = (commentId: string, authorId: string) => {
+    const data = {
+      commentId,
+      authorId,
+    };
+    onOpen("commentDelete", data);
+  };
+
   return (
     <>
       {comments?.map((comment) => {
-        const formattedTime = formatTimeDifference(comment.createdAt);
-        const data = {
-          commentId: comment.id,
-          authorId: comment.userId,
-        };
-        const onCommentDeleteModalOpen = () => {
-          onOpen("commentDelete", data);
-        };
-
         return (
           <>
             <div key={comment.id} className="flex gap-3 p-3">
@@ -150,7 +153,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-3 group/comment">
                     <span className="text-xs text-muted-foreground cursor-pointer">
-                      {formattedTime}
+                      {getFormattedtime(comment.createdAt)}
                     </span>
                     <span
                       onClick={() =>
@@ -163,7 +166,9 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                     {userId === comment.userId && (
                       <button>
                         <MoreHorizontal
-                          onClick={onCommentDeleteModalOpen}
+                          onClick={() =>
+                            onCommentDeleteModalOpen(comment.id, comment.userId)
+                          }
                           className="h-5 w-5 text-muted-foreground pt-1 opacity-0 group-hover/comment:opacity-100 group-hover/reply:opacity-0"
                         />
                       </button>

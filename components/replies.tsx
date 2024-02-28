@@ -45,6 +45,14 @@ export const Replies = ({
     return formatTimeDifference(createdAt);
   };
 
+  const onCommentDeleteModalOpen = (replyId: string, authorId: string) => {
+    const data = {
+      commentId: replyId,
+      authorId,
+    };
+    onOpen("commentDelete", data);
+  };
+
   return (
     <Accordion type="multiple">
       <AccordionItem value="item-1">
@@ -58,14 +66,6 @@ export const Replies = ({
         </AccordionTrigger>
         <AccordionContent>
           {reply.map((r, i) => {
-            const data = {
-              replyId: r.id,
-              authorId: r.userId,
-            };
-            const onCommentDeleteModalOpen = () => {
-              onOpen("commentDelete", data);
-            };
-
             return (
               <div className="flex gap-3 group/reply" key={i}>
                 <div>
@@ -78,23 +78,19 @@ export const Replies = ({
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="flex gap-1">
-                    {/* <Link onClick={handleClose} href={`/${comment.userId}`}>
-                    <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer flex">
-                      {authorId === comment.userId ? (
+                    <Link onClick={handleClose} href={`/${r.userId}`}>
+                      <h1 className="font-semibold text-sm hover:text-muted-foreground cursor-pointer flex">
                         <span className="flex items-center gap-2">
-                          <span>{comment.user.username}</span>
-                          &bull;
-                          <span className="text-amber-500 text-xs">
-                            Creator
-                          </span>
+                          <span>{r.user.username}</span>
                         </span>
-                      ) : (
-                        <span>{r.user.username}</span>
-                      )}
-                    </h1>
-                  </Link> */}
+                      </h1>
+                    </Link>
                     <span className="text-sm break-all">
-                      <Link onClick={handleClose} href={`/${r.replyAuthorId}`} className="cursor-pointer text-[#22486a]">
+                      <Link
+                        onClick={handleClose}
+                        href={`/${r.replyAuthorId}`}
+                        className="cursor-pointer text-[#22486a]"
+                      >
                         @{r.replyAuthorUsername}
                       </Link>
                       {" " + r.content}
@@ -108,7 +104,9 @@ export const Replies = ({
                       {userId === r.userId && (
                         <button>
                           <MoreHorizontal
-                            onClick={onCommentDeleteModalOpen}
+                            onClick={() =>
+                              onCommentDeleteModalOpen(r.id, r.userId)
+                            }
                             className="h-5 w-5 text-muted-foreground pt-1 opacity-0 group-hover/reply:opacity-100"
                           />
                         </button>
