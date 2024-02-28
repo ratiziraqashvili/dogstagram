@@ -1,3 +1,4 @@
+import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
@@ -8,14 +9,14 @@ export async function POST(req: Request) {
         const {
             imageUrl,
             isDog,
-            story,
+            story: isStory,
         } = body;
 
         if (!user || !user.id) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!story) return null;
+        if (!isStory) return null;
 
         if (!imageUrl) {
             return new NextResponse("Missing required parameter", { status: 400 })
@@ -25,7 +26,18 @@ export async function POST(req: Request) {
             return;
         }
 
-        
+        const expiresAt = new Date();
+        expiresAt.setHours(expiresAt.getHours() + 24);
+
+        const story = await db.story.create({
+            data: {
+                userId: user.id,
+                imageUrl,
+                expiresAt, 
+            }
+        })
+
+        return NextResponse.json(story);
 
     } catch (error) {
         console.log("error in server [API_STORY]", error);
