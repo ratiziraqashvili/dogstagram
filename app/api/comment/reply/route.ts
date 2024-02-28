@@ -90,3 +90,49 @@ export async function POST(req: NextRequest) {
         return new NextResponse("Internal error", { status: 500 })
     }
 }
+
+export async function DELETE(req: Request) {
+    try {
+        const user = await currentUser();
+        const { searchParams } = new URL(req.url);
+
+        const commentId = searchParams.get("commentId");
+        const authorId = searchParams.get("authorId");
+
+        if (!user || !user.id) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        if (!commentId || !authorId) {
+            return new NextResponse("commentId and authorId are required but it is missing", { status: 400 });
+        }
+
+        if (user.id !== authorId) {
+            return new NextResponse("Forbidden", { status: 403 })
+        }
+
+        const reply = await db.reply.findFirst({
+            where: {
+                id: commentId,
+                userId: authorId,
+            }
+        })
+
+        if (!reply) {
+            return new NextResponse("reply does not exist to delete", { status: 404 });
+        }
+
+        const deletedReply = await db.reply.delete({
+            where: {
+                id: commentId,
+                userId: authorId,
+            }
+        })
+
+        return NextResponse.json(deletedReply)
+
+    } catch (error) {
+        console.log("error in server [API_COMMENT_REPLY]", error);
+        return new NextResponse("Internal error", { status: 500 });
+    }
+}

@@ -49,6 +49,7 @@ export const Replies = ({
     const data = {
       commentId: replyId,
       authorId,
+      type: "reply",
     };
     onOpen("commentDelete", data);
   };

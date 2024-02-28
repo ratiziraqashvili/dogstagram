@@ -26,7 +26,10 @@ export const CommentDeleteModal = () => {
     try {
       if (userId === comment.authorId) {
         const url = qs.stringifyUrl({
-          url: "/api/comment/delete",
+          url:
+            comment.type === "comment"
+              ? "/api/comment/delete"
+              : "/api/comment/reply",
           query: {
             commentId: comment.commentId,
             authorId: comment.authorId,

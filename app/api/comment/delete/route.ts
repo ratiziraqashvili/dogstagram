@@ -25,9 +25,10 @@ export async function DELETE(req: Request) {
         const comment = await db.comment.findFirst({
             where: {
                 id: commentId,
-                userId: authorId!,
+                userId: authorId,
             }
         })
+
 
         if (!comment) {
             return new NextResponse("comment does not exist to delete", { status: 404 });

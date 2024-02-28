@@ -113,6 +113,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
     const data = {
       commentId,
       authorId,
+      type: "comment"
     };
     onOpen("commentDelete", data);
   };
@@ -121,8 +122,8 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
     <>
       {comments?.map((comment) => {
         return (
-          <>
-            <div key={comment.id} className="flex gap-3 p-3">
+          <div key={comment.id}>
+            <div className="flex gap-3 p-3">
               <div>
                 <Link onClick={handleClose} href={`/${comment.userId}`}>
                   <ProfilePicture
@@ -223,7 +224,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                 </div>
               </>
             )}
-          </>
+          </div>
         );
       })}
     </>

@@ -23,7 +23,7 @@ export const PostInfoModal = () => {
     likes,
     comments,
     savedPostsId: id,
-    restrictedUsers
+    restrictedUsers,
   } = useModal();
   const { onOpen } = useSecondModal();
   const [flag, setFlag] = useState("");
@@ -75,10 +75,10 @@ export const PostInfoModal = () => {
               <span className="text-sm font-semibold cursor-pointer hover:text-muted-foreground">
                 {post?.user.username}
               </span>
-              {post?.location && (
+              {post?.location && flag && (
                 <span className="text-sm font-semibold flex items-center gap-2">
                   <span className="relative w-5 h-3">
-                    <Image alt="location flag" fill src={flag ?? ""} />
+                    {flag !== null && <Image alt="location flag" fill src={flag} />}
                   </span>
                   {post?.location}
                 </span>
