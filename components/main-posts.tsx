@@ -40,13 +40,15 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
     },
   });
 
+  const getFormattedtime = (createdAt: Date) => {
+    return formatTimeDifference(createdAt);
+  };
+
   const comments = await getComments({ blockedIds });
 
   return (
     <div className="flex-1 mx-auto lg:max-w-[60%] md:max-w-[80%] max-w-full xl:ml-[20rem] md:mt-0 mt-[3.8rem] pb-20 sm:pb-0">
       {posts.map(async (post) => {
-        const formattedTime = formatTimeDifference(post.createdAt);
-
         const likeIds = likes.map((like) => like.postId);
         const isLiked = likeIds.includes(post.id);
         const restrictAuthorId = restrictedUsers.map((user) => user.userId);
@@ -85,7 +87,7 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
                     {post.user?.username}
                   </h1>
                   <span className="text-xs text-muted-foreground">
-                    &bull; {formattedTime}
+                    &bull; {getFormattedtime(post.createdAt)}
                   </span>
                 </div>
               </Link>

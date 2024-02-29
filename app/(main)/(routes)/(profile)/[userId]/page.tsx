@@ -187,8 +187,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
           <StoryWrapper storyLength={story.length}>
             <ProfilePicture
               story={story}
-              hasStory
-              onClick
+              onClick={story.length > 0 ? "story" : "aboutAccount"}
               imageUrl={user?.imageUrl}
               className="md:w-36 md:h-36 w-[4.6rem] h-[4.6rem]"
             />

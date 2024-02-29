@@ -9,23 +9,29 @@ import { Story } from "@prisma/client";
 interface ProfilePictureProps {
   className?: string;
   imageUrl?: string | undefined | null;
-  onClick?: boolean;
-  hasStory?: boolean;
+  onClick?: "story" | "aboutAccount";
   story?: Story[];
 }
 
 export const ProfilePicture = ({
   className = "w-6 h-6",
   imageUrl,
-  onClick = false,
-  hasStory = false,
+  onClick,
   story,
 }: ProfilePictureProps) => {
   const { user } = useClerk();
   const { onOpen } = useModal();
 
   const onAboutAccountModalOpen = () => {
-    onClick && hasStory ? onOpen("story", story) : onOpen("aboutAccount");
+    if (onClick === "aboutAccount") {
+      onOpen("aboutAccount");
+      return;
+    }
+    if (onClick === "story") {
+      onOpen("story", story);
+      return;
+    }
+    return;
   };
 
   return (

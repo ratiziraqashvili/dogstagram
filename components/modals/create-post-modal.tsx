@@ -35,6 +35,7 @@ import { SinglePost } from "@/types";
 import axios from "axios";
 import Image from "next/image";
 import qs from "query-string";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, {
@@ -258,12 +259,14 @@ export const CreatePostModal = () => {
                             {...field}
                           />
                         </FormControl>
-                        <EmojiPicker
-                          className="text-muted-foreground h-6 w-6 cursor-pointer hover:opacity-95 transition ml-2 pb-1"
-                          onChange={(emoji: string) =>
-                            field.onChange(`${field.value} ${emoji}`)
-                          }
-                        />
+                        {!isStory && (
+                          <EmojiPicker
+                            className="text-muted-foreground h-6 w-6 cursor-pointer hover:opacity-95 transition ml-2 pb-1"
+                            onChange={(emoji: string) =>
+                              field.onChange(`${field.value} ${emoji}`)
+                            }
+                          />
+                        )}
                         <FormMessage className="pl-3 pb-3" />
                       </FormItem>
                     )}

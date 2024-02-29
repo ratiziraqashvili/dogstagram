@@ -15,8 +15,8 @@ export const StoryModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogOverlay className="bg-gradient-to-t from-black to-zinc-400">
-        <DialogContent className="px-0 pb-0 pt-0 w-[70%] sm:w-[25rem] gap-0"></DialogContent>
+      <DialogOverlay className="bg-gradient-to-t from-black to-zinc-400 ">
+        <DialogContent className="px-0 pb-0 pt-0 w-[55%] md:w-[35%] xl:w-[25%] h-[65%] md:h-[75%] xl:h-[95%] gap-0"></DialogContent>
       </DialogOverlay>
     </Dialog>
   );
