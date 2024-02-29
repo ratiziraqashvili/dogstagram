@@ -16,6 +16,7 @@ import { PostPropertiesModal } from "../modals/post-properties-modal";
 import { AboutPostModal } from "../modals/about-post-modal";
 import { CommentDeleteModal } from "../modals/comment-delete-modal";
 import { RestrictModal } from "../modals/restrict-modal";
+import { StoryModal } from "../modals/story-modal";
 
 export const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -45,6 +46,7 @@ export const ModalProvider = () => {
       <AboutPostModal />
       <CommentDeleteModal />
       <RestrictModal />
+      <StoryModal />
     </>
   );
 };

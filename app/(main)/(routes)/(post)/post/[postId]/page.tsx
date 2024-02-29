@@ -5,6 +5,7 @@ import { Post } from "../_components/post";
 import { currentUser } from "@clerk/nextjs";
 import { getBlockedUserIds } from "@/lib/blocked-users";
 import NotFound from "@/app/not-found";
+import { getComments } from "@/lib/getComments";
 
 const PostPage = async ({ params }: { params: { postId: string } }) => {
   const user = await currentUser();
@@ -41,46 +42,7 @@ const PostPage = async ({ params }: { params: { postId: string } }) => {
     return <NotFound />;
   }
 
-  const comments = await db.comment.findMany({
-    where: {
-      postId,
-      NOT: {
-        userId: {
-          in: blockedIds,
-        },
-      },
-    },
-    include: {
-      user: {
-        select: {
-          imageUrl: true,
-          username: true,
-        },
-      },
-      reply: {
-        select: {
-          content: true,
-          replyAuthorUsername: true,
-          replyAuthorId: true,
-          userId: true,
-          createdAt: true,
-          id: true,
-          user: {
-            select: {
-              imageUrl: true,
-              username: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const comments = await getComments({ blockedIds });
 
   const restrictedUsers = await db.restrict.findMany({
     where: {

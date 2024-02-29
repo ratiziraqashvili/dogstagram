@@ -3,11 +3,13 @@ import { ExplorePosts } from "./_components/explore-posts";
 import { shuffleArray } from "@/lib/shuffleArray";
 import { currentUser } from "@clerk/nextjs";
 import { getBlockedUserIds } from "@/lib/blocked-users";
+import { getComments } from "@/lib/getComments";
 
 const ExplorePage = async () => {
   const user = await currentUser();
 
   const blockedIds = await getBlockedUserIds();
+  const comments = await getComments({ blockedIds });
 
   const userLocation = await db.user.findFirst({
     where: {
@@ -48,46 +50,6 @@ const ExplorePage = async () => {
           username: true,
         },
       },
-    },
-  });
-
-  const comments = await db.comment.findMany({
-    where: {
-      NOT: {
-        userId: {
-          in: blockedIds,
-        },
-      },
-    },
-    include: {
-      user: {
-        select: {
-          imageUrl: true,
-          username: true,
-        },
-      },
-      reply: {
-        select: {
-          content: true,
-          replyAuthorUsername: true,
-          replyAuthorId: true,
-          userId: true,
-          createdAt: true,
-          id: true,
-          user: {
-            select: {
-              imageUrl: true,
-              username: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
     },
   });
 

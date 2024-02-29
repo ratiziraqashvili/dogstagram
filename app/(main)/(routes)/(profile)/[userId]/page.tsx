@@ -7,6 +7,9 @@ import { ProfileFilters } from "./_components/profile-filters";
 import NotFound from "@/app/not-found";
 import { currentUser } from "@clerk/nextjs";
 import { getBlockedUserIds } from "@/lib/blocked-users";
+import { cn } from "@/lib/utils";
+import { StoryWrapper } from "@/components/story-wrapper";
+import { getComments } from "@/lib/getComments";
 
 const ProfilePage = async ({ params }: { params: { userId: string } }) => {
   const currUser = await currentUser();
@@ -111,45 +114,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     },
   });
 
-  const comments = await db.comment.findMany({
-    where: {
-      NOT: {
-        userId: {
-          in: blockedIds,
-        },
-      },
-    },
-    include: {
-      user: {
-        select: {
-          imageUrl: true,
-          username: true,
-        },
-      },
-      reply: {
-        select: {
-          content: true,
-          replyAuthorUsername: true,
-          replyAuthorId: true,
-          userId: true,
-          createdAt: true,
-          id: true,
-          user: {
-            select: {
-              imageUrl: true,
-              username: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const comments = await getComments({ blockedIds });
 
   const postCount = await db.post.count({
     where: {
@@ -183,6 +148,17 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
     },
   });
 
+  const now = new Date();
+
+  const story = await db.story.findMany({
+    where: {
+      userId: userId,
+      expiresAt: {
+        gte: now,
+      },
+    },
+  });
+
   const followerIds = followers?.followers.map((user) => user.followerId)!;
 
   const isFollowing = followerIds.includes(currUser!.id);
@@ -208,11 +184,15 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
       <ProfileNavbar username={user?.username} profileId={user?.clerkId} />
       <div className="md:w-[73%] xl:pr-44 pt-[4rem] md:pt-7 p-4 md:mx-auto  md:justify-center flex gap-5 md:gap-24 md:border-b-[1px] md:pb-12 pb-5 max-w-4xl">
         <div className="md:pl-7">
-          <ProfilePicture
-            onClick
-            imageUrl={user?.imageUrl}
-            className="md:w-36 md:h-36 w-[4.6rem] h-[4.6rem]"
-          />
+          <StoryWrapper storyLength={story.length}>
+            <ProfilePicture
+              story={story}
+              hasStory
+              onClick
+              imageUrl={user?.imageUrl}
+              className="md:w-36 md:h-36 w-[4.6rem] h-[4.6rem]"
+            />
+          </StoryWrapper>
         </div>
         <div>
           <ProfileInfo

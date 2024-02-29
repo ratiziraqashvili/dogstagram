@@ -9,6 +9,7 @@ import { currentUser } from "@clerk/nextjs";
 import { MoreHorizOpen } from "./more-horiz-open";
 import { getBlockedUserIds } from "@/lib/blocked-users";
 import { CheckCircle2 } from "lucide-react";
+import { getComments } from "@/lib/getComments";
 
 interface MainPostsProps {
   posts: PostInfoType;
@@ -39,45 +40,7 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
     },
   });
 
-  const comments = await db.comment.findMany({
-    where: {
-      NOT: {
-        userId: {
-          in: blockedIds,
-        },
-      },
-    },
-    include: {
-      user: {
-        select: {
-          imageUrl: true,
-          username: true,
-        },
-      },
-      reply: {
-        select: {
-          content: true,
-          replyAuthorUsername: true,
-          replyAuthorId: true,
-          userId: true,
-          createdAt: true,
-          id: true,
-          user: {
-            select: {
-              imageUrl: true,
-              username: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const comments = await getComments({ blockedIds });
 
   return (
     <div className="flex-1 mx-auto lg:max-w-[60%] md:max-w-[80%] max-w-full xl:ml-[20rem] md:mt-0 mt-[3.8rem] pb-20 sm:pb-0">

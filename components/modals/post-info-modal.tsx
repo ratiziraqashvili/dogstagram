@@ -68,12 +68,12 @@ export const PostInfoModal = () => {
             <Link onClick={handleClose} href={`/${post?.userId}`}>
               <ProfilePicture
                 className="w-8 h-8 cursor-pointer"
-                imageUrl={post?.user.imageUrl}
+                imageUrl={post?.user?.imageUrl}
               />
             </Link>
             <Link onClick={handleClose} href={`/${post?.userId}`}>
               <span className="text-sm font-semibold cursor-pointer hover:text-muted-foreground">
-                {post?.user.username}
+                {post?.user?.username}
               </span>
               {post?.location && flag && (
                 <span className="text-sm font-semibold flex items-center gap-2">
@@ -111,13 +111,13 @@ export const PostInfoModal = () => {
               <Link onClick={handleClose} href={`/${post?.userId}`}>
                 <ProfilePicture
                   className="h-8 w-8"
-                  imageUrl={post?.user.imageUrl}
+                  imageUrl={post?.user?.imageUrl}
                 />
               </Link>
               <Link onClick={handleClose} href={`/${post?.userId}`}>
                 <div className="flex flex-col">
                   <span className="text-sm font-semibold cursor-pointer hover:text-muted-foreground">
-                    {post?.user.username}
+                    {post?.user?.username}
                   </span>
                   {post?.location && (
                     <span className="text-sm font-semibold flex items-center gap-2">

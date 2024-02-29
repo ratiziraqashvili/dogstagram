@@ -2,7 +2,7 @@ import { CommentArray } from "@/types";
 import { Like, Restrict } from "@prisma/client";
 import { create } from "zustand";
 
-export type ModalType = "following" | "settings" | "moreHorizontal" | "displayFollowers" | "displayFollowings" | "aboutAccount" | "blockConfirm" | "blockIndicator" | "shareTo" | "createPost" | "postInfo" | "restrict"
+export type ModalType = "following" | "settings" | "moreHorizontal" | "displayFollowers" | "displayFollowings" | "aboutAccount" | "blockConfirm" | "blockIndicator" | "shareTo" | "createPost" | "postInfo" | "restrict" | "story"
 
 type ModalStore = {
     type: ModalType | null;
