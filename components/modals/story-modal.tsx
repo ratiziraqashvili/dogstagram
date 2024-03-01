@@ -30,17 +30,20 @@ export const StoryModal = () => {
   useEffect(() => {
     if (!story || !progressValues.length) return;
 
+    const totalSeconds = 5;
+    const increment = 100 / (totalSeconds * 10);
+
     let intervalId: string | number | NodeJS.Timeout | undefined;
     const updateProgress = () => {
       const newProgressValues = progressValues.slice();
       newProgressValues[currentStoryIndex] = Math.min(
-        newProgressValues[currentStoryIndex] + 10,
+        newProgressValues[currentStoryIndex] + increment,
         100
       );
       setProgressValues(newProgressValues);
     };
 
-    intervalId = setInterval(updateProgress, 1000);
+    intervalId = setInterval(updateProgress, 100);
 
     return () => clearInterval(intervalId);
   }, [story, currentStoryIndex, progressValues]);
