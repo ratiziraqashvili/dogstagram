@@ -33,7 +33,8 @@ export const StoryModal = () => {
     const totalSeconds = 5;
     const increment = 100 / (totalSeconds * 10);
 
-    let intervalId: string | number | NodeJS.Timeout | undefined;
+    let intervalId: NodeJS.Timeout;
+
     const updateProgress = () => {
       const newProgressValues = progressValues.slice();
       newProgressValues[currentStoryIndex] = Math.min(
@@ -47,6 +48,17 @@ export const StoryModal = () => {
 
     return () => clearInterval(intervalId);
   }, [story, currentStoryIndex, progressValues]);
+
+  useEffect(() => {
+    if (!isModalOpen || !story || currentStoryIndex >= story.length - 1) return;
+
+    const timeoutId = setTimeout(() => {
+      setCurrentStoryIndex(currentStoryIndex + 1);
+      setProgressValues(Array(data?.length || 0).fill(0));
+    }, 10000);
+
+    return () => clearTimeout(timeoutId);
+  }, [isOpen, currentStoryIndex, story]);
 
   return (
     <>
@@ -82,7 +94,7 @@ export const StoryModal = () => {
                       crop="fill"
                       sharpen={60}
                       priority
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover rounded-lg"
                       width="900"
                       height="900"
                     />
