@@ -72,6 +72,9 @@ model Story {
 
   user User @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([userId])
 }
 

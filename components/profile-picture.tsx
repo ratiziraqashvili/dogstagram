@@ -4,13 +4,13 @@ import { useClerk } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
-import { Story } from "@prisma/client";
+import { StoryType } from "@/types";
 
 interface ProfilePictureProps {
   className?: string;
   imageUrl?: string | undefined | null;
   onClick?: "story" | "aboutAccount";
-  story?: Story[];
+  story?: StoryType;
 }
 
 export const ProfilePicture = ({

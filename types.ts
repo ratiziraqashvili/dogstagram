@@ -1,4 +1,4 @@
-import { Comment, Notification, Post } from "@prisma/client";
+import { Comment, Notification, Post, Story } from "@prisma/client";
 
 export type PostInfoType = (
     Post & {
@@ -26,6 +26,15 @@ export type SinglePost = (
     };
   }
 )
+
+export type StoryType = (
+  Story & {
+    user: {
+      username: string;
+      imageUrl: string | null;
+    }
+  }
+)[]
 
 export type CommentArray = (
   Comment & {

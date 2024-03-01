@@ -157,6 +157,14 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
         gte: now,
       },
     },
+    include: {
+      user: {
+        select: {
+          username: true,
+          imageUrl: true,
+        }
+      },
+    }
   });
 
   const followerIds = followers?.followers.map((user) => user.followerId)!;
