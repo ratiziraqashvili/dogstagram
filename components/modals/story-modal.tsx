@@ -6,9 +6,14 @@ import { ProfilePicture } from "../profile-picture";
 import { StoryType } from "@/types";
 import { formatTimeDifference } from "@/lib/timeUtils";
 import { CldImage } from "next-cloudinary";
+import { useEffect, useState } from "react";
 
 export const StoryModal = () => {
   const { isOpen, onClose, type, data } = useModal();
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+  const [progressValues, setProgressValues] = useState(
+    Array(data?.length || 0).fill(0) // Initialize progress for all stories
+  );
 
   const story: StoryType = data;
 
@@ -22,6 +27,24 @@ export const StoryModal = () => {
     return formatTimeDifference(createdAt);
   };
 
+  useEffect(() => {
+    if (!story || !progressValues.length) return;
+
+    let intervalId: string | number | NodeJS.Timeout | undefined;
+    const updateProgress = () => {
+      const newProgressValues = progressValues.slice();
+      newProgressValues[currentStoryIndex] = Math.min(
+        newProgressValues[currentStoryIndex] + 10,
+        100
+      );
+      setProgressValues(newProgressValues);
+    };
+
+    intervalId = setInterval(updateProgress, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [story, currentStoryIndex, progressValues]);
+
   return (
     <>
       <Dialog open={isModalOpen} onOpenChange={handleClose}>
@@ -29,29 +52,29 @@ export const StoryModal = () => {
           <DialogContent className="px-0 pb-0 pt-0 w-[55%] md:w-[35%] xl:w-[25%] h-[65%] md:h-[75%] xl:h-[95%] gap-0 bg-black border-none">
             <div>
               <div className="pt-5 flex gap-1 absolute z-50 px-3 w-full">
-                {[...Array(story?.length)].map((_, i) => (
-                  <Progress key={i} value={0} />
+                {progressValues.map((progress, index) => (
+                  <Progress key={index} value={progress} />
                 ))}
               </div>
-              {story?.map((s) => (
+              {story?.[currentStoryIndex] && (
                 <>
                   <div className="flex absolute top-6 items-center px-3 pt-2 z-50">
                     <div className="flex items-center gap-2">
                       <ProfilePicture
                         className="w-8 h-8"
-                        imageUrl={s.user.imageUrl}
+                        imageUrl={story[currentStoryIndex].user.imageUrl}
                       />
                       <span className="text-sm text-white">
-                        {s.user.username}
+                        {story[currentStoryIndex].user.username}
                       </span>
                       <span className="text-sm text-zinc-300">
-                        {getFormattedTime(s.createdAt)}
+                        {getFormattedTime(story[currentStoryIndex].createdAt)}
                       </span>
                     </div>
                   </div>
                   <div>
                     <CldImage
-                      src={s.imageUrl}
+                      src={story[currentStoryIndex].imageUrl}
                       alt="Story Photo"
                       crop="fill"
                       sharpen={60}
@@ -62,7 +85,7 @@ export const StoryModal = () => {
                     />
                   </div>
                 </>
-              ))}
+              )}
             </div>
           </DialogContent>
         </DialogOverlay>
