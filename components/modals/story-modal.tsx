@@ -28,6 +28,14 @@ export const StoryModal = () => {
   };
 
   useEffect(() => {
+    if (!isModalOpen || !story) return;
+
+    setProgressValues(Array(story.length).fill(0));
+
+    setCurrentStoryIndex(0);
+  }, [isModalOpen, story]);
+
+  useEffect(() => {
     if (!story || !progressValues.length) return;
 
     const totalSeconds = 5;
@@ -55,7 +63,7 @@ export const StoryModal = () => {
     const timeoutId = setTimeout(() => {
       setCurrentStoryIndex(currentStoryIndex + 1);
       setProgressValues(Array(data?.length || 0).fill(0));
-    }, 10000);
+    }, 6070);
 
     return () => clearTimeout(timeoutId);
   }, [isOpen, currentStoryIndex, story]);
