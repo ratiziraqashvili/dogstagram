@@ -65,7 +65,7 @@ export default async function Home() {
   const stories = await db.story.findMany({
     where: {
       userId: {
-        in: followingIds,
+        in: ids,
       },
       expiresAt: {
         gte: now,

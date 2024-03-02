@@ -36,6 +36,15 @@ export type StoryType = (
   }
 )[]
 
+export type SingleStory = (
+  Story & {
+    user: {
+      username: string;
+      imageUrl: string | null;
+    }
+  }
+)
+
 export type CommentArray = (
   Comment & {
     user: {
