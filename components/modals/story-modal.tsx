@@ -1,6 +1,5 @@
 import { useModal } from "@/hooks/use-modal-store";
 import { Dialog, DialogContent, DialogOverlay } from "../ui/dialog";
-import { X } from "lucide-react";
 import { Progress } from "../ui/progress";
 import { ProfilePicture } from "../profile-picture";
 import { StoryType } from "@/types";
@@ -10,9 +9,11 @@ import { useEffect, useState } from "react";
 
 export const StoryModal = () => {
   const { isOpen, onClose, type, data } = useModal();
+
+  // define state variables for current story index and progress values
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [progressValues, setProgressValues] = useState(
-    Array(data?.length || 0).fill(0) // Initialize progress for all stories
+    Array(data?.length || 0).fill(0) // initialize progress for all stories
   );
 
   const story: StoryType = data;
@@ -27,6 +28,7 @@ export const StoryModal = () => {
     return formatTimeDifference(createdAt);
   };
 
+  // effect to initialize progress values and current story index when modal opens or story data changes
   useEffect(() => {
     if (!isModalOpen || !story) return;
 
@@ -35,6 +37,7 @@ export const StoryModal = () => {
     setCurrentStoryIndex(0);
   }, [isModalOpen, story]);
 
+  // effect to update progress values for each story based on a timer
   useEffect(() => {
     if (!story || !progressValues.length) return;
 
@@ -57,6 +60,7 @@ export const StoryModal = () => {
     return () => clearInterval(intervalId);
   }, [story, currentStoryIndex, progressValues]);
 
+  // effect to transition to the next story after a certain time interval
   useEffect(() => {
     if (!isModalOpen || !story || currentStoryIndex >= story.length - 1) return;
 
@@ -113,9 +117,6 @@ export const StoryModal = () => {
           </DialogContent>
         </DialogOverlay>
       </Dialog>
-      {isModalOpen && (
-        <X className="text-white size-8 cursor-pointer absolute right-1 top-4 z-50" />
-      )}
     </>
   );
 };
