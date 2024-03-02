@@ -2,15 +2,19 @@ import { cn } from "@/lib/utils";
 
 interface StoryWrapperProps {
   children: React.ReactNode;
-  storyLength: number;
+  hasStory?: boolean;
+  isStory?: boolean;
 }
 
-export const StoryWrapper = ({ children, storyLength }: StoryWrapperProps) => {
+export const StoryWrapper = ({
+  children,
+  hasStory,
+  isStory,
+}: StoryWrapperProps) => {
   return (
     <div
       className={cn(
-        storyLength > 0 &&
-          "bg-gradient-to-r from-amber-400 to-amber-600 rounded-full p-1"
+        (hasStory || isStory) && "ring-2 ring-amber-500 rounded-full p-1"
       )}
     >
       {children}

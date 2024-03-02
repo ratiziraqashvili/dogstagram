@@ -4,12 +4,11 @@ import { MobileFollowerCount } from "./_components/mobile-follower-count";
 import { db } from "@/lib/db";
 import { ProfileNavbar } from "../_components/profile-navbar";
 import { ProfileFilters } from "./_components/profile-filters";
-import NotFound from "@/app/not-found";
 import { currentUser } from "@clerk/nextjs";
 import { getBlockedUserIds } from "@/lib/blocked-users";
-import { cn } from "@/lib/utils";
 import { StoryWrapper } from "@/components/story-wrapper";
 import { getComments } from "@/lib/getComments";
+import NotFound from "@/app/not-found";
 
 const ProfilePage = async ({ params }: { params: { userId: string } }) => {
   const currUser = await currentUser();
@@ -192,7 +191,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
       <ProfileNavbar username={user?.username} profileId={user?.clerkId} />
       <div className="md:w-[73%] xl:pr-44 pt-[4rem] md:pt-7 p-4 md:mx-auto  md:justify-center flex gap-5 md:gap-24 md:border-b-[1px] md:pb-12 pb-5 max-w-4xl">
         <div className="md:pl-7">
-          <StoryWrapper storyLength={story.length}>
+          <StoryWrapper hasStory={story.length > 0}>
             <ProfilePicture
               story={story}
               onClick={story.length > 0 ? "story" : "aboutAccount"}

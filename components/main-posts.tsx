@@ -1,4 +1,4 @@
-import { PostInfoType } from "@/types";
+import { PostInfoType, StoryType } from "@/types";
 import { ProfilePicture } from "./profile-picture";
 import { formatTimeDifference } from "@/lib/timeUtils";
 import Link from "next/link";
@@ -10,12 +10,14 @@ import { MoreHorizOpen } from "./more-horiz-open";
 import { getBlockedUserIds } from "@/lib/blocked-users";
 import { CheckCircle2 } from "lucide-react";
 import { getComments } from "@/lib/getComments";
+import { Stories } from "./stories";
 
 interface MainPostsProps {
   posts: PostInfoType;
+  stories: StoryType;
 }
 
-export const MainPosts = async ({ posts }: MainPostsProps) => {
+export const MainPosts = async ({ posts, stories }: MainPostsProps) => {
   const user = await currentUser();
   const blockedIds = await getBlockedUserIds();
 
@@ -47,83 +49,86 @@ export const MainPosts = async ({ posts }: MainPostsProps) => {
   const comments = await getComments({ blockedIds });
 
   return (
-    <div className="flex-1 mx-auto lg:max-w-[60%] md:max-w-[80%] max-w-full xl:ml-[20rem] md:mt-0 mt-[3.8rem] pb-20 sm:pb-0">
-      {posts.map(async (post) => {
-        const likeIds = likes.map((like) => like.postId);
-        const isLiked = likeIds.includes(post.id);
-        const restrictAuthorId = restrictedUsers.map((user) => user.userId);
-        const restrictedUserId = restrictedUsers.map(
-          (user) => user.restrictedUserId
-        );
+    <>
+      <div className="flex-1 mx-auto lg:max-w-[60%] md:max-w-[80%] max-w-full xl:ml-[20rem] md:mt-0 mt-[3.8rem] pb-20 sm:pb-0">
+        <Stories stories={stories} />
+        {posts.map(async (post) => {
+          const likeIds = likes.map((like) => like.postId);
+          const isLiked = likeIds.includes(post.id);
+          const restrictAuthorId = restrictedUsers.map((user) => user.userId);
+          const restrictedUserId = restrictedUsers.map(
+            (user) => user.restrictedUserId
+          );
 
-        const isRestricted =
-          restrictAuthorId.includes(post.userId) &&
-          restrictedUserId.includes(user?.id!);
+          const isRestricted =
+            restrictAuthorId.includes(post.userId) &&
+            restrictedUserId.includes(user?.id!);
 
-        const restricted = await db.restrict.findMany({
-          where: {
-            userId: post.userId,
-          },
-        });
+          const restricted = await db.restrict.findMany({
+            where: {
+              userId: post.userId,
+            },
+          });
 
-        return (
-          <div
-            key={post.id}
-            className="sm:max-w-[75%] xl:max-w-[65%] mx-auto flex flex-col lg:pt-2 border-b-[1px] sm:px-0 px-2"
-          >
-            <div className="flex justify-between items-center py-3">
-              <Link
-                href={`/${post.userId}`}
-                className="flex items-center gap-2 cursor-pointer"
-              >
+          return (
+            <div
+              key={post.id}
+              className="sm:max-w-[75%] xl:max-w-[65%] mx-auto flex flex-col lg:pt-2 border-b-[1px] sm:px-0 px-2"
+            >
+              <div className="flex justify-between items-center py-3">
+                <Link
+                  href={`/${post.userId}`}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <div>
+                    <ProfilePicture
+                      imageUrl={post.user?.imageUrl}
+                      className="w-8 h-8"
+                    />
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <h1 className="text-sm font-semibold active:text-muted-foreground">
+                      {post.user?.username}
+                    </h1>
+                    <span className="text-xs text-muted-foreground">
+                      &bull; {getFormattedtime(post.createdAt)}
+                    </span>
+                  </div>
+                </Link>
                 <div>
-                  <ProfilePicture
-                    imageUrl={post.user?.imageUrl}
-                    className="w-8 h-8"
-                  />
+                  <MoreHorizOpen post={post} />
                 </div>
-                <div className="flex items-center gap-1">
-                  <h1 className="text-sm font-semibold active:text-muted-foreground">
-                    {post.user?.username}
-                  </h1>
-                  <span className="text-xs text-muted-foreground">
-                    &bull; {getFormattedtime(post.createdAt)}
-                  </span>
-                </div>
-              </Link>
+              </div>
+              <div className="z-0">
+                <PostImage imageUrl={post.imageUrl} />
+              </div>
               <div>
-                <MoreHorizOpen post={post} />
+                <MainPostInput
+                  comments={comments}
+                  likes={likes}
+                  savedPostsId={savedPostsId}
+                  isRestricted={isRestricted}
+                  post={post}
+                  liked={isLiked}
+                  restrictedUserId={restrictedUserId}
+                  restrictedUsers={restricted}
+                />
               </div>
             </div>
-            <div className="z-0">
-              <PostImage imageUrl={post.imageUrl} />
-            </div>
+          );
+        })}
+        <div className="sm:max-w-[75%] xl:max-w-[65%] mx-auto flex flex-col justify-center sm:px-0 py-16">
+          <div className="flex flex-col justify-center items-center">
+            <CheckCircle2 strokeWidth="0.5px" className="w-28 h-28" />
             <div>
-              <MainPostInput
-                comments={comments}
-                likes={likes}
-                savedPostsId={savedPostsId}
-                isRestricted={isRestricted}
-                post={post}
-                liked={isLiked}
-                restrictedUserId={restrictedUserId}
-                restrictedUsers={restricted}
-              />
+              <h1 className="text-lg text-center">You're all caught up</h1>
+              <p className="text-sm text-muted-foreground text-center">
+                You've seen all new posts from the past 14 days.
+              </p>
             </div>
-          </div>
-        );
-      })}
-      <div className="sm:max-w-[75%] xl:max-w-[65%] mx-auto flex flex-col justify-center sm:px-0 py-16">
-        <div className="flex flex-col justify-center items-center">
-          <CheckCircle2 strokeWidth="0.5px" className="w-28 h-28" />
-          <div>
-            <h1 className="text-lg text-center">You're all caught up</h1>
-            <p className="text-sm text-muted-foreground text-center">
-              You've seen all new posts from the past 14 days.
-            </p>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };

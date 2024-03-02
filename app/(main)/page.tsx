@@ -35,7 +35,7 @@ export default async function Home() {
         in: ids,
       },
       createdAt: {
-        gte: twoWeeksAgo
+        gte: twoWeeksAgo,
       },
       NOT: {
         userId: {
@@ -60,12 +60,38 @@ export default async function Home() {
     },
   });
 
+  const now = new Date();
+
+  const stories = await db.story.findMany({
+    where: {
+      userId: {
+        in: followingIds,
+      },
+      expiresAt: {
+        gte: now,
+      },
+      NOT: {
+        userId: {
+          in: blockedIds,
+        },
+      },
+    },
+    include: {
+      user: {
+        select: {
+          username: true,
+          imageUrl: true,
+        },
+      },
+    },
+  });
+
   const shuffledPosts = shuffleArray(posts);
 
   return (
     <div>
       <div className="flex">
-        <MainPosts posts={shuffledPosts} />
+        <MainPosts stories={stories} posts={shuffledPosts} />
         <ProfileIndicator />
       </div>
     </div>
