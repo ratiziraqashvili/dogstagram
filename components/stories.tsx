@@ -12,8 +12,9 @@ interface StoriesProps {
 export const Stories = ({ stories }: StoriesProps) => {
   const { onOpen } = useModal();
 
-  const onStoryModalOpen = (story: SingleStory) => {
-    onOpen("story", stories);
+  const onStoryModalOpen = (userId: string) => {
+    const userStories = stories.filter((s) => s.userId === userId);
+    onOpen("story", userStories);
   };
 
   const groupedStories = stories.reduce((acc, story) => {
@@ -33,7 +34,7 @@ export const Stories = ({ stories }: StoriesProps) => {
         <div
           className="flex items-center flex-col gap-1 cursor-pointer"
           key={story.id}
-          onClick={() => onStoryModalOpen(story)}
+          onClick={() => onStoryModalOpen(story.userId)}
         >
           <StoryWrapper isStory>
             <ProfilePicture

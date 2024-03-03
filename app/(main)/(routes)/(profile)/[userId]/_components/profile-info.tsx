@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useModal } from "@/hooks/use-modal-store";
 import Link from "next/link";
 import { useFollower } from "@/hooks/use-follower-store";
-import qs from "query-string"
+import qs from "query-string";
 import { useToast } from "@/components/ui/use-toast";
 
 interface ProfileInfoProps {
@@ -34,13 +34,14 @@ export const ProfileInfo = ({
   const { user } = useClerk();
   const router = useRouter();
   const { onOpen } = useModal();
-  const { isFollowing, setIsFollowing, followerCount, setFollowerCount } = useFollower();
+  const { isFollowing, setIsFollowing, followerCount, setFollowerCount } =
+    useFollower();
   const { toast } = useToast();
 
   useEffect(() => {
     setIsFollowing(following);
-    setFollowerCount(followerCountNumber)
-  }, [])
+    setFollowerCount(followerCountNumber);
+  }, []);
 
   const onFollow = async () => {
     // Making req to api route to follow user
@@ -51,10 +52,10 @@ export const ProfileInfo = ({
       const url = qs.stringifyUrl({
         url: "/api/users/follow",
         query: {
-          otherUserId: userId
-        }
-      })
-      
+          otherUserId: userId,
+        },
+      });
+
       await axios.post(url);
 
       router.refresh();
@@ -127,13 +128,14 @@ export const ProfileInfo = ({
                   Edit Profile
                 </Button>
               </Link>
-              <Button
-                className="sm:h-[2rem] h-full whitespace-normal"
-                variant="default"
-              >
-                {/* TODO: see archived stories */}
-                View archive
-              </Button>
+              <Link href="/archive">
+                <Button
+                  className="sm:h-[2rem] h-full whitespace-normal"
+                  variant="default"
+                >
+                  View archive
+                </Button>
+              </Link>
             </>
           )}
           <button

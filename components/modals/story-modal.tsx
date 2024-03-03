@@ -52,6 +52,14 @@ export const StoryModal = () => {
         newProgressValues[currentStoryIndex] + increment,
         100
       );
+
+      if (
+        currentStoryIndex === story.length - 1 &&
+        newProgressValues[currentStoryIndex] === 100
+      ) {
+        handleClose(); // Call your close function
+      }
+
       setProgressValues(newProgressValues);
     };
 
