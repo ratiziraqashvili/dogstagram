@@ -1,5 +1,6 @@
 "use client";
 
+import { useModal } from "@/hooks/use-modal-store";
 import { StoryType } from "@/types";
 import { Clock8 } from "lucide-react";
 import { CldImage } from "next-cloudinary";
@@ -9,6 +10,12 @@ interface StoriesDisplayProps {
 }
 
 export const StoriesDisplay = ({ expiredStories }: StoriesDisplayProps) => {
+  const { onOpen } = useModal();
+
+  const onStoryModalOpen = () => {
+    onOpen("story", expiredStories);
+  };
+
   if (!expiredStories) {
     return (
       <div className="h-full">
@@ -39,6 +46,7 @@ export const StoriesDisplay = ({ expiredStories }: StoriesDisplayProps) => {
             className="cursor-pointer hover:brightness-75 h-80 object-cover"
             sharpen={60}
             priority
+            onClick={onStoryModalOpen}
           />
         </div>
       ))}
