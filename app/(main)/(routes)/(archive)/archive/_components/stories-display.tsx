@@ -1,7 +1,7 @@
 "use client";
 
 import { useModal } from "@/hooks/use-modal-store";
-import { StoryType } from "@/types";
+import { SingleStory, StoryType } from "@/types";
 import { Clock8 } from "lucide-react";
 import { CldImage } from "next-cloudinary";
 
@@ -12,8 +12,8 @@ interface StoriesDisplayProps {
 export const StoriesDisplay = ({ expiredStories }: StoriesDisplayProps) => {
   const { onOpen } = useModal();
 
-  const onStoryModalOpen = () => {
-    onOpen("story", expiredStories);
+  const onStoryModalOpen = (story: SingleStory) => {
+    onOpen("story", [story]);
   };
 
   if (!expiredStories) {
@@ -37,7 +37,7 @@ export const StoriesDisplay = ({ expiredStories }: StoriesDisplayProps) => {
   return (
     <div className="grid xl:grid-cols-5 sm:grid-cols-4 grid-cols-3 gap-1 pt-10 md:pt-1">
       {expiredStories.map((story) => (
-        <div>
+        <div key={story.id}>
           <CldImage
             src={story.imageUrl}
             alt="Posts"
@@ -46,7 +46,7 @@ export const StoriesDisplay = ({ expiredStories }: StoriesDisplayProps) => {
             className="cursor-pointer hover:brightness-75 h-80 object-cover"
             sharpen={60}
             priority
-            onClick={onStoryModalOpen}
+            onClick={() => onStoryModalOpen(story)}
           />
         </div>
       ))}
