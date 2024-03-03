@@ -15,8 +15,9 @@ export const MobileNavbar = ({ unReadNotiCount }: MobileNavbarProps) => {
   const isProfilePage = pathname.split("/")[1].startsWith("user_");
   const isNotificationPage = pathname.startsWith("/notifications");
   const isPostPage = pathname.startsWith("/post");
+  const isArchivePage = pathname.startsWith("/archive");
 
-  if (isProfilePage || isPostPage || isNotificationPage) {
+  if (isProfilePage || isPostPage || isNotificationPage || isArchivePage) {
     return null;
   }
 
@@ -28,7 +29,7 @@ export const MobileNavbar = ({ unReadNotiCount }: MobileNavbarProps) => {
         </Link>
       </div>
       <div className="flex items-center gap-5 pr-5">
-          <SearchSheet />
+        <SearchSheet />
         <div className="relative">
           <Link href="/notifications">
             <Heart className="w-6 h-6 cursor-pointer hover:scale-105 transition" />
