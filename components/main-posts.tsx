@@ -11,6 +11,7 @@ import { getBlockedUserIds } from "@/lib/blocked-users";
 import { CheckCircle2 } from "lucide-react";
 import { getComments } from "@/lib/getComments";
 import { Stories } from "./stories";
+import { cn } from "@/lib/utils";
 
 interface MainPostsProps {
   posts: PostInfoType;
@@ -117,7 +118,12 @@ export const MainPosts = async ({ posts, stories }: MainPostsProps) => {
             </div>
           );
         })}
-        <div className="sm:max-w-[75%] xl:max-w-[65%] mx-auto flex flex-col justify-center sm:px-0 py-16">
+        <div
+          className={cn(
+            "sm:max-w-[75%] xl:max-w-[65%] mx-auto flex flex-col justify-center sm:px-0 py-16",
+            posts.length === 0 && "py-44"
+          )}
+        >
           <div className="flex flex-col justify-center items-center">
             <CheckCircle2 strokeWidth="0.5px" className="w-28 h-28" />
             <div>

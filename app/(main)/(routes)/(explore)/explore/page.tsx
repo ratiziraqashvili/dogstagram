@@ -81,7 +81,7 @@ const ExplorePage = async () => {
   });
 
   return (
-    <div className="md:w-[73%] max-w-4xl lg:pl-24 mx-auto pt-16 md:pt-2">
+    <div className="md:w-[73%] max-w-4xl lg:pl-24 mx-auto">
       <ExplorePosts
         restrictedUsers={restrictedUsers}
         savedPostsId={savedPostsId}

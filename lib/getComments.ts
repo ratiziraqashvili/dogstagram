@@ -41,5 +41,5 @@ export const getComments = async ({ blockedIds }: { blockedIds: string[] }) => {
         },
       });
 
-      return comments
+      return comments;
 }

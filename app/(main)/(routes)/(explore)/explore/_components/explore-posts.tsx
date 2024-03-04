@@ -46,8 +46,18 @@ export const ExplorePosts = ({
     }
   };
 
+  if (!posts) {
+    return (
+      <div className="flex justify-center items-center h-[100vh] overflow-hidden">
+        <h1 className="text-2xl font-semibold text-center">
+          There are nothing to explore yet!
+        </h1>
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-3 gap-1">
+    <div className="grid grid-cols-3 gap-1 pt-16 md:pt-2">
       {posts.map((post) => (
         <div
           onClick={() =>

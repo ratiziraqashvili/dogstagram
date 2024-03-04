@@ -1,5 +1,6 @@
 import { MainPosts } from "@/components/main-posts";
 import { ProfileIndicator } from "@/components/profile-indicator";
+import { SuggestedAccounts } from "@/components/suggested-accounts";
 import { getBlockedUserIds } from "@/lib/blocked-users";
 import { db } from "@/lib/db";
 import { shuffleArray } from "@/lib/shuffleArray";
@@ -86,7 +87,23 @@ export default async function Home() {
     },
   });
 
+  const suggestedUsers = await db.user.findMany({
+    where: {
+      followers: {
+        
+      }
+    }
+  })
+
   const shuffledPosts = shuffleArray(posts);
+
+  if (followingIds?.length === 0) {
+    return (
+      <div className="flex justify-center max-w-xl md:max-w-lg md:pt-0 pt-14 mx-auto p-3">
+        <SuggestedAccounts />
+      </div>
+    );
+  }
 
   return (
     <div>
