@@ -5,11 +5,11 @@ import { cn } from "@/lib/utils";
 import { useOrigin } from "@/hooks/use-origin";
 import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { useState } from "react";
-import qs from "query-string";
 import { useModal } from "@/hooks/use-modal-store";
 import { SinglePost } from "@/types";
+import qs from "query-string";
+import axios from "axios";
 
 export const PostPropertiesModal = () => {
   const { isOpen, onClose, type, data, onOpen } = useSecondModal();

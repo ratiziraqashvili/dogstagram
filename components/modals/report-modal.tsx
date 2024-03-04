@@ -9,10 +9,15 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { useState } from "react";
+import qs from "query-string";
+import axios from "axios";
+import { useToast } from "../ui/use-toast";
 
 export const ReportModal = () => {
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
-  const { isOpen, onClose, type } = useSecondModal();
+  const { isOpen, onClose, type, data } = useSecondModal();
+  const { toast } = useToast();
+  const postId: string = data;
 
   const isModalOpen = isOpen && type === "report";
 
@@ -40,6 +45,35 @@ export const ReportModal = () => {
     setSelectedReason(value);
   };
 
+  const onReport = async () => {
+    try {
+      const url = qs.stringifyUrl({
+        url: "/api/report",
+        query: {
+          reason: selectedReason,
+          postId,
+        },
+      });
+
+      await axios.post(url);
+
+      toast({
+        title: "Reported successfully.",
+        variant: "default",
+        duration: 3000,
+      });
+    } catch (error: any) {
+      console.error("error in client [REPORT-MODAL]", error);
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
+    }
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
@@ -62,7 +96,11 @@ export const ReportModal = () => {
                 ))}
               </SelectContent>
             </Select>
-            <Button disabled={!selectedReason} variant="destructive">
+            <Button
+              onClick={onReport}
+              disabled={!selectedReason}
+              variant="destructive"
+            >
               Report
             </Button>
           </div>
