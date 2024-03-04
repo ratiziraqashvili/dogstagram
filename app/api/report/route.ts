@@ -38,11 +38,19 @@ export async function POST(req: NextRequest) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
-        if (!postId) {
-            return new NextResponse("postId is required but its missing", { status: 400 });
+        if (!postId || !reason) {
+            return new NextResponse("postId or reason is required but its missing", { status: 400 });
         }
 
-        const report = await 
+        const report = await db.report.create({
+            data: {
+                reason: reason!,
+                userId: user?.id,
+                postId,
+            }
+        })
+
+        return NextResponse.json(report);
 
     } catch (error) {
         console.log("error in server [API_REPORT]", error);
