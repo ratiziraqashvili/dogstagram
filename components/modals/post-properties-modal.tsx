@@ -207,6 +207,10 @@ export const PostPropertiesModal = () => {
     editPostOpen("createPost", post);
   };
 
+  const onReportModalOpen = (postId: string) => {
+    onOpen("report", postId);
+  };
+
   const redirectToPost = () => {
     handleClose();
     closeModal();
@@ -217,6 +221,9 @@ export const PostPropertiesModal = () => {
     isAuthor
       ? { label: "Delete", onClick: () => onDelete(post?.userId) }
       : null,
+    isAuthor
+      ? null
+      : { label: "Report", onClick: () => onReportModalOpen(post?.id) },
     isAuthor ? { label: "Edit", onClick: onCreatePostModalOpen } : null,
     isAuthor
       ? {
@@ -256,8 +263,10 @@ export const PostPropertiesModal = () => {
             >
               <span
                 className={cn(
-                  button!.label === "Delete" &&
-                    "font-bold text-red-600 opacity-85"
+                  (button!.label === "Delete" &&
+                    "font-bold text-red-600 opacity-85") ||
+                    (button!.label === "Report" &&
+                      "font-bold text-red-600 opacity-85")
                 )}
               >
                 {button!.label}

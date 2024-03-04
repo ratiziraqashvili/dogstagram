@@ -9,8 +9,8 @@ import { PostInput } from "../post-input";
 import { useSecondModal } from "@/hooks/use-second-modal-store";
 import { SinglePost } from "@/types";
 import { formatTimeDifference } from "@/lib/timeUtils";
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import axios from "axios";
 import Image from "next/image";
 
