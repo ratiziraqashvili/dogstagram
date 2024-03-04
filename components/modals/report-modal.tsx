@@ -15,6 +15,7 @@ import { useToast } from "../ui/use-toast";
 
 export const ReportModal = () => {
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onClose, type, data } = useSecondModal();
   const { toast } = useToast();
   const postId: string = data;
@@ -46,6 +47,7 @@ export const ReportModal = () => {
   };
 
   const onReport = async () => {
+    setIsLoading(true);
     try {
       const url = qs.stringifyUrl({
         url: "/api/report",
@@ -62,6 +64,7 @@ export const ReportModal = () => {
         variant: "default",
         duration: 3000,
       });
+      handleClose();
     } catch (error: any) {
       console.error("error in client [REPORT-MODAL]", error);
 
@@ -72,6 +75,8 @@ export const ReportModal = () => {
           duration: 3000,
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -98,7 +103,7 @@ export const ReportModal = () => {
             </Select>
             <Button
               onClick={onReport}
-              disabled={!selectedReason}
+              disabled={!selectedReason || isLoading}
               variant="destructive"
             >
               Report
