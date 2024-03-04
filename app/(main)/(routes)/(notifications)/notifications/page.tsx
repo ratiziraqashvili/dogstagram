@@ -14,6 +14,7 @@ const NotificationPage = async () => {
     orderBy: {
       createdAt: "desc",
     },
+    take: 10,
     include: {
       user: {
         select: {

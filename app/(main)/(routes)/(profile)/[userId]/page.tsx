@@ -141,7 +141,6 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
       followers: {
         select: {
           followerId: true,
-          followingId: true,
         },
       },
     },

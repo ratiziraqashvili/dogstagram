@@ -1,20 +1,113 @@
+"use client";
+
+import Link from "next/link";
+import { ProfilePicture } from "./profile-picture";
+import { Button } from "./ui/button";
+import { useFollower } from "@/hooks/use-follower-store";
+import { useEffect, useState } from "react";
+import qs from "query-string";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useToast } from "./ui/use-toast";
+
 interface SuggestedAccountsProps {
-    suggestedUsers: unknown;
+  suggestedUsers: {
+    imageUrl: string | null;
+    username: string;
+    clerkId: string;
+    firstName: string | null;
+    isFollowing: boolean | undefined;
+  }[];
 }
 
-export const SuggestedAccounts = ({ suggestedUsers }: SuggestedAccountsProps) => {
+export const SuggestedAccounts = ({
+  suggestedUsers,
+}: SuggestedAccountsProps) => {
+  const { isFollowing, setIsFollowing } = useFollower();
+  const router = useRouter();
+  const { toast } = useToast();
+  const [users, setUsers] = useState(suggestedUsers)
+
+  const onFollow = async (userId: string) => {
+    // Making req to api route to follow user
+    try {
+      setUsers((prev) =>
+      prev.map((f) =>
+        f.clerkId === userId ? { ...f, isFollowing: true } : f
+      )
+    );
+
+      const url = qs.stringifyUrl({
+        url: "/api/users/follow",
+        query: {
+          otherUserId: userId,
+        },
+      });
+
+      await axios.post(url);
+
+      router.refresh();
+    } catch (error: any) {
+      console.error(error);
+      setUsers((prev) =>
+      prev.map((f) =>
+        f.clerkId === userId ? { ...f, isFollowing: true } : f
+      )
+    );
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
+    }
+  };
+
+  const onUnfollow = async (userId: string) => {
+    try {
+      setUsers((prev) =>
+      prev.map((f) =>
+        f.clerkId === userId ? { ...f, isFollowing: false } : f
+      )
+    );
+      await axios.delete(`/api/users/unfollow/${userId}`);
+
+      router.refresh();
+    } catch (error: any) {
+      console.error(error);
+      setUsers((prev) =>
+      prev.map((f) =>
+        f.clerkId === userId ? { ...f, isFollowing: true } : f
+      )
+    );
+
+      if (error.response.status === 429) {
+        toast({
+          title: "Rate limit exceeded, try again later.",
+          variant: "default",
+          duration: 3000,
+        });
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4 md:gap-6 pt-8 w-full">
       <div>
         <h1 className="font-semibold text-md">Suggested</h1>
       </div>
       <div className="flex flex-col gap-4">
-        {/* {blockedUser.map((user) => (
+        {users.map((user) => (
           <div
             className="flex justify-between items-center w-full"
             key={user.clerkId}
           >
-            <div className="flex items-center gap-3 cursor-pointer">
+            <Link
+              href={`/${user.clerkId}`}
+              className="flex items-center gap-3 cursor-pointer"
+            >
               <ProfilePicture className="w-11 h-11" imageUrl={user.imageUrl} />
               <div>
                 <p className="font-semibold text-sm">{user.username}</p>
@@ -22,19 +115,22 @@ export const SuggestedAccounts = ({ suggestedUsers }: SuggestedAccountsProps) =>
                   {user.firstName}
                 </p>
               </div>
-            </div>
+            </Link>
             <div>
               <Button
-                disabled={isLoading}
-                onClick={() => onUnblock(user.clerkId)}
+                onClick={
+                  user.isFollowing
+                    ? () => onUnfollow(user.clerkId)
+                    : () => onFollow(user.clerkId)
+                }
                 className="h-8"
-                variant="default"
+                variant={user.isFollowing ? "default" : "amber"}
               >
-                Unblock
+                {user.isFollowing ? "Unfollow" : "Follow"}
               </Button>
             </div>
           </div>
-        ))} */}
+        ))}
       </div>
     </div>
   );

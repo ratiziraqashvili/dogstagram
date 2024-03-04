@@ -31,8 +31,8 @@ export const ProfileInfo = ({
   followerCountNumber,
   isFollowing: following,
 }: ProfileInfoProps) => {
-  const { user } = useClerk();
   const router = useRouter();
+  const { user } = useClerk();
   const { onOpen } = useModal();
   const { isFollowing, setIsFollowing, followerCount, setFollowerCount } =
     useFollower();

@@ -89,18 +89,41 @@ export default async function Home() {
 
   const suggestedUsers = await db.user.findMany({
     where: {
+      NOT: {
+        clerkId: user?.id,
+      },
+    },
+    orderBy: {
       followers: {
-        
-      }
-    }
-  })
+        _count: "desc",
+      },
+    },
+    take: 7,
+    select: {
+      username: true,
+      imageUrl: true,
+      clerkId: true,
+      firstName: true,
+    },
+  });
+
+  const suggestedUsersWithFollowingStatus = suggestedUsers.map((suggestedUser) => {
+    const isFollowing = currUserRelatives?.following.some(
+      (following) => following.followingId === suggestedUser.clerkId
+    );
+  
+    return {
+      ...suggestedUser,
+      isFollowing,
+    };
+  });
 
   const shuffledPosts = shuffleArray(posts);
 
   if (followingIds?.length === 0) {
     return (
-      <div className="flex justify-center max-w-xl md:max-w-lg md:pt-0 pt-14 mx-auto p-3">
-        <SuggestedAccounts />
+      <div className="flex justify-center items-center h-full max-w-xl md:max-w-lg pb-24 mx-auto p-3">
+        <SuggestedAccounts suggestedUsers={suggestedUsersWithFollowingStatus} />
       </div>
     );
   }

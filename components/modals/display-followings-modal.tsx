@@ -37,6 +37,7 @@ export const DisplayFollowingsModal = () => {
   const [skeleton, setSkeleton] = useState(true);
   const { isOpen, onClose, type } = useModal();
   const { toast } = useToast();
+  
 
   const params = useParams();
   const otherUserId = params.userId;
