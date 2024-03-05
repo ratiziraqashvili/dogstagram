@@ -36,7 +36,7 @@ export const ProfileIndicator = ({ suggestedUsers }: ProfileIndicatorProps) => {
           <div>
             <Button
               onClick={() => signOut()}
-              className="text-xs text-amber-500 font-semibold"
+              className="text-xs text-amber-500 font-semibold transition-none"
               variant="ghost"
             >
               Logout

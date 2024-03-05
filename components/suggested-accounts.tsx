@@ -3,7 +3,6 @@
 import { ProfilePicture } from "./profile-picture";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useToast } from "./ui/use-toast";
 import { SuggestedUsers } from "@/types";
 import qs from "query-string";
@@ -18,7 +17,6 @@ export const SuggestedAccounts = ({
   suggestedUsers,
 }: SuggestedAccountsProps) => {
   const [users, setUsers] = useState(suggestedUsers);
-  const router = useRouter();
   const { toast } = useToast();
 
   const onFollow = async (userId: string) => {
@@ -38,8 +36,6 @@ export const SuggestedAccounts = ({
       });
 
       await axios.post(url);
-
-      router.refresh();
     } catch (error: any) {
       console.error(error);
       setUsers((prev) =>
@@ -66,8 +62,6 @@ export const SuggestedAccounts = ({
         )
       );
       await axios.delete(`/api/users/unfollow/${userId}`);
-
-      router.refresh();
     } catch (error: any) {
       console.error(error);
       setUsers((prev) =>

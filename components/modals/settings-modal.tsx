@@ -4,7 +4,7 @@ import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 export const SettingsModal = () => {
-  const { isOpen, onClose, type } = useModal();
+  const { isOpen, onClose, type, onOpen } = useModal();
   const { signOut } = useClerk();
   const router = useRouter();
 
@@ -19,8 +19,13 @@ export const SettingsModal = () => {
     router.push("/notifications");
   };
 
+  const onShareModalOpen = () => {
+    onOpen("shareTo");
+  };
+
   const buttons = [
     { label: "Notifications", onClick: redirectToNotiPage },
+    { label: "Share to...", onClick: onShareModalOpen },
     { label: "Log Out", onClick: () => signOut() },
   ];
 
