@@ -4,13 +4,19 @@ import { useClerk } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { ProfilePicture } from "./profile-picture";
+import { SuggestedUsers } from "@/types";
+import { Suggestion } from "./suggestion";
 
-export const ProfileIndicator = () => {
+interface ProfileIndicatorProps {
+  suggestedUsers: SuggestedUsers;
+}
+
+export const ProfileIndicator = ({ suggestedUsers }: ProfileIndicatorProps) => {
   const { signOut, user } = useClerk();
 
   return (
-    <div className="w-[31%] hidden xl:block">
-      <div>
+    <div className="w-[31%] hidden xl:flex flex-col gap-4">
+      <div className="w-full">
         <div className="flex justify-around mt-9">
           <Link href={`/${user?.id}`}>
             <div className="flex gap-2 items-center">
@@ -38,6 +44,7 @@ export const ProfileIndicator = () => {
           </div>
         </div>
       </div>
+      <Suggestion suggestedUsers={suggestedUsers} />
     </div>
   );
 };

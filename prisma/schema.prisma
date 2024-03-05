@@ -9,20 +9,20 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  firstName    String?
-  username     String        @unique
-  email        String        @unique
-  imageUrl     String?       @db.Text
-  clerkId      String        @unique
-  location     String        @default("Unspecified")
-  blockedUsers BlockedUser[]
-  following    Follow[]      @relation("follower")
-  followers    Follow[]      @relation("following")
+  id        String  @id @default(uuid())
+  firstName String?
+  username  String  @unique
+  email     String  @unique
+  imageUrl  String? @db.Text
+  clerkId   String  @unique
+  location  String  @default("Unspecified")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  following    Follow[]       @relation("follower")
+  followers    Follow[]       @relation("following")
+  blockedUsers BlockedUser[]
   posts        Post[]
   comments     Comment[]
   SavedPosts   SavedPosts[]

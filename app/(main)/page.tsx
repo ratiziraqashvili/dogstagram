@@ -132,7 +132,7 @@ export default async function Home() {
     <div>
       <div className="flex">
         <MainPosts stories={stories} posts={shuffledPosts} />
-        <ProfileIndicator />
+        <ProfileIndicator suggestedUsers={suggestedUsersWithFollowingStatus.filter(user => !user.isFollowing)} />
       </div>
     </div>
   );

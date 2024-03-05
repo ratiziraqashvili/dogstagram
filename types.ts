@@ -85,3 +85,11 @@ export type SearchUser = {
   imageUrl: string;
   username: string;
 }[];
+
+export type SuggestedUsers = {
+    imageUrl: string | null;
+    username: string;
+    clerkId: string;
+    firstName: string | null;
+    isFollowing: boolean | undefined;
+}[];

@@ -8,10 +8,10 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
+import { useToast } from "../ui/use-toast";
 import { useState } from "react";
 import qs from "query-string";
 import axios from "axios";
-import { useToast } from "../ui/use-toast";
 
 export const ReportModal = () => {
   const [selectedReason, setSelectedReason] = useState<string | null>(null);

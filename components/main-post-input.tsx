@@ -339,7 +339,7 @@ export const MainPostInput = ({
           }
           className="text-sm text-muted-foreground cursor-pointer"
         >
-          View all {commentCount} comments
+          {commentCount === 0 ? null : `View all ${commentCount} comments`}
         </span>
       </div>
       {!post?.hideComments && (

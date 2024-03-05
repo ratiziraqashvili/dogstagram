@@ -1,41 +1,34 @@
 "use client";
 
-import Link from "next/link";
 import { ProfilePicture } from "./profile-picture";
 import { Button } from "./ui/button";
-import { useFollower } from "@/hooks/use-follower-store";
-import { useEffect, useState } from "react";
-import qs from "query-string";
-import axios from "axios";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "./ui/use-toast";
+import { SuggestedUsers } from "@/types";
+import qs from "query-string";
+import axios from "axios";
+import Link from "next/link";
 
 interface SuggestedAccountsProps {
-  suggestedUsers: {
-    imageUrl: string | null;
-    username: string;
-    clerkId: string;
-    firstName: string | null;
-    isFollowing: boolean | undefined;
-  }[];
+  suggestedUsers: SuggestedUsers;
 }
 
 export const SuggestedAccounts = ({
   suggestedUsers,
 }: SuggestedAccountsProps) => {
-  const { isFollowing, setIsFollowing } = useFollower();
+  const [users, setUsers] = useState(suggestedUsers);
   const router = useRouter();
   const { toast } = useToast();
-  const [users, setUsers] = useState(suggestedUsers)
 
   const onFollow = async (userId: string) => {
     // Making req to api route to follow user
     try {
       setUsers((prev) =>
-      prev.map((f) =>
-        f.clerkId === userId ? { ...f, isFollowing: true } : f
-      )
-    );
+        prev.map((f) =>
+          f.clerkId === userId ? { ...f, isFollowing: true } : f
+        )
+      );
 
       const url = qs.stringifyUrl({
         url: "/api/users/follow",
@@ -50,10 +43,10 @@ export const SuggestedAccounts = ({
     } catch (error: any) {
       console.error(error);
       setUsers((prev) =>
-      prev.map((f) =>
-        f.clerkId === userId ? { ...f, isFollowing: true } : f
-      )
-    );
+        prev.map((f) =>
+          f.clerkId === userId ? { ...f, isFollowing: true } : f
+        )
+      );
 
       if (error.response.status === 429) {
         toast({
@@ -68,20 +61,20 @@ export const SuggestedAccounts = ({
   const onUnfollow = async (userId: string) => {
     try {
       setUsers((prev) =>
-      prev.map((f) =>
-        f.clerkId === userId ? { ...f, isFollowing: false } : f
-      )
-    );
+        prev.map((f) =>
+          f.clerkId === userId ? { ...f, isFollowing: false } : f
+        )
+      );
       await axios.delete(`/api/users/unfollow/${userId}`);
 
       router.refresh();
     } catch (error: any) {
       console.error(error);
       setUsers((prev) =>
-      prev.map((f) =>
-        f.clerkId === userId ? { ...f, isFollowing: true } : f
-      )
-    );
+        prev.map((f) =>
+          f.clerkId === userId ? { ...f, isFollowing: true } : f
+        )
+      );
 
       if (error.response.status === 429) {
         toast({
