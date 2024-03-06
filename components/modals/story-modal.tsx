@@ -66,7 +66,7 @@ export const StoryModal = () => {
     intervalId = setInterval(updateProgress, 100);
 
     return () => clearInterval(intervalId);
-  }, [story, currentStoryIndex, progressValues, handleClose]);
+  }, [story, currentStoryIndex, progressValues]);
 
   // effect to transition to the next story after a certain time interval
   useEffect(() => {

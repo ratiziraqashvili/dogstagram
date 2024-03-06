@@ -41,7 +41,7 @@ export const ProfileInfo = ({
   useEffect(() => {
     setIsFollowing(following);
     setFollowerCount(followerCountNumber);
-  }, [followerCountNumber, following]);
+  }, [followerCountNumber, following, setFollowerCount, setIsFollowing]);
 
   const onFollow = async () => {
     // Making req to api route to follow user

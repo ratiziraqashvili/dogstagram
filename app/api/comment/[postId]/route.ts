@@ -49,7 +49,7 @@ export async function POST(req: NextRequest, { params }: { params: { postId: str
             return new NextResponse("postId is required but it is missing", { status: 400 });
         }
 
-        if (!content) return null;
+        if (!content) return new NextResponse('Missing content', { status: 400 });;
 
         if (content.length > MAX_COMMENT_LENGTH) {
             return new NextResponse("comment is too large", { status: 400 })
