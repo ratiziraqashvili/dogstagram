@@ -25,6 +25,8 @@ const ArchivePage = async () => {
     },
   });
 
+  console.log(expiredStories)
+
   return (
     <div className="mx-auto lg:max-w-[60%] md:max-w-[80%] max-w-full xl:ml-[20rem] pb-20 sm:pb-0 md:pt-7">
       <div className="md:flex hidden items-center gap-2 border-b-[1px] pb-20">

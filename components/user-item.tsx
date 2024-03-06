@@ -77,7 +77,7 @@ export const UserItem = ({
   };
 
   return (
-    <div className="flex flex-col gap-2 pt-3">
+    <div className="flex flex-col gap-2 pt-3 overflow-y-auto">
       {searchResults.map((result) => (
         <SheetClose key={result.clerkId} asChild>
           <div

@@ -14,6 +14,7 @@ import axios from "axios";
 import { EmojiPicker } from "./emoji-pickers";
 import { cn } from "@/lib/utils";
 import { Replies } from "./replies";
+import { useRouter } from "next/navigation";
 
 interface CommentsProps {
   comments: CommentArray;
@@ -31,6 +32,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
   const { onOpen } = useSecondModal();
   const { onClose } = useModal();
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleClose = () => {
     onClose();
@@ -85,6 +87,7 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
         });
 
         await axios.post(url);
+        router.refresh();
       } else return;
     } catch (error: any) {
       console.error("error in client [COMPONENTS_COMMENTS]", error);

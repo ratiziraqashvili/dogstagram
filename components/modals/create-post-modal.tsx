@@ -43,8 +43,8 @@ const formSchema = z.object({
   }),
   caption: z
     .string()
-    .max(100, {
-      message: "Caption should contain less that 100 characters.",
+    .max(70, {
+      message: "Caption should contain less that 70 characters.",
     })
     .optional(),
   location: z.string().optional(),

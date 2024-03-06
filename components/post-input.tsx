@@ -110,8 +110,8 @@ export const PostInput = ({
       setIsSubmitting(true);
       setIsLiked(false);
       setLikeCount((prevCount) => prevCount! - 1);
-      await axios.delete(`/api/like/${post?.id}`);
 
+      await axios.delete(`/api/like/${post?.id}`);
     } catch (error: any) {
       setIsLiked(true);
       setLikeCount((prevCount) => prevCount! + 1);
@@ -167,6 +167,7 @@ export const PostInput = ({
         });
 
         await axios.post(url);
+        router.refresh();
       } else return;
     } catch (error) {
       console.error("client error in onComment", error);

@@ -16,7 +16,7 @@ export const StoriesDisplay = ({ expiredStories }: StoriesDisplayProps) => {
     onOpen("story", [story]);
   };
 
-  if (!expiredStories) {
+  if (expiredStories.length === 0) {
     return (
       <div className="h-full">
         <div className="flex justify-center gap-14 flex-col items-center pt-20">

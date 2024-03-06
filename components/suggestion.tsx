@@ -4,12 +4,12 @@ import { SuggestedUsers } from "@/types";
 import { ProfilePicture } from "./profile-picture";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useToast } from "./ui/use-toast";
-import qs from "query-string";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import qs from "query-string";
 
 interface SuggestionProps {
   suggestedUsers: SuggestedUsers;
@@ -17,6 +17,7 @@ interface SuggestionProps {
 
 export const Suggestion = ({ suggestedUsers }: SuggestionProps) => {
   const [users, setUsers] = useState(suggestedUsers);
+  const router = useRouter();
   const { toast } = useToast();
 
   const onFollow = async (userId: string) => {
@@ -36,6 +37,8 @@ export const Suggestion = ({ suggestedUsers }: SuggestionProps) => {
       });
 
       await axios.post(url);
+
+      router.refresh();
     } catch (error: any) {
       console.error(error);
       setUsers((prev) =>
@@ -63,6 +66,8 @@ export const Suggestion = ({ suggestedUsers }: SuggestionProps) => {
       );
 
       await axios.delete(`/api/users/unfollow/${userId}`);
+
+      router.refresh();
     } catch (error: any) {
       console.error(error);
       setUsers((prev) =>
@@ -81,15 +86,19 @@ export const Suggestion = ({ suggestedUsers }: SuggestionProps) => {
     }
   };
 
+  if (suggestedUsers.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="w-full pl-12">
+    <div className="w-full pl-[13%]">
       <h1 className="text-muted-foreground text-sm font-semibold opacity-90 pb-4">
         Suggested for you
       </h1>
       <div className="flex">
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 w-full pr-[15%]">
           {users.map((user) => (
-            <div className="flex gap-[5.4rem]">
+            <div className="flex justify-between">
               <Link
                 href={`/${user.clerkId}`}
                 className="flex gap-2 items-center"
