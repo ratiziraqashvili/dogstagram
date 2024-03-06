@@ -20,7 +20,9 @@ export async function POST(req: Request) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (story) return null;
+        if (story) {
+            return new NextResponse("Forbidden", { status: 403 })
+        };
 
         if (!imageUrl) {
             return new NextResponse("Missing required parameter", { status: 400 })
