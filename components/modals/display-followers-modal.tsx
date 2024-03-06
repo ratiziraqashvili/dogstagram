@@ -88,7 +88,7 @@ export const DisplayFollowersModal = () => {
     };
 
     fetchFollowers();
-  }, [isModalOpen]);
+  }, [isModalOpen, otherUserId, userId]);
 
   const onRemoveFollow = async (clerkId: string) => {
     //Making api req to remove/delete follow

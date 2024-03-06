@@ -88,7 +88,7 @@ export const DisplayFollowingsModal = () => {
     };
 
     fetchFollowings();
-  }, [isModalOpen]);
+  }, [isModalOpen, otherUserId, userId]);
 
   const onUnfollow = async (clerkId: string) => {
     // making req to api route to unfollow user

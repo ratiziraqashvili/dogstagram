@@ -87,7 +87,6 @@ export const PostInput = ({
       });
 
       await axios.post(url);
-
     } catch (error: any) {
       setIsLiked(false);
       setLikeCount((prevCount) => prevCount! - 1);
@@ -103,7 +102,7 @@ export const PostInput = ({
     } finally {
       setIsSubmitting(false);
     }
-  }, []);
+  }, [post?.id, post?.userId, restrictedUserId, toast, userId]);
 
   const onUnLike = useCallback(async () => {
     try {
@@ -127,10 +126,10 @@ export const PostInput = ({
     } finally {
       setIsSubmitting(false);
     }
-  }, []);
+  }, [post?.id, toast]);
 
-  const deboundedOnLike = useCallback(debounce(onLike, 300), []);
-  const deboundedOnUnLike = useCallback(debounce(onUnLike, 300), []);
+  const deboundedOnLike = useCallback(debounce(onLike, 300), [onLike]);
+  const deboundedOnUnLike = useCallback(debounce(onUnLike, 300), [onUnLike]);
 
   const MAX_COMMENT_LENGTH = 150;
 

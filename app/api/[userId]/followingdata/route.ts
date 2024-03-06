@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request, { params }: { params: { userId: string } }) {
    try {
     if (!params.userId) {
-        return null;
+        return new NextResponse('Missing userId parameter', { status: 400 });
     }
 
     const followingDetails = await db.follow.findMany({

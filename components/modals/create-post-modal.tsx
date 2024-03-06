@@ -122,7 +122,15 @@ export const CreatePostModal = () => {
     setValue("location", post?.location ?? "");
     setValue("hideLikes", post?.hideLikes ?? false);
     setValue("hideComments", post?.hideComments ?? false);
-  }, [image, isDog, setValue]);
+  }, [
+    image,
+    isDog,
+    setValue,
+    post?.caption,
+    post?.location,
+    post?.hideLikes,
+    post?.hideComments,
+  ]);
 
   const handleClose = () => {
     onClose();
@@ -131,7 +139,6 @@ export const CreatePostModal = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-
       if (!values.story) {
         if (!post) {
           if (!values.isDog) {
@@ -336,8 +343,8 @@ export const CreatePostModal = () => {
                             Only you will see the total number of likes and
                             views on this post. You can change this later by
                             going to the ··· menu at the top of the post. To
-                            hide like counts on other people&apos;s posts, go to your
-                            account settings.
+                            hide like counts on other people&apos;s posts, go to
+                            your account settings.
                           </FormDescription>
                         </FormItem>
                       )}

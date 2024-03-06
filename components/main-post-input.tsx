@@ -116,7 +116,7 @@ export const MainPostInput = ({
     } finally {
       setIsSubmitting(false);
     }
-  }, []);
+  }, [isRestricted, post?.id, post?.userId, restrictedUserId, toast]);
 
   const onUnLike = useCallback(async () => {
     try {
@@ -139,10 +139,10 @@ export const MainPostInput = ({
     } finally {
       setIsSubmitting(false);
     }
-  }, []);
+  }, [post?.id, toast]);
 
-  const deboundedOnLike = useCallback(debounce(onLike, 300), []);
-  const deboundedOnUnLike = useCallback(debounce(onUnLike, 300), []);
+  const deboundedOnLike = useCallback(debounce(onLike, 300), [onLike]);
+  const deboundedOnUnLike = useCallback(debounce(onUnLike, 300), [onUnLike]);
 
   const MAX_COMMENT_LENGTH = 150;
 
