@@ -6,7 +6,7 @@ export async function GET(req: Request, { params }: { params: { userId: string }
         const { userId } = params;
 
         if (!userId) {
-            return null;
+            return new NextResponse('Missing userId parameter', { status: 400 });
         }
 
         const user = await db.user.findUnique({
