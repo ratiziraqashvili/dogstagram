@@ -17,7 +17,7 @@ export async function POST(req: Request, { params }: { params: { userId: string 
         }
 
         if (!userId) {
-            return null;
+            return new NextResponse("Missing required userId", { status: 400 });
         }
 
         const alreadyRestricted = await db.restrict.findFirst({
