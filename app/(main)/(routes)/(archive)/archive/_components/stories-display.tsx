@@ -25,7 +25,7 @@ export const StoriesDisplay = ({ expiredStories }: StoriesDisplayProps) => {
             <h1 className="text-xl">Add to your story</h1>
             <p className="text-sm text-center w-[70%]">
               Keep your stories in your archive after they disappear, so you can
-              look back on your memories. Only you can see what's in your
+              look back on your memories. Only you can see what&apos;s in your
               archive.
             </p>
           </div>

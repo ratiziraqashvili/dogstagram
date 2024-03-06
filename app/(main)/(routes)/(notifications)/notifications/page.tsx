@@ -75,7 +75,7 @@ const NotificationPage = async () => {
           />
           <p className="text-sm">Activity On Your Posts</p>
           <p className="text-sm text-center">
-            When someone likes or comments on one of your posts, you'll see it
+            When someone likes or comments on one of your posts, you&apos;ll see it
             here.
           </p>
         </div>

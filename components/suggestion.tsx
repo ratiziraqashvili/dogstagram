@@ -98,7 +98,7 @@ export const Suggestion = ({ suggestedUsers }: SuggestionProps) => {
       <div className="flex">
         <div className="flex flex-col gap-3 w-full pr-[15%]">
           {users.map((user) => (
-            <div className="flex justify-between">
+            <div key={user.clerkId} className="flex justify-between">
               <Link
                 href={`/${user.clerkId}`}
                 className="flex gap-2 items-center"

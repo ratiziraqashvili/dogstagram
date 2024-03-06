@@ -127,9 +127,9 @@ export const MainPosts = async ({ posts, stories }: MainPostsProps) => {
           <div className="flex flex-col justify-center items-center">
             <CheckCircle2 strokeWidth="0.5px" className="w-28 h-28" />
             <div>
-              <h1 className="text-lg text-center">You're all caught up</h1>
+              <h1 className="text-lg text-center">You&apos;re all caught up</h1>
               <p className="text-sm text-muted-foreground text-center">
-                You've seen all new posts from the past 14 days.
+                You&apos;ve seen all new posts from the past 14 days.
               </p>
             </div>
           </div>

@@ -24,6 +24,7 @@ interface CommentsProps {
 
 export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
   const [isReplying, setIsReplying] = useState(false);
+  const [replyStates, setReplyStates] = useState<{ [commentId: string]: boolean }>({});
   const [replyingToId, setReplyingToId] = useState("");
   const [commentValue, setCommentValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,6 +37,13 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
 
   const handleClose = () => {
     onClose();
+  };
+
+  const toggleReplyState = (commentId: string) => {
+    setReplyStates(prevStates => ({
+      ...prevStates,
+      [commentId]: !prevStates[commentId]
+    }));
   };
 
   const onReply = (id: string, username: string) => {
@@ -123,8 +131,6 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
   return (
     <>
       {comments?.map((comment) => {
-        const [replyVisible, setReplyVisible] = useState(false);
-
         return (
           <div key={comment.id}>
             <div className="flex gap-3 p-3">
@@ -182,8 +188,8 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
                   {comment.reply.length > 0 && (
                     <Replies
                       reply={comment.reply}
-                      isReplyVisible={replyVisible}
-                      onClick={() => setReplyVisible((prev) => !prev)}
+                      isReplyVisible={replyStates[comment.id]}
+                      onClick={() => toggleReplyState(comment.id)}
                       replyCount={comment.reply.length}
                     />
                   )}

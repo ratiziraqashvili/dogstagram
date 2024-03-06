@@ -86,7 +86,7 @@ export const RestrictModal = () => {
             <div className="flex gap-4 items-center">
               <MessageCircle className="w-8 h-8" />
               <span className="text-sm text-muted-foreground">
-                You'll control if others can see their new comments on your
+                You&apos;ll control if others can see their new comments on your
                 posts for only 24 hours.
               </span>
             </div>

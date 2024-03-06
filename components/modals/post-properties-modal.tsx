@@ -16,13 +16,14 @@ export const PostPropertiesModal = () => {
   const { onOpen: editPostOpen, onClose: closeModal } = useModal();
   const { onClose: onCloseRootModal } = useModal();
   const { toast } = useToast();
-  const post: SinglePost = data;
   const [isLoading, setIsLoading] = useState(false);
   const { userId } = useAuth();
+  const post: SinglePost = data;
   const origin = useOrigin();
   const router = useRouter();
 
   const isModalOpen = isOpen && type === "postProperties";
+  const isAuthor = post?.userId === userId;
 
   const handleClose = () => {
     onClose();
@@ -33,8 +34,6 @@ export const PostPropertiesModal = () => {
   const onAboutAccountModalOpen = () => {
     onOpen("aboutPost", post);
   };
-
-  const isAuthor = post?.userId === userId;
 
   const onCopy = () => {
     navigator.clipboard.writeText(postUrl);

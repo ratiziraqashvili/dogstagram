@@ -35,7 +35,6 @@ import { SinglePost } from "@/types";
 import axios from "axios";
 import Image from "next/image";
 import qs from "query-string";
-import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, {
@@ -59,12 +58,12 @@ interface UploadResultsTags {
 }
 
 export const CreatePostModal = () => {
-  const { isOpen, onClose, type, data } = useModal();
-  const { uploadedData } = usePostDataStore();
-  const { user } = useUser();
   const [locations, setLocations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isStory, setIsStory] = useState(false);
+  const { isOpen, onClose, type, data } = useModal();
+  const { uploadedData } = usePostDataStore();
+  const { user } = useUser();
   const { toast } = useToast();
   const router = useRouter();
   const post: SinglePost = data;
@@ -130,8 +129,8 @@ export const CreatePostModal = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
 
       if (!values.story) {
         if (!post) {
@@ -337,7 +336,7 @@ export const CreatePostModal = () => {
                             Only you will see the total number of likes and
                             views on this post. You can change this later by
                             going to the ··· menu at the top of the post. To
-                            hide like counts on other people's posts, go to your
+                            hide like counts on other people&apos;s posts, go to your
                             account settings.
                           </FormDescription>
                         </FormItem>

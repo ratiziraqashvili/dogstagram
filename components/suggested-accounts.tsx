@@ -8,6 +8,7 @@ import { SuggestedUsers } from "@/types";
 import qs from "query-string";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface SuggestedAccountsProps {
   suggestedUsers: SuggestedUsers;
@@ -18,6 +19,7 @@ export const SuggestedAccounts = ({
 }: SuggestedAccountsProps) => {
   const [users, setUsers] = useState(suggestedUsers);
   const { toast } = useToast();
+  const router = useRouter();
 
   const onFollow = async (userId: string) => {
     // Making req to api route to follow user
@@ -36,6 +38,7 @@ export const SuggestedAccounts = ({
       });
 
       await axios.post(url);
+      router.refresh();
     } catch (error: any) {
       console.error(error);
       setUsers((prev) =>
