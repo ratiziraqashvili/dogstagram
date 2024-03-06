@@ -10,10 +10,6 @@ const ratelimit = new Ratelimit({
     limiter: Ratelimit.slidingWindow(5, "10s"),
 })
 
-export const config = {
-    runtime: "edge",
-}
-
 const MAX_REPLY_LENGTH = 150;
 
 export async function POST(req: NextRequest) {

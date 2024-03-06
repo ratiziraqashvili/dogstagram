@@ -9,10 +9,6 @@ const ratelimit = new Ratelimit({
     limiter: Ratelimit.slidingWindow(5, "10s"),
 })
 
-export const config = {
-    runtime: "edge",
-}
-
 export async function DELETE(req: NextRequest, { params }: { params: { userId: string } }) {
     try {
         const user = await currentUser();
