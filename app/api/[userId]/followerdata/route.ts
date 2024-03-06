@@ -37,7 +37,7 @@ export async function GET(req: Request, { params }: { params: { userId: string }
         }
     })
 
-    return NextResponse.json(users, { status: 200 });
+    return new NextResponse(JSON.stringify(users), { status: 200, headers: { "Content-Type": "application/json" } });
 
    } catch (error) {
     console.log("Error in Follower Data", error);

@@ -24,7 +24,9 @@ interface CommentsProps {
 
 export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
   const [isReplying, setIsReplying] = useState(false);
-  const [replyStates, setReplyStates] = useState<{ [commentId: string]: boolean }>({});
+  const [replyStates, setReplyStates] = useState<{
+    [commentId: string]: boolean;
+  }>({});
   const [replyingToId, setReplyingToId] = useState("");
   const [commentValue, setCommentValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,9 +42,9 @@ export const Comments = ({ comments, authorId, postId }: CommentsProps) => {
   };
 
   const toggleReplyState = (commentId: string) => {
-    setReplyStates(prevStates => ({
+    setReplyStates((prevStates) => ({
       ...prevStates,
-      [commentId]: !prevStates[commentId]
+      [commentId]: !prevStates[commentId],
     }));
   };
 
