@@ -1,8 +1,7 @@
+import { RESTRICT_DURATION_HOURS } from "@/constants/constants";
 import { db } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-
-export const RESTRICT_DURATION_HOURS = 24;
 
 export async function POST(req: Request, { params }: { params: { userId: string } }) {
     try {
