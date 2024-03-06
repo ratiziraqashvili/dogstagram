@@ -5,7 +5,7 @@ export async function GET(req: Request, { params }: { params: { userId: string }
    try {
     
     if (!params.userId) {
-        return null;
+        return new Response('Missing userId parameter', { status: 400 });
     }
 
     const followerDetails = await db.follow.findMany({
