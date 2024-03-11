@@ -89,6 +89,9 @@ export default async function Home() {
 
   const suggestedUsers = await db.user.findMany({
     where: {
+      clerkId: {
+        notIn: [...blockedIds!, user?.id!],
+      },
       NOT: {
         clerkId: user?.id,
       },
@@ -107,16 +110,18 @@ export default async function Home() {
     },
   });
 
-  const suggestedUsersWithFollowingStatus = suggestedUsers.map((suggestedUser) => {
-    const isFollowing = currUserRelatives?.following.some(
-      (following) => following.followingId === suggestedUser.clerkId
-    );
-  
-    return {
-      ...suggestedUser,
-      isFollowing,
-    };
-  });
+  const suggestedUsersWithFollowingStatus = suggestedUsers.map(
+    (suggestedUser) => {
+      const isFollowing = currUserRelatives?.following.some(
+        (following) => following.followingId === suggestedUser.clerkId
+      );
+
+      return {
+        ...suggestedUser,
+        isFollowing,
+      };
+    }
+  );
 
   const shuffledPosts = shuffleArray(posts);
 
@@ -132,7 +137,11 @@ export default async function Home() {
     <div>
       <div className="flex">
         <MainPosts stories={stories} posts={shuffledPosts} />
-        <ProfileIndicator suggestedUsers={suggestedUsersWithFollowingStatus.filter(user => !user.isFollowing)} />
+        <ProfileIndicator
+          suggestedUsers={suggestedUsersWithFollowingStatus.filter(
+            (user) => !user.isFollowing
+          )}
+        />
       </div>
     </div>
   );
