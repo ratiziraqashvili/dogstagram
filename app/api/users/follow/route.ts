@@ -5,10 +5,10 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { kv } from "@vercel/kv";
 import { NextRequest, NextResponse } from "next/server";
 
-const ratelimit = new Ratelimit({
-    redis: kv,
-    limiter: Ratelimit.slidingWindow(5, "10s"),
-})
+// const ratelimit = new Ratelimit({
+//     redis: kv,
+//     limiter: Ratelimit.slidingWindow(5, "10s"),
+// })
 
 export async function POST(req: NextRequest) {
     try {
@@ -17,18 +17,18 @@ export async function POST(req: NextRequest) {
         const otherUserId = searchParams.get("otherUserId");
 
         const ip = req.ip;
-        const { limit, reset, remaining } = await ratelimit.limit(ip!);
+        // const { limit, reset, remaining } = await ratelimit.limit(ip!);
 
-        if (remaining === 0) {
-            return new NextResponse(JSON.stringify({ error: "Rate limit exceeded" }), {
-                status: 429,
-                headers: {
-                    "X-RateLimit-Limit": limit.toString(),
-                    "X-RateLimit-Remaining": remaining.toString(),
-                    "X-RateLimit-Reset": reset.toString(),
-                }
-            })
-        }
+        // if (remaining === 0) {
+        //     return new NextResponse(JSON.stringify({ error: "Rate limit exceeded" }), {
+        //         status: 429,
+        //         headers: {
+        //             "X-RateLimit-Limit": limit.toString(),
+        //             "X-RateLimit-Remaining": remaining.toString(),
+        //             "X-RateLimit-Reset": reset.toString(),
+        //         }
+        //     })
+        // }
 
         if (!user || !user.id || !otherUserId) {
             return new NextResponse("Unauthorized", { status: 401 })
